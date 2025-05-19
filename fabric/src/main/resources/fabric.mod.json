@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "A mod that optimizes the Minecraft networking stack and entity tracker.",
+  "authors": [
+    "tuxed"
+  ],
+  "contributors": [
+    "404"
+  ],
+  "contact": {
+    "website": "https://github.com/404Setup/krypton-Multi",
+    "repo": "https://github.com/404Setup/krypton-Multi"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/krypton/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.steinborn.krypton.mod.KryptonBootstrap"
+    ],
+    "client": [
+    ]
+  },
+  "mixins": [
+    "krypton.mixins.json"
+  ],
+  "accessWidener": "krypton.accesswidener",
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${fabric_game_version_range}",
+    "java": ">=${java_version}"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
