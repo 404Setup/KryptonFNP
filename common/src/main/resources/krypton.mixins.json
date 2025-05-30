@@ -6,6 +6,7 @@
     "client": [],
     "mixins": [
         "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
+        "shared.network.experimental.VarLongMixin",
         "shared.network.microopt.EntityTrackerEntryMixin",
         "shared.network.microopt.StringEncodingMixin",
         "shared.network.microopt.VarIntsMixin",
@@ -13,9 +14,9 @@
         "shared.network.pipeline.SplitterHandlerMixin",
         "shared.network.pipeline.compression.ClientConnectionMixin",
         "shared.network.pipeline.encryption.ClientConnectionMixin",
-        "shared.network.pipeline.encryption.ServerLoginNetworkHandlerMixin",
-        "shared.network.pipeline.prepender.ClientConnectionMixin"
+        "shared.network.pipeline.encryption.ServerLoginNetworkHandlerMixin"
     ],
+    "refmap": "krypton.refmap.json",
     "injectors": {
         "defaultRequire": 1
     }

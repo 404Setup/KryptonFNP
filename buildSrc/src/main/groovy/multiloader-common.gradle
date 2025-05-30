@@ -42,9 +42,14 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
-    maven {
-        name = 'Paper'
-        url = 'https://repo.papermc.io/repository/maven-public/'
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Paper'
+                url = 'https://repo.papermc.io/repository/maven-public/'
+            }
+        }
+        filter { includeGroupAndSubgroups('com.velocitypowered') }
     }
 }
 
@@ -113,7 +118,7 @@ processResources {
         key, value -> [(key): value instanceof String ? value.replace("\n", "\\\\n") : value]
     }
 
-    filesMatching(['META-INF/mods.toml', 'META-INF/neoforge.mods.toml']) {
+    filesMatching(['META-INF/mods.toml']) {
         expand expandProps
     }
 
