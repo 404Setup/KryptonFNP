@@ -24,7 +24,7 @@ public class KryptonBootstrap {
 
     private final Logger LOGGER = LoggerFactory.getLogger(KryptonBootstrap.class);
 
-    public KryptonBootstrap(FMLJavaModLoadingContext context) {
+    public KryptonBootstrap() {
         if (FMLLoader.getDist().isClient()) {
             LOGGER.info("Krypton is now accelerating your Minecraft client's networking stack \uD83D\uDE80");
             LOGGER.info("Note that Krypton is most effective on servers, not the client.");
