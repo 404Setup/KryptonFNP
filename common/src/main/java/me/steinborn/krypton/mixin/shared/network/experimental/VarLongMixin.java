@@ -9,17 +9,11 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(VarLong.class)
 public class VarLongMixin {
     @Unique
-    private static final int MAX_VARLONG_SIZE = 10;
-    @Unique
-    private static final int DATA_BITS_MASK = 0x7F;
-    @Unique
-    private static final int CONTINUATION_BIT_MASK = 0x80;
-    @Unique
     private static final int DATA_BITS_PER_BYTE = 7;
 
     @Unique
     private static boolean krypton_Multi$hasContinuationBit(byte data) {
-        return (data & CONTINUATION_BIT_MASK) != 0;
+        return (data & 0x80) != 0;
     }
 
     /**
@@ -46,12 +40,12 @@ public class VarLongMixin {
 
         byte currentByte;
         do {
-            if (bytesRead >= MAX_VARLONG_SIZE) {
+            if (bytesRead >= 10) {
                 throw new RuntimeException("VarLong too big");
             }
 
             currentByte = buffer.readByte();
-            result |= (long) (currentByte & DATA_BITS_MASK) << (bytesRead * DATA_BITS_PER_BYTE);
+            result |= (long) (currentByte & 0x7F) << (bytesRead * DATA_BITS_PER_BYTE);
             bytesRead++;
         } while (krypton_Multi$hasContinuationBit(currentByte));
 
