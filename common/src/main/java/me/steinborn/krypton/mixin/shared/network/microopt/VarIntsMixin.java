@@ -41,12 +41,7 @@ public class VarIntsMixin {
     @Unique
     private static void krypton_Multi$writeVarIntFull(ByteBuf buf, int value) {
         // See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
-        if ((value & (0xFFFFFFFF << 7)) == 0) {
-            buf.writeByte(value);
-        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
-            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
-            buf.writeShort(w);
-        } else if ((value & (0xFFFFFFFF << 21)) == 0) {
+        if ((value & (0xFFFFFFFF << 21)) == 0) {
             int w = (value & 0x7F | 0x80) << 16 | ((value >>> 7) & 0x7F | 0x80) << 8 | (value >>> 14);
             buf.writeMedium(w);
         } else if ((value & (0xFFFFFFFF << 28)) == 0) {
