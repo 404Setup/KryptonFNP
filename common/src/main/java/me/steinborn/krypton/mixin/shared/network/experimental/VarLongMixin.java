@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(VarLong.class)
+@Mixin(value = VarLong.class, priority = 900)
 public class VarLongMixin {
     @Unique
     private static final int DATA_BITS_PER_BYTE = 7;
