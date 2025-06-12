@@ -6,7 +6,6 @@
   "client": [],
   "mixins": [
     "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
-    "shared.network.experimental.VarLongMixin",
     "shared.network.microopt.EntityTrackerEntryMixin",
     "shared.network.microopt.FriendlyByteBufMixin",
     "shared.network.pipeline.LegacyQueryHandlerMixin",
