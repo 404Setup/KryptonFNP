@@ -1,15 +1,10 @@
-package me.steinborn.krypton.mod;
+package me.steinborn.krypton.mod.shared;
 
 import com.velocitypowered.natives.util.Natives;
-import me.steinborn.krypton.mod.shared.KryptonSharedBootstrap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class KryptonBootstrap implements ModInitializer {
-    private final Logger LOGGER = LoggerFactory.getLogger(KryptonBootstrap.class);
+public class KryptonSharedBootstrap {
+    public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(KryptonSharedBootstrap.class);
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much
@@ -24,8 +19,13 @@ public class KryptonBootstrap implements ModInitializer {
         }
     }
 
-    @Override
-    public void onInitialize() {
-        KryptonSharedBootstrap.run(FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT));
+    public static void run(boolean client) {
+        if (!client) {
+            LOGGER.info("Krypton is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
+        } else {
+            LOGGER.info("Krypton is now accelerating your Minecraft client's networking stack \uD83D\uDE80");
+            LOGGER.info("Note that Krypton is most effective on servers, not the client.");
+        }
+        LOGGER.info("Compression will use {}, encryption will use {}", Natives.compress.getLoadedVariant(), Natives.cipher.getLoadedVariant());
     }
 }
