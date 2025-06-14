@@ -9,6 +9,16 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(VarInt.class)
 public class VarIntsMixin {
+    @Unique
+    private static final int MASK_7_BITS = 0xFFFFFFFF << 7;
+    @Unique
+    private static final int MASK_14_BITS = 0xFFFFFFFF << 14;
+    @Unique
+    private static final int MASK_21_BITS = 0xFFFFFFFF << 21;
+    @Unique
+    private static final int MASK_28_BITS = 0xFFFFFFFF << 28;
+
+
     /**
      * @author Andrew Steinborn
      * @reason optimized version
@@ -26,9 +36,9 @@ public class VarIntsMixin {
     public static ByteBuf write(ByteBuf buf, int value) {
         // Peel the one and two byte count cases explicitly as they are the most common VarInt sizes
         // that the server will send, to improve inlining.
-        if ((value & (0xFFFFFFFF << 7)) == 0) {
+        if ((value & MASK_7_BITS) == 0) {
             buf.writeByte(value);
-        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
+        } else if ((value & MASK_14_BITS) == 0) {
             int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
             buf.writeShort(w);
         } else {
@@ -41,10 +51,10 @@ public class VarIntsMixin {
     @Unique
     private static void krypton_Multi$writeVarIntFull(ByteBuf buf, int value) {
         // See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
-        if ((value & (0xFFFFFFFF << 21)) == 0) {
+        if ((value & MASK_21_BITS) == 0) {
             int w = (value & 0x7F | 0x80) << 16 | ((value >>> 7) & 0x7F | 0x80) << 8 | (value >>> 14);
             buf.writeMedium(w);
-        } else if ((value & (0xFFFFFFFF << 28)) == 0) {
+        } else if ((value & MASK_28_BITS) == 0) {
             int w = (value & 0x7F | 0x80) << 24 | (((value >>> 7) & 0x7F | 0x80) << 16)
                     | ((value >>> 14) & 0x7F | 0x80) << 8 | (value >>> 21);
             buf.writeInt(w);
