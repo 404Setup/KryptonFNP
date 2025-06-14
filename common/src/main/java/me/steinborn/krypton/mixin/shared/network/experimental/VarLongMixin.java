@@ -1,6 +1,5 @@
 package me.steinborn.krypton.mixin.shared.network.experimental;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.VarLong;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -9,12 +8,18 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(value = VarLong.class, priority = 900)
 public class VarLongMixin {
     @Unique
-    private static final int DATA_BITS_PER_BYTE = 7;
-
-    @Unique
-    private static boolean krypton_Multi$hasContinuationBit(byte data) {
-        return (data & 0x80) != 0;
-    }
+    private static final long[] SIZE_MASKS = {
+            0L,
+            -1L << 7,
+            -1L << 14,
+            -1L << 21,
+            -1L << 28,
+            -1L << 35,
+            -1L << 42,
+            -1L << 49,
+            -1L << 56,
+            -1L << 63
+    };
 
     /**
      * @author 404
@@ -22,33 +27,11 @@ public class VarLongMixin {
      */
     @Overwrite
     public static int getByteSize(long data) {
-        if (data == 0) return 1;
-
-        int significantBits = 64 - Long.numberOfLeadingZeros(data);
-        return (significantBits + DATA_BITS_PER_BYTE - 1) / DATA_BITS_PER_BYTE;
-    }
-
-
-    /**
-     * @author 404
-     * @reason test
-     */
-    @Overwrite
-    public static long read(ByteBuf buffer) {
-        long result = 0L;
-        int bytesRead = 0;
-
-        byte currentByte;
-        do {
-            if (bytesRead >= 10) {
-                throw new RuntimeException("VarLong too big");
+        for (int i = 1; i < 10; i++) {
+            if ((data & SIZE_MASKS[i]) == 0L) {
+                return i;
             }
-
-            currentByte = buffer.readByte();
-            result |= (long) (currentByte & 0x7F) << (bytesRead * DATA_BITS_PER_BYTE);
-            bytesRead++;
-        } while (krypton_Multi$hasContinuationBit(currentByte));
-
-        return result;
+        }
+        return 10;
     }
 }
