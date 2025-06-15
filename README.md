@@ -21,36 +21,29 @@ answer your question.
 
 ## Benchmark
 
-### Compression
-
-I didn't test
-
-### Encryption
-
-I didn't test
-
-### VarInt
-I didn't test
+The Benchmark results are not necessarily accurate, 
+and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
 ### VarLong
 
-#### getByteSize
+- `getByteSize`
 
 | Implementation         | Performance (ops/s) | vs Minecraft | vs Previous Gen |
 |------------------------|---------------------|--------------|-----------------|
-| **Minecraft**          | 64,404              | Baseline     | -               |
-| **Krypton FNP 0.2.9**  | 115,026             | **+78.6%**   | +78.6%          |
-| **Krypton FNP 0.2.14** | 409,338             | **+535.7%**  | +255.8%         |
+| **Minecraft**          | 65,843              | Baseline     | -               |
+| **Krypton FNP 0.2.10** | 104,184             | **+58.2%**   | +62.4%          |
+| **Krypton FNP 0.2.12** | 66,312              | **+0.7%**    | -36.3%          |
+| **Krypton FNP 0.2.14** | 422,719             | **+542.0%**  | +537.3%         |
 
-#### Write
+- `Write`
 
 | Implementation         | Performance (ops/s) | vs Minecraft | vs Previous Gen |
 |------------------------|---------------------|--------------|-----------------|
-| **Minecraft**          | 25,712              | Baseline     | -               |
-| **Krypton FNP 0.2.13** | 34,237              | **+33.2%**   | +33.2%          |
-| **Krypton FNP 0.2.14** | 44,431              | **+72.8%**   | +29.8%          |
+| **Minecraft**          | 27,227              | Baseline     | -               |
+| **Krypton FNP 0.2.13** | 36,395              | **+33.2%**   | +33.2%          |
+| **Krypton FNP 0.2.14** | 45,683              | **+72.8%**   | +25.5%          |
 
-#### Data Size Specialized Performance
+- `Data Size Specialized Performance`
 
 | Data Size Category            | Performance (ops/s) | vs Mixed Data |
 |-------------------------------|---------------------|---------------|

@@ -28,11 +28,24 @@ import java.util.concurrent.TimeUnit;
 @Threads(1)
 @Fork(2)
 @State(Scope.Thread)
+@SuppressWarnings("unused")
 public class VarLongBenchmark {
-    private static final long MASK_7_BITS = -1L << 7;
-    private static final long MASK_14_BITS = -1L << 14;
     private static final long MASK_21_BITS = -1L << 21;
     private static final long MASK_28_BITS = -1L << 28;
+
+    private static final long[] SIZE_MASKS = {
+            0L,
+            -1L << 7,
+            -1L << 14,
+            -1L << 21,
+            -1L << 28,
+            -1L << 35,
+            -1L << 42,
+            -1L << 49,
+            -1L << 56,
+            -1L << 63
+    };
+
     private long[] testValues;
     private long[] smallValues;      // 1-2
     private long[] mediumValues;     // 3-5
@@ -52,16 +65,25 @@ public class VarLongBenchmark {
         return 10;
     }
 
+    private static int getByteSize0212(long data) {
+        for (int i = 1; i < 10; i++) {
+            if ((data & SIZE_MASKS[i]) == 0L) {
+                return i;
+            }
+        }
+        return 10;
+    }
+
     // ========== write test ==========
 
-    private static int getByteSizeMath(long data) {
+    private static int getByteSize0210(long data) {
         if (data == 0) return 1;
         int significantBits = 64 - Long.numberOfLeadingZeros(data);
         return (significantBits + 6) / 7;
     }
 
     private static void writeOriginalLoop(ByteBuf buffer, long value) {
-        while ((value & MASK_7_BITS) != 0L) {
+        while ((value & VarLongUtil.MASK_7_BITS) != 0L) {
             buffer.writeByte((int) (value & 0x7FL) | 0x80);
             value >>>= 7;
         }
@@ -69,14 +91,14 @@ public class VarLongBenchmark {
     }
 
     private static void writeOptimizedBranches(ByteBuf buffer, long value) {
-        if ((value & MASK_7_BITS) == 0L) {
+        if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
             buffer.writeByte((int) value);
-        } else if ((value & MASK_14_BITS) == 0L) {
-            writeTwoBytes(buffer, value);
+        } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
+            VarLongUtil.writeTwoBytes(buffer, value);
         } else if ((value & MASK_21_BITS) == 0L) {
-            writeThreeBytes(buffer, value);
+            VarLongUtil.writeThreeBytes(buffer, value);
         } else if ((value & MASK_28_BITS) == 0L) {
-            writeFourBytes(buffer, value);
+            VarLongUtil.writeFourBytes(buffer, value);
         } else {
             writeOriginalLoop(buffer, value);
         }
@@ -85,136 +107,13 @@ public class VarLongBenchmark {
     // ========== size write test ==========
 
     private static void writeOptimizedSwitch(ByteBuf buffer, long value) {
-        if ((value & MASK_7_BITS) == 0L) {
+        if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
             buffer.writeByte((int) value);
-        } else if ((value & MASK_14_BITS) == 0L) {
-            writeTwoBytes(buffer, value);
+        } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
+            VarLongUtil.writeTwoBytes(buffer, value);
         } else {
-            writeVarLongFull(buffer, value);
+            VarLongUtil.writeVarLongFull(buffer, value);
         }
-    }
-
-    private static void writeVarLongFull(ByteBuf buffer, long value) {
-        int length = VarLongUtil.getVarLongLength(value);
-
-        switch (length) {
-            case 3:
-                writeThreeBytes(buffer, value);
-                break;
-            case 4:
-                writeFourBytes(buffer, value);
-                break;
-            case 5:
-                writeFiveBytes(buffer, value);
-                break;
-            case 6:
-                writeSixBytes(buffer, value);
-                break;
-            case 7:
-                writeSevenBytes(buffer, value);
-                break;
-            case 8:
-                writeEightBytes(buffer, value);
-                break;
-            case 9:
-                writeNineBytes(buffer, value);
-                break;
-            case 10:
-                writeTenBytes(buffer, value);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid VarLong length: " + length);
-        }
-    }
-
-    private static void writeTwoBytes(ByteBuf buffer, long value) {
-        int encoded = (int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7);
-        buffer.writeShort(encoded);
-    }
-
-    private static void writeThreeBytes(ByteBuf buffer, long value) {
-        int encoded = (int) ((value & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 14);
-        buffer.writeMedium(encoded);
-    }
-
-    private static void writeFourBytes(ByteBuf buffer, long value) {
-        int encoded = (int) ((value & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 21);
-        buffer.writeInt(encoded);
-    }
-
-    private static void writeFiveBytes(ByteBuf buffer, long value) {
-        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
-                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
-        buffer.writeInt(first4);
-        buffer.writeByte((int) (value >>> 28));
-    }
-
-    private static void writeSixBytes(ByteBuf buffer, long value) {
-        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
-                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
-        int last2 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 35);
-        buffer.writeInt(first4);
-        buffer.writeShort(last2);
-    }
-
-    private static void writeSevenBytes(ByteBuf buffer, long value) {
-        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
-                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
-        int last3 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 35) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 42);
-        buffer.writeInt(first4);
-        buffer.writeMedium(last3);
-    }
-
-    private static void writeEightBytes(ByteBuf buffer, long value) {
-        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
-                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
-        int last4 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 24
-                | (int) (((value >>> 35) & 0x7FL) | 0x80L) << 16
-                | (int) (((value >>> 42) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 49);
-        buffer.writeInt(first4);
-        buffer.writeInt(last4);
-    }
-
-    private static void writeNineBytes(ByteBuf buffer, long value) {
-        long first8 = getFirst8(value);
-        buffer.writeLong(first8);
-        buffer.writeByte((int) (value >>> 56));
-    }
-
-    private static void writeTenBytes(ByteBuf buffer, long value) {
-        long first8 = getFirst8(value);
-        int last2 = (int) (((value >>> 56) & 0x7FL) | 0x80L) << 8
-                | (int) (value >>> 63);
-        buffer.writeLong(first8);
-        buffer.writeShort(last2);
-    }
-
-    private static long getFirst8(long value) {
-        return ((value & 0x7FL) | 0x80L) << 56
-                | (((value >>> 7) & 0x7FL) | 0x80L) << 48
-                | (((value >>> 14) & 0x7FL) | 0x80L) << 40
-                | (((value >>> 21) & 0x7FL) | 0x80L) << 32
-                | (((value >>> 28) & 0x7FL) | 0x80L) << 24
-                | (((value >>> 35) & 0x7FL) | 0x80L) << 16
-                | (((value >>> 42) & 0x7FL) | 0x80L) << 8
-                | (((value >>> 49) & 0x7FL) | 0x80L);
     }
 
     @Setup
@@ -275,14 +174,21 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
-    public void benchmarkGetByteSizeMath(Blackhole bh) {
+    public void benchmarkGetByteSize0210(Blackhole bh) {
         for (long value : testValues) {
-            bh.consume(getByteSizeMath(value));
+            bh.consume(getByteSize0210(value));
         }
     }
 
     @Benchmark
-    public void benchmarkGetByteSizeLookupTable(Blackhole bh) {
+    public void benchmarkGetByteSize0212(Blackhole bh) {
+        for (long value : testValues) {
+            bh.consume(getByteSize0212(value));
+        }
+    }
+
+    @Benchmark
+    public void benchmarkGetByteSize0214(Blackhole bh) {
         for (long value : testValues) {
             bh.consume(VarLongUtil.getVarLongLength(value));
         }
