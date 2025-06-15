@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-common'
     id 'net.neoforged.moddev'
+    id "me.champeau.jmh" version "0.7.3"
 }
 
 neoForge {
@@ -25,6 +26,15 @@ dependencies {
     implementation("com.velocitypowered:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'
     }
+
+    jmh("io.netty:netty-buffer:4.1.118.Final")
+    jmh("io.netty:netty-common:4.1.118.Final")
+    jmh("io.netty:netty-codec:4.1.118.Final")
+    jmh("io.netty:netty-handler:4.1.118.Final")
+    jmh("io.netty:netty-resolver:4.1.118.Final")
+    jmh("org.openjdk.jmh:jmh-core:1.37")
+    jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+    jmh("org.openjdk.jmh:jmh-generator-bytecode:1.37")
 }
 
 configurations {

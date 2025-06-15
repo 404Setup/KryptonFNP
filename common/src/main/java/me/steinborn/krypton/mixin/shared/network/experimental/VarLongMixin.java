@@ -1,6 +1,7 @@
 package me.steinborn.krypton.mixin.shared.network.experimental;
 
 import io.netty.buffer.ByteBuf;
+import me.steinborn.krypton.mod.shared.network.util.VarLongUtil;
 import net.minecraft.network.VarLong;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -9,27 +10,9 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(value = VarLong.class, priority = 900)
 public class VarLongMixin {
     @Unique
-    private static final long[] SIZE_MASKS = {
-            0L,
-            -1L << 7,
-            -1L << 14,
-            -1L << 21,
-            -1L << 28,
-            -1L << 35,
-            -1L << 42,
-            -1L << 49,
-            -1L << 56,
-            -1L << 63
-    };
-
-    @Unique
     private static final long MASK_7_BITS = -1L << 7;
     @Unique
     private static final long MASK_14_BITS = -1L << 14;
-    @Unique
-    private static final long MASK_21_BITS = -1L << 21;
-    @Unique
-    private static final long MASK_28_BITS = -1L << 28;
 
     /**
      * @author 404
@@ -37,12 +20,7 @@ public class VarLongMixin {
      */
     @Overwrite
     public static int getByteSize(long data) {
-        for (int i = 1; i < 10; i++) {
-            if ((data & SIZE_MASKS[i]) == 0L) {
-                return i;
-            }
-        }
-        return 10;
+        return VarLongUtil.getVarLongLength(data);
     }
 
     /**
@@ -55,10 +33,6 @@ public class VarLongMixin {
             buffer.writeByte((int) value);
         } else if ((value & MASK_14_BITS) == 0L) {
             krypton_Multi$writeTwoBytes(buffer, value);
-        } else if ((value & MASK_21_BITS) == 0L) {
-            krypton_Multi$writeThreeBytes(buffer, value);
-        } else if ((value & MASK_28_BITS) == 0L) {
-            krypton_Multi$writeFourBytes(buffer, value);
         } else {
             krypton_Multi$writeVarLongFull(buffer, value);
         }
@@ -69,6 +43,40 @@ public class VarLongMixin {
     private static void krypton_Multi$writeTwoBytes(ByteBuf buffer, long value) {
         int encoded = (int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7);
         buffer.writeShort(encoded);
+    }
+
+    @Unique
+    private static void krypton_Multi$writeVarLongFull(ByteBuf buffer, long value) {
+        int length = VarLongUtil.getVarLongLength(value);
+
+        switch (length) {
+            case 3:
+                krypton_Multi$writeThreeBytes(buffer, value);
+                break;
+            case 4:
+                krypton_Multi$writeFourBytes(buffer, value);
+                break;
+            case 5:
+                krypton_Multi$writeFiveBytes(buffer, value);
+                break;
+            case 6:
+                krypton_Multi$writeSixBytes(buffer, value);
+                break;
+            case 7:
+                krypton_Multi$writeSevenBytes(buffer, value);
+                break;
+            case 8:
+                krypton_Multi$writeEightBytes(buffer, value);
+                break;
+            case 9:
+                krypton_Multi$writeNineBytes(buffer, value);
+                break;
+            case 10:
+                krypton_Multi$writeTenBytes(buffer, value);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid VarLong length: " + length);
+        }
     }
 
     @Unique
@@ -89,12 +97,79 @@ public class VarLongMixin {
     }
 
     @Unique
-    private static void krypton_Multi$writeVarLongFull(ByteBuf buffer, long value) {
-        while ((value & MASK_7_BITS) != 0L) {
-            buffer.writeByte((int) (value & 0x7FL) | 0x80);
-            value >>>= 7;
-        }
-        buffer.writeByte((int) value);
+    private static void krypton_Multi$writeFiveBytes(ByteBuf buffer, long value) {
+        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
+                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
+                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
+        buffer.writeInt(first4);
+        buffer.writeByte((int) (value >>> 28));
     }
 
+    @Unique
+    private static void krypton_Multi$writeSixBytes(ByteBuf buffer, long value) {
+        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
+                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
+                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
+        int last2 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 8
+                | (int) (value >>> 35);
+        buffer.writeInt(first4);
+        buffer.writeShort(last2);
+    }
+
+    @Unique
+    private static void krypton_Multi$writeSevenBytes(ByteBuf buffer, long value) {
+        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
+                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
+                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
+        int last3 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 35) & 0x7FL) | 0x80L) << 8
+                | (int) (value >>> 42);
+        buffer.writeInt(first4);
+        buffer.writeMedium(last3);
+    }
+
+    @Unique
+    private static void krypton_Multi$writeEightBytes(ByteBuf buffer, long value) {
+        int first4 = (int) ((value & 0x7FL) | 0x80L) << 24
+                | (int) (((value >>> 7) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 14) & 0x7FL) | 0x80L) << 8
+                | (int) (((value >>> 21) & 0x7FL) | 0x80L);
+        int last4 = (int) (((value >>> 28) & 0x7FL) | 0x80L) << 24
+                | (int) (((value >>> 35) & 0x7FL) | 0x80L) << 16
+                | (int) (((value >>> 42) & 0x7FL) | 0x80L) << 8
+                | (int) (value >>> 49);
+        buffer.writeInt(first4);
+        buffer.writeInt(last4);
+    }
+
+    @Unique
+    private static void krypton_Multi$writeNineBytes(ByteBuf buffer, long value) {
+        long first8 = krypton_Multi$getFirst8(value);
+        buffer.writeLong(first8);
+        buffer.writeByte((int) (value >>> 56));
+    }
+
+    @Unique
+    private static void krypton_Multi$writeTenBytes(ByteBuf buffer, long value) {
+        long first8 = krypton_Multi$getFirst8(value);
+        int last2 = (int) (((value >>> 56) & 0x7FL) | 0x80L) << 8
+                | (int) (value >>> 63);
+        buffer.writeLong(first8);
+        buffer.writeShort(last2);
+    }
+
+    @Unique
+    private static long krypton_Multi$getFirst8(long value) {
+        return ((value & 0x7FL) | 0x80L) << 56
+                | (((value >>> 7) & 0x7FL) | 0x80L) << 48
+                | (((value >>> 14) & 0x7FL) | 0x80L) << 40
+                | (((value >>> 21) & 0x7FL) | 0x80L) << 32
+                | (((value >>> 28) & 0x7FL) | 0x80L) << 24
+                | (((value >>> 35) & 0x7FL) | 0x80L) << 16
+                | (((value >>> 42) & 0x7FL) | 0x80L) << 8
+                | (((value >>> 49) & 0x7FL) | 0x80L);
+    }
 }
