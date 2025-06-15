@@ -55,7 +55,7 @@ public class VarLongBenchmark {
     private ByteBuf buffer;
 
     // ========== method ==========
-    private static int getByteSizeOriginal(long data) {
+    private static int getByteSizeMinecraft(long data) {
         for (int i = 1; i < 10; ++i) {
             if ((data & -1L << i * 7) == 0L) {
                 return i;
@@ -82,7 +82,7 @@ public class VarLongBenchmark {
         return (significantBits + 6) / 7;
     }
 
-    private static void writeOriginalLoop(ByteBuf buffer, long value) {
+    private static void writeMinecraft(ByteBuf buffer, long value) {
         while ((value & VarLongUtil.MASK_7_BITS) != 0L) {
             buffer.writeByte((int) (value & 0x7FL) | 0x80);
             value >>>= 7;
@@ -90,7 +90,7 @@ public class VarLongBenchmark {
         buffer.writeByte((int) value);
     }
 
-    private static void writeOptimizedBranches(ByteBuf buffer, long value) {
+    private static void write0213(ByteBuf buffer, long value) {
         if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
             buffer.writeByte((int) value);
         } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
@@ -100,13 +100,13 @@ public class VarLongBenchmark {
         } else if ((value & MASK_28_BITS) == 0L) {
             VarLongUtil.writeFourBytes(buffer, value);
         } else {
-            writeOriginalLoop(buffer, value);
+            writeMinecraft(buffer, value);
         }
     }
 
     // ========== size write test ==========
 
-    private static void writeOptimizedSwitch(ByteBuf buffer, long value) {
+    private static void write0214(ByteBuf buffer, long value) {
         if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
             buffer.writeByte((int) value);
         } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
@@ -167,9 +167,9 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
-    public void benchmarkGetByteSizeOriginal(Blackhole bh) {
+    public void benchmarkGetByteSizeMinecraft(Blackhole bh) {
         for (long value : testValues) {
-            bh.consume(getByteSizeOriginal(value));
+            bh.consume(getByteSizeMinecraft(value));
         }
     }
 
@@ -195,55 +195,111 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
-    public void benchmarkWriteOriginalLoop(Blackhole bh) {
+    public void benchmarkWriteMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
-            writeOriginalLoop(buffer, value);
+            writeMinecraft(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
 
     @Benchmark
-    public void benchmarkWriteOptimizedBranches(Blackhole bh) {
+    public void benchmarkWrite0213(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
-            writeOptimizedBranches(buffer, value);
+            write0213(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
 
     @Benchmark
-    public void benchmarkWriteOptimizedSwitch(Blackhole bh) {
+    public void benchmarkWrite0214(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
-            writeOptimizedSwitch(buffer, value);
+            write0214(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
 
+    // ========== size-specific write benchmarks ==========
+
     @Benchmark
-    public void benchmarkWriteSmallValues(Blackhole bh) {
+    public void benchmarkWriteSmallValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : smallValues) {
-            writeOptimizedSwitch(buffer, value);
+            writeMinecraft(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
 
     @Benchmark
-    public void benchmarkWriteMediumValues(Blackhole bh) {
+    public void benchmarkWriteSmallValues0213(Blackhole bh) {
+        buffer.clear();
+        for (long value : smallValues) {
+            write0213(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteSmallValues0214(Blackhole bh) {
+        buffer.clear();
+        for (long value : smallValues) {
+            write0214(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteMediumValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : mediumValues) {
-            writeOptimizedSwitch(buffer, value);
+            writeMinecraft(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
 
     @Benchmark
-    public void benchmarkWriteLargeValues(Blackhole bh) {
+    public void benchmarkWriteMediumValues0213(Blackhole bh) {
+        buffer.clear();
+        for (long value : mediumValues) {
+            write0213(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteMediumValues0214(Blackhole bh) {
+        buffer.clear();
+        for (long value : mediumValues) {
+            write0214(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteLargeValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : largeValues) {
-            writeOptimizedSwitch(buffer, value);
+            writeMinecraft(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteLargeValues0213(Blackhole bh) {
+        buffer.clear();
+        for (long value : largeValues) {
+            write0213(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteLargeValues0214(Blackhole bh) {
+        buffer.clear();
+        for (long value : largeValues) {
+            write0214(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }

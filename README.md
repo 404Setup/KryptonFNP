@@ -21,8 +21,56 @@ answer your question.
 
 ## Benchmark
 
-The Benchmark results are not necessarily accurate, 
+The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
+
+Benchmark cannot simulate all scenarios, and the results are used only as reference.
+
+### How to run Benchmark?
+
+After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
+After waiting for 20–40 minutes, the result will be generated to `common/build/results/jmh/results.txt`
+
+### VarInt
+
+- `getByteSize`
+
+| Implementation        | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|-----------------------|---------------------|--------------|-----------------|
+| **Minecraft**         | 87,630              | Baseline     | -               |
+| **Krypton FNP 0.2.9** | 443,558             | **+406.1%**  | +406.1%         |
+
+- `Write`
+
+| Implementation         | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 32,152              | Baseline     | -               |
+| **Krypton FNP 0.2.09** | 53,787              | **+67.2%**   | +67.2%          |
+| **Krypton FNP 0.2.10** | 63,200              | **+96.5%**   | +17.5%          |
+
+- `Data Size Specialized Performance | Small Values (1-2 bytes)`
+
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 445,110             | Baseline     | -               |
+| **Krypton FNP 0.2.09** | 882,266             | **+98.2%**   | +98.2%          |
+| **Krypton FNP 0.2.10** | 754,263             | **+69.4%**   | -16.9%          |
+
+- `Data Size Specialized Performance | Medium Values (3-4 bytes)`
+
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 294,285             | Baseline     | -               |
+| **Krypton FNP 0.2.09** | 543,529             | **+84.6%**   | +84.6%          |
+| **Krypton FNP 0.2.10** | 536,198             | **+82.2%**   | -1.3%           |
+
+- `Data Size Specialized Performance | Large Values (5 bytes)`
+
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 233,121             | Baseline     | -               |
+| **Krypton FNP 0.2.09** | 415,558             | **+78.2%**   | +78.2%          |
+| **Krypton FNP 0.2.10** | 417,760             | **+79.2%**   | +0.5%           |
 
 ### VarLong
 
@@ -43,13 +91,29 @@ and the final results are determined based on different JVM distributions, start
 | **Krypton FNP 0.2.13** | 36,395              | **+33.2%**   | +33.2%          |
 | **Krypton FNP 0.2.14** | 45,683              | **+72.8%**   | +25.5%          |
 
-- `Data Size Specialized Performance`
+- `Data Size Specialized Performance | Small Values (1-2 bytes)`
 
-| Data Size Category            | Performance (ops/s) | vs Mixed Data |
-|-------------------------------|---------------------|---------------|
-| **Small Values (1-2 bytes)**  | 672,153             | **+1412%**    |
-| **Medium Values (3-5 bytes)** | 457,188             | **+929%**     |
-| **Large Values (6-10 bytes)** | 255,988             | **+476%**     |
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 430,115             | Baseline     | -               |
+| **Krypton FNP 0.2.13** | 613,444             | **+42.6%**   | +42.6%          |
+| **Krypton FNP 0.2.14** | 730,696             | **+69.8%**   | +19.1%          |
+
+- `Data Size Specialized Performance | Medium Values (3-5 bytes)`
+
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 278,078             | Baseline     | -               |
+| **Krypton FNP 0.2.13** | 490,109             | **+76.2%**   | +76.2%          |
+| **Krypton FNP 0.2.14** | 484,071             | **+74.1%**   | -1.2%           |
+
+- `Data Size Specialized Performance | Large Values (6-10 bytes)`
+
+| Data Size Category     | Performance (ops/s) | vs Minecraft | vs Previous Gen |
+|------------------------|---------------------|--------------|-----------------|
+| **Minecraft**          | 150,128             | Baseline     | -               |
+| **Krypton FNP 0.2.13** | 160,425             | **+6.8%**    | +6.8%           |
+| **Krypton FNP 0.2.14** | 262,583             | **+74.9%**   | +63.6%          |
 
 ## Compiling / Releases
 
