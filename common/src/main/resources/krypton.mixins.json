@@ -6,6 +6,9 @@
   "client": [],
   "mixins": [
     "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
+    "shared.network.experimental.ServerLoginPacketListenerImplMixin",
+    "shared.network.experimental.ServerTextFilterMixin",
+    "shared.network.experimental.UtilMixin",
     "shared.network.experimental.VarLongMixin",
     "shared.network.microopt.EntityTrackerEntryMixin",
     "shared.network.microopt.StringEncodingMixin",

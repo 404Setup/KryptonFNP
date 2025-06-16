@@ -29,12 +29,23 @@ public class VarIntsMixin {
         if ((value & VarIntUtil.MASK_7_BITS) == 0) {
             buf.writeByte(value);
         } else if ((value & VarIntUtil.MASK_14_BITS) == 0) {
-            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
-            buf.writeShort(w);
+            buf.writeShort((value & 0x7F | 0x80) << 8 | (value >>> 7));
+        } else if ((value & VarIntUtil.MASK_21_BITS) == 0) {
+            buf.writeMedium((value & 0x7F | 0x80) << 16
+                    | ((value >>> 7) & 0x7F | 0x80) << 8
+                    | (value >>> 14));
+        } else if ((value & VarIntUtil.MASK_28_BITS) == 0) {
+            buf.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | (value >>> 21));
         } else {
-            VarIntUtil.writeVarIntFull(buf, value);
+            buf.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | ((value >>> 21) & 0x7F | 0x80));
+            buf.writeByte(value >>> 28);
         }
-
         return buf;
     }
 }

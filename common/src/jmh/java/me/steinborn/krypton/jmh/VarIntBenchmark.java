@@ -87,7 +87,30 @@ public class VarIntBenchmark {
             int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
             buffer.writeShort(w);
         } else {
-            VarIntUtil.writeVarIntFull(buffer, value);
+            VarIntUtil.writeVarIntFull0210(buffer, value);
+        }
+    }
+
+    private static void write0216(ByteBuf buf, int value) {
+        if ((value & VarIntUtil.MASK_7_BITS) == 0) {
+            buf.writeByte(value);
+        } else if ((value & VarIntUtil.MASK_14_BITS) == 0) {
+            buf.writeShort((value & 0x7F | 0x80) << 8 | (value >>> 7));
+        } else if ((value & VarIntUtil.MASK_21_BITS) == 0) {
+            buf.writeMedium((value & 0x7F | 0x80) << 16
+                    | ((value >>> 7) & 0x7F | 0x80) << 8
+                    | (value >>> 14));
+        } else if ((value & VarIntUtil.MASK_28_BITS) == 0) {
+            buf.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | (value >>> 21));
+        } else {
+            buf.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | ((value >>> 21) & 0x7F | 0x80));
+            buf.writeByte(value >>> 28);
         }
     }
 
@@ -185,6 +208,15 @@ public class VarIntBenchmark {
         bh.consume(buffer.writerIndex());
     }
 
+    @Benchmark
+    public void benchmarkWrite0216(Blackhole bh) {
+        buffer.clear();
+        for (int value : testValues) {
+            write0216(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
     // ========== size-specific write benchmarks ==========
 
     @Benchmark
@@ -210,6 +242,15 @@ public class VarIntBenchmark {
         buffer.clear();
         for (int value : smallValues) {
             write0210(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteSmallValues0216(Blackhole bh) {
+        buffer.clear();
+        for (int value : smallValues) {
+            write0216(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
@@ -242,6 +283,15 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    public void benchmarkWriteMediumValues0216(Blackhole bh) {
+        buffer.clear();
+        for (int value : mediumValues) {
+            write0216(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
     public void benchmarkWriteLargeValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (int value : largeValues) {
@@ -264,6 +314,15 @@ public class VarIntBenchmark {
         buffer.clear();
         for (int value : largeValues) {
             write0210(buffer, value);
+        }
+        bh.consume(buffer.writerIndex());
+    }
+
+    @Benchmark
+    public void benchmarkWriteLargeValues0216(Blackhole bh) {
+        buffer.clear();
+        for (int value : largeValues) {
+            write0216(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }

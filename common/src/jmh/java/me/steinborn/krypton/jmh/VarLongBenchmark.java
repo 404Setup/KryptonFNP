@@ -1,6 +1,5 @@
 package me.steinborn.krypton.jmh;
 
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import me.steinborn.krypton.mod.shared.network.util.VarLongUtil;
