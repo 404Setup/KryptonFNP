@@ -6,6 +6,7 @@ import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Group;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -166,6 +167,7 @@ public class VarIntBenchmark {
     // ========== getByteSize benchmarks ==========
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSizeMinecraft(Blackhole bh) {
         for (int value : testValues) {
             bh.consume(getByteSizeMinecraft(value));
@@ -173,6 +175,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSize0209(Blackhole bh) {
         for (int value : testValues) {
             bh.consume(VarIntUtil.getVarIntLength(value));
@@ -182,6 +185,7 @@ public class VarIntBenchmark {
     // ========== write benchmarks ==========
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWriteMinecraft(Blackhole bh) {
         buffer.clear();
         for (int value : testValues) {
@@ -191,6 +195,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWrite0209(Blackhole bh) {
         buffer.clear();
         for (int value : testValues) {
@@ -200,6 +205,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWrite0210(Blackhole bh) {
         buffer.clear();
         for (int value : testValues) {
@@ -209,6 +215,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWrite0216(Blackhole bh) {
         buffer.clear();
         for (int value : testValues) {
@@ -220,6 +227,7 @@ public class VarIntBenchmark {
     // ========== size-specific write benchmarks ==========
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (int value : smallValues) {
@@ -229,6 +237,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValues0209(Blackhole bh) {
         buffer.clear();
         for (int value : smallValues) {
@@ -238,6 +247,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValues0210(Blackhole bh) {
         buffer.clear();
         for (int value : smallValues) {
@@ -247,6 +257,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValues0216(Blackhole bh) {
         buffer.clear();
         for (int value : smallValues) {
@@ -256,6 +267,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (int value : mediumValues) {
@@ -265,6 +277,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValues0209(Blackhole bh) {
         buffer.clear();
         for (int value : mediumValues) {
@@ -274,6 +287,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValues0210(Blackhole bh) {
         buffer.clear();
         for (int value : mediumValues) {
@@ -283,6 +297,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValues0216(Blackhole bh) {
         buffer.clear();
         for (int value : mediumValues) {
@@ -292,6 +307,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (int value : largeValues) {
@@ -301,6 +317,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValues0209(Blackhole bh) {
         buffer.clear();
         for (int value : largeValues) {
@@ -310,6 +327,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValues0210(Blackhole bh) {
         buffer.clear();
         for (int value : largeValues) {
@@ -319,6 +337,7 @@ public class VarIntBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValues0216(Blackhole bh) {
         buffer.clear();
         for (int value : largeValues) {

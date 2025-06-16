@@ -6,6 +6,7 @@ import me.steinborn.krypton.mod.shared.network.util.VarLongUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Group;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -166,6 +167,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSizeMinecraft(Blackhole bh) {
         for (long value : testValues) {
             bh.consume(getByteSizeMinecraft(value));
@@ -173,6 +175,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSize0210(Blackhole bh) {
         for (long value : testValues) {
             bh.consume(getByteSize0210(value));
@@ -180,6 +183,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSize0212(Blackhole bh) {
         for (long value : testValues) {
             bh.consume(getByteSize0212(value));
@@ -187,6 +191,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("GetByteSize")
     public void benchmarkGetByteSize0214(Blackhole bh) {
         for (long value : testValues) {
             bh.consume(VarLongUtil.getVarLongLength(value));
@@ -194,6 +199,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWriteMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
@@ -203,6 +209,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWrite0213(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
@@ -212,6 +219,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("Write")
     public void benchmarkWrite0214(Blackhole bh) {
         buffer.clear();
         for (long value : testValues) {
@@ -223,6 +231,7 @@ public class VarLongBenchmark {
     // ========== size-specific write benchmarks ==========
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : smallValues) {
@@ -232,6 +241,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValues0213(Blackhole bh) {
         buffer.clear();
         for (long value : smallValues) {
@@ -241,6 +251,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteSmallValues")
     public void benchmarkWriteSmallValues0214(Blackhole bh) {
         buffer.clear();
         for (long value : smallValues) {
@@ -250,6 +261,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : mediumValues) {
@@ -259,6 +271,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValues0213(Blackhole bh) {
         buffer.clear();
         for (long value : mediumValues) {
@@ -268,6 +281,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteMediumValues")
     public void benchmarkWriteMediumValues0214(Blackhole bh) {
         buffer.clear();
         for (long value : mediumValues) {
@@ -277,6 +291,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValuesMinecraft(Blackhole bh) {
         buffer.clear();
         for (long value : largeValues) {
@@ -286,6 +301,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValues0213(Blackhole bh) {
         buffer.clear();
         for (long value : largeValues) {
@@ -295,6 +311,7 @@ public class VarLongBenchmark {
     }
 
     @Benchmark
+    @Group("WriteLargeValues")
     public void benchmarkWriteLargeValues0214(Blackhole bh) {
         buffer.clear();
         for (long value : largeValues) {
