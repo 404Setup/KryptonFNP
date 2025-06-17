@@ -1,5 +1,6 @@
-package me.steinborn.krypton.jmh;
+package me.steinborn.krypton.jmh.varint;
 
+import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -24,7 +25,16 @@ import java.util.concurrent.TimeUnit;
 @Fork(2)
 @State(Scope.Thread)
 @SuppressWarnings("unused")
-public class VarLongWrite extends VarLongBase {
+public class VarIntGetByteSize extends VarIntBase {
+    private static int getByteSizeMinecraft(int data) {
+        for (int i = 1; i < 5; ++i) {
+            if ((data & -1 << i * 7) == 0) {
+                return i;
+            }
+        }
+        return 5;
+    }
+
     @Setup
     public void setup() {
         super.setup();
@@ -37,28 +47,15 @@ public class VarLongWrite extends VarLongBase {
 
     @Benchmark
     public void Minecraft(Blackhole bh) {
-        buffer.clear();
-        for (long value : testValues) {
-            writeMinecraft(buffer, value);
+        for (int value : testValues) {
+            bh.consume(getByteSizeMinecraft(value));
         }
-        bh.consume(buffer.writerIndex());
     }
 
     @Benchmark
-    public void V0213(Blackhole bh) {
-        buffer.clear();
-        for (long value : testValues) {
-            write0213(buffer, value);
+    public void V0209(Blackhole bh) {
+        for (int value : testValues) {
+            bh.consume(VarIntUtil.getVarIntLength(value));
         }
-        bh.consume(buffer.writerIndex());
-    }
-
-    @Benchmark
-    public void V0214(Blackhole bh) {
-        buffer.clear();
-        for (long value : testValues) {
-            write0214(buffer, value);
-        }
-        bh.consume(buffer.writerIndex());
     }
 }

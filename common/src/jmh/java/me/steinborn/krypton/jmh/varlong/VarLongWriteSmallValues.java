@@ -1,4 +1,4 @@
-package me.steinborn.krypton.jmh;
+package me.steinborn.krypton.jmh.varlong;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

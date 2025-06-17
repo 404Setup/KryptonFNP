@@ -31,4 +31,4 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 ### How to run Benchmark?
 
 After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
-After waiting for 25–45 minutes, the result will be generated to `common/build/results/jmh/results.json`
+After waiting for 50–90 minutes, the result will be generated to `common/build/results/jmh/results.json`

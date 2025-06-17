@@ -1,4 +1,4 @@
-package me.steinborn.krypton.jmh;
+package me.steinborn.krypton.jmh.varint;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;

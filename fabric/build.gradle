@@ -11,7 +11,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modImplementation include("com.velocitypowered:velocity-native:3.4.0-SNAPSHOT")  {
+    modImplementation include("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")  {
         exclude group: 'io.netty'
     }
 }
