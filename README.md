@@ -1,6 +1,6 @@
 ![Krypton logo](https://user-images.githubusercontent.com/16436212/102424564-692de280-3fd9-11eb-98a2-ac125cb8e507.png)
 
-# Krypton MultiLoader (Krypton FNP)
+# Krypton FNP
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
 
@@ -17,16 +17,30 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 
 [The wiki contains important information &ndash; read it](https://github.com/astei/krypton/wiki).
 
-## Benchmark
+## Feature
+- More basic optimizations
+- The Velocity Native library based on Rust brings exponential decompression performance improvements in simulated performance testing (provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast))
+- Support NeoForge/Forge
 
-[View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
+## Benchmark
 
 The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
+I don't have a native Linux development environment; 
+all my Linux tests are done in WSL2 (Windows Subsystem for Linux 2), which can bring about ~15%-25% additional loss.
+
 Those tiny performance differences of about 1% can be considered as a random result.
 
 Benchmark cannot simulate all scenarios, and the results are used only as reference.
+
+### View
+
+[VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
+
+[Native Compress for Windows | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
+
+[Native Compress for Linux {WSL2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
 
 ### How to run Benchmark?
 
