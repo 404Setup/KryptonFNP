@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "${neoforge_loader_version_range}"
 license = "${license}"
-issueTrackerURL="https://github.com/404Setup/Krypton-Multi/issues"
+issueTrackerURL="https://github.com/404Setup/KryptonFNP/issues"
 
 [[mods]]
 modId = "${mod_id}"
