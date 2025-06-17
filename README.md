@@ -38,9 +38,9 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 
 [VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
 
-[Native Compress for Windows | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
+[Native Compress for Windows | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/native_compress_windows.json)
 
-[Native Compress for Linux {WSL2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/results.json)
+[Native Compress for Linux {WSL2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/krypton-Multi/refs/heads/master/results/native_compress_linux.json)
 
 ### How to run Benchmark?
 
