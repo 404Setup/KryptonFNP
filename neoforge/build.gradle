@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(jarJar("com.velocitypowered:velocity-native:3.4.0-SNAPSHOT")) {
+    implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         exclude group: 'io.netty'
     }
 }

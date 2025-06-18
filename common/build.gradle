@@ -23,7 +23,7 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.3.5")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
 
-    implementation("com.velocitypowered:velocity-native:3.4.0-SNAPSHOT") {
+    implementation("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'
     }
 
@@ -32,6 +32,9 @@ dependencies {
     jmh("io.netty:netty-codec:4.1.97.Final")
     jmh("io.netty:netty-handler:4.1.97.Final")
     jmh("io.netty:netty-resolver:4.1.97.Final")
+    jmh("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
+        exclude group: 'io.netty'
+    }
     jmh("org.openjdk.jmh:jmh-core:1.37")
     jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
     jmh("org.openjdk.jmh:jmh-generator-bytecode:1.37")

@@ -46,6 +46,10 @@ repositories {
         name = 'Paper'
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
+    maven {
+        name = 'VelocityRecast'
+        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/3.0.0/m2/'
+    }
 }
 
 // Declare capabilities on the outgoing configurations.

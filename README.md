@@ -1,6 +1,6 @@
 ![Krypton logo](https://user-images.githubusercontent.com/16436212/102424564-692de280-3fd9-11eb-98a2-ac125cb8e507.png)
 
-# Krypton MultiLoader (Krypton FNP)
+# Krypton FNP
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
 
@@ -16,50 +16,34 @@ Krypton derives itself from Ancient Greek _kryptos_, which means "the hidden one
 it evident most of the benefit from Krypton is "hidden" but is noticeable by a server administrator.
 
 [The wiki contains important information &ndash; read it](https://github.com/astei/krypton/wiki).
-[Join my Discord](https://discord.gg/RUGArxEQ8J) to discuss the mod or get support if the wiki didn't
-answer your question.
+
+## Feature
+- More basic optimizations
+- The Velocity Native library based on Rust brings exponential decompression performance improvements in simulated performance testing (provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast))
+- Rust-based native library brings encryption and decryption support to Windows (also provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast), requires OpenSSL Win64 to be installed)
+- Support NeoForge/Forge
 
 ## Benchmark
 
 The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
-### VarLong
+I don't have a native Linux development environment;
+all my Linux tests are done in WSL2 (Windows Subsystem for Linux), which can bring about ~15%-25% additional loss.
 
-- `getByteSize`
+Those tiny performance differences of about 1% can be considered as a random result.
 
-| Implementation         | Performance (ops/s) | vs Minecraft | vs Previous Gen |
-|------------------------|---------------------|--------------|-----------------|
-| **Minecraft**          | 65,843              | Baseline     | -               |
-| **Krypton FNP 0.2.10** | 104,184             | **+58.2%**   | +62.4%          |
-| **Krypton FNP 0.2.12** | 66,312              | **+0.7%**    | -36.3%          |
-| **Krypton FNP 0.2.14** | 422,719             | **+542.0%**  | +537.3%         |
+Benchmark cannot simulate all scenarios, and the results are used only as reference.
 
-- `Write`
+### View
 
-| Implementation         | Performance (ops/s) | vs Minecraft | vs Previous Gen |
-|------------------------|---------------------|--------------|-----------------|
-| **Minecraft**          | 27,227              | Baseline     | -               |
-| **Krypton FNP 0.2.13** | 36,395              | **+33.2%**   | +33.2%          |
-| **Krypton FNP 0.2.14** | 45,683              | **+72.8%**   | +25.5%          |
+[VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/results.json)
 
-- `Data Size Specialized Performance`
+[Native Compress for Windows | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows.json)
 
-| Data Size Category            | Performance (ops/s) | vs Mixed Data |
-|-------------------------------|---------------------|---------------|
-| **Small Values (1-2 bytes)**  | 672,153             | **+1412%**    |
-| **Medium Values (3-5 bytes)** | 457,188             | **+929%**     |
-| **Large Values (6-10 bytes)** | 255,988             | **+476%**     |
+[Native Compress for Linux {WSL2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux.json)
 
-## Compiling / Releases
+### How to run Benchmark?
 
-**CAUTION!** I do not provide any guarantees about Krypton's stability, compatibility with other mods,
-ability to be used on every server, or support for every possible setup out there. Support
-for this mod is provided on a "best-effort" basis. This is not my day job, it is a hobby
-growing out of related work I've done. **You have been warned.**
-
-Releases I deem reasonably stable can be found on [GitHub](https://github.com/astei/krypton/releases),
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/krypton), and on [Modrinth](https://modrinth.com/mod/krypton).
-Development builds may be downloaded from my [Jenkins server](https://ci.velocitypowered.com/job/krypton/).
-
-You can also compile the mod from source in the usual fashion.
+After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
+After waiting for 50–90 minutes, the result will be generated to `common/build/results/jmh/results.json`
