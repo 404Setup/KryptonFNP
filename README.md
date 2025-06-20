@@ -18,17 +18,37 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 [The wiki contains important information &ndash; read it](https://github.com/astei/krypton/wiki).
 
 ## Feature
+
 - More basic optimizations
-- The Velocity Native library based on Rust brings exponential decompression performance improvements in simulated performance testing (provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast))
-- Rust-based native library brings encryption and decryption support to Windows (also provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast), requires OpenSSL Win64 to be installed)
+- The Velocity Native library based on Rust brings exponential decompression performance improvements in simulated
+  performance testing (provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast))
+- Rust-based native library brings encryption and decryption support to Windows (also provided
+  by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast), requires OpenSSL Win64 to be installed)
 - Support NeoForge/Forge
+
+## Config
+
+Add the following parameters to the Java startup parameters to control the mixin enablement:
+
+| Parameter            | Description                                  |
+|----------------------|----------------------------------------------|
+| krypton.loginVT      | Enable Login VirtualThread optimization      |
+| krypton.textFilterVT | Enable TextFilter VirtualThread optimization |
+| krypton.utilVT       | Enable Util VirtualThread optimization       |
+| krypton.bestVarLong  | Enable VarLong optimization                  |
+
+example:
+
+```shell
+java -Dkrypton.loginVT=false -jar neoforge_launcher.jar
+```
 
 ## Benchmark
 
 The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
-I don't have a native Linux development environment; 
+I don't have a native Linux development environment;
 all my Linux tests are done in WSL2 (Windows Subsystem for Linux), which can bring about ~15%-25% additional loss.
 
 Those tiny performance differences of about 1% can be considered as a random result.
