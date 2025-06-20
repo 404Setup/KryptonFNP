@@ -19,11 +19,6 @@ public class VarLongUtil {
         return VARLONG_EXACT_BYTE_LENGTHS[Long.numberOfLeadingZeros(data)];
     }
 
-    public static void writeTwoBytes(ByteBuf buffer, long value) {
-        int encoded = (int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7);
-        buffer.writeShort(encoded);
-    }
-
     public static void writeVarLongFull(ByteBuf buffer, long value) {
         int length = getVarLongLength(value);
 
@@ -118,16 +113,14 @@ public class VarLongUtil {
     }
 
     public static void writeNineBytes(ByteBuf buffer, long value) {
-        long first8 = getFirst8(value);
-        buffer.writeLong(first8);
+        buffer.writeLong(getFirst8(value));
         buffer.writeByte((int) (value >>> 56));
     }
 
     public static void writeTenBytes(ByteBuf buffer, long value) {
-        long first8 = getFirst8(value);
         int last2 = (int) (((value >>> 56) & 0x7FL) | 0x80L) << 8
                 | (int) (value >>> 63);
-        buffer.writeLong(first8);
+        buffer.writeLong(getFirst8(value));
         buffer.writeShort(last2);
     }
 
