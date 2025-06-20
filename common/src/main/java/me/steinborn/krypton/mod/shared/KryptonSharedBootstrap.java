@@ -19,6 +19,16 @@ public class KryptonSharedBootstrap {
         }
     }
 
+    public static String getVersion() {
+        return System.getProperty("krypton.version");
+    }
+
+    public static void setVersion(String version) {
+        if (System.getProperty("krypton.version") == null) {
+            System.setProperty("krypton.version", version);
+        }
+    }
+
     public static void run(boolean client) {
         if (!client) {
             LOGGER.info("Krypton is now accelerating your Minecraft server's networking stack \uD83D\uDE80");

@@ -5,13 +5,11 @@
   "name": "${mod_name}",
   "description": "A mod that optimizes the Minecraft networking stack and entity tracker.",
   "authors": [
+    "404",
     "tuxed"
   ],
-  "contributors": [
-    "404"
-  ],
   "contact": {
-    "website": "https://github.com/404Setup/KryptonFNP",
+    "website": "https://modrinth.com/mod/krypton-fnp",
     "repo": "https://github.com/404Setup/KryptonFNP"
   },
   "license": "LGPL-3.0",
@@ -34,7 +32,10 @@
     "minecraft": "${fabric_game_version_range}",
     "java": ">=${java_version}"
   },
-  "suggests": {
-    "another-mod": "*"
+  "breaks": {
+    "arclight": "*",
+    "banner-launcher": "*",
+    "cardboard": "*",
+    "mohist": "*"
   }
 }

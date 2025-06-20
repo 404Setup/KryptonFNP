@@ -2,8 +2,12 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.steinborn.krypton.mixin",
+  "refmap": "krypton.refmap.json",
+  "plugin": "me.steinborn.krypton.mod.shared.KryptonMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
-  "client": [],
+  "client": [
+    "shared.render.DebugScreenOverlayMixin"
+  ],
   "mixins": [
     "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
     "shared.network.experimental.ServerLoginPacketListenerImplMixin",
