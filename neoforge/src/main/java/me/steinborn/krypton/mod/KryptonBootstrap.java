@@ -7,6 +7,24 @@ import net.neoforged.fml.loading.FMLLoader;
 @Mod("krypton")
 public class KryptonBootstrap {
     public KryptonBootstrap() {
+        fmlSetup();
         KryptonSharedBootstrap.run(FMLLoader.getDist().isClient());
+        KryptonSharedBootstrap.setVersion(FMLLoader.getLoadingModList().getModFileById("krypton").versionString());
+    }
+
+    // This is a deliberate check.
+    protected void fmlSetup() {
+        checkMod("arclight");
+        checkMod("mohist");
+        try {
+            Class.forName("org.bukkit.advancement.Advancement");
+            throw new SecurityException("Unsupported mod detected: bukkit");
+        } catch (ClassNotFoundException ignored) {
+        }
+    }
+
+    protected void checkMod(String modid) {
+        if (FMLLoader.getLoadingModList().getModFileById(modid) != null)
+            throw new SecurityException("Unsupported mod detected: " + modid);
     }
 }
