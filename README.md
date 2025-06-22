@@ -92,3 +92,8 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 
 After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
 After waiting for 50–90 minutes, the result will be generated to `common/build/results/jmh/results.json`
+
+## License
+
+This work has a restrictive license in addition to the original license to prevent some unexpected behavior, 
+see [404Setup Works Redistribution License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
