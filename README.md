@@ -21,28 +21,35 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 ## Feature
 
 - More basic optimizations
-- The Velocity Native library based on Rust brings exponential decompression performance improvements in simulated
-  performance testing (provided by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast))
-- Rust-based native library brings encryption and decryption support to Windows (also provided
-  by [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast), requires OpenSSL Win64 to be installed)
+- Support RecastLib (Velocity Native rewritten in Rust, compatible with Windows x64/arm64)
 - Support NeoForge/Forge
 
 ## Config
 
 Add the following parameters to the Java startup parameters to control the mixin enablement:
 
-| Parameter            | Description                                  |
-|----------------------|----------------------------------------------|
-| krypton.loginVT      | Enable Login VirtualThread optimization      |
-| krypton.textFilterVT | Enable TextFilter VirtualThread optimization |
-| krypton.utilVT       | Enable Util VirtualThread optimization       |
-| krypton.bestVarLong  | Enable VarLong optimization                  |
+| Parameter                     | Description                                  | Default value |
+|-------------------------------|----------------------------------------------|---------------|
+| krypton.loginVT               | Enable Login VirtualThread optimization      | true          |
+| krypton.textFilterVT          | Enable TextFilter VirtualThread optimization | true          |
+| krypton.utilVT                | Enable Util VirtualThread optimization       | true          |
+| krypton.bestVarLong           | Enable VarLong optimization                  | true          |
+| velocity.natives-disable      | Disable Native                               | false         |
+| velocity.linux-recast-enabled | Enable RecastLib for Linux                   | false         |
 
 example:
 
 ```shell
 java -Dkrypton.loginVT=false -jar neoforge_launcher.jar
 ```
+
+### Use env instead of jvm args
+
+Some configuration items support using environment variables instead of jvm args.
+
+| JVM ARGS                      | Environment Variable |
+|-------------------------------|----------------------|
+| velocity.linux-recast-enabled | ENABLE_LINUX_RECAST  |
 
 ## Benchmark
 
@@ -58,11 +65,13 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 
 ### View
 
-[VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/results.json)
+[VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
 
-[Native Compress for Windows | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows.json)
+[Native Compress for Windows {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows_recastlib.json)
 
-[Native Compress for Linux {WSL2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux.json)
+[Native Compress for WSL2 {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_recastlib.json)
+
+[Native Compress for WSL2 {VelocityNative} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_vc.json)
 
 ### How to run Benchmark?
 
