@@ -8,8 +8,6 @@ Krypton FNP
 This mod is an unofficial port of [Krypton Fabric](https://modrinth.com/mod/krypton), designed to provide Forge &
 NeoForge compatibility.
 
-It should be consistent with the upstream behavior.
-
 Krypton is a mod that attempts to optimize the Minecraft networking stack. It derives from work
 done in the [Velocity](https://velocitypowered.com/) and [Paper](https://papermc.io) projects.
 
@@ -50,6 +48,23 @@ Some configuration items support using environment variables instead of jvm args
 | JVM ARGS                      | Environment Variable |
 |-------------------------------|----------------------|
 | velocity.linux-recast-enabled | ENABLE_LINUX_RECAST  |
+
+## Use in Fabric
+To avoid KryptonFNP becoming a direct competitor to the upstream (Krypton Fabric),
+I will not provide the Fabric version directly.
+
+Before the Patch Mod is completed,
+you can use the following method to manually add some KryptonFNP capabilities to Krypton Fabric.
+
+1. Download the latest Krypton Fabric and KryptonFNP
+2. Use compression software to open them at the same time
+3. Find the directory `META-INF\jarjar` in KryptonFNP
+4. Find the directory `META-INF\jars` in Krypton Fabric
+5. Copy the `velocity-native-3.4.0-SNAPSHOT.jar` file in the KryptonFNP directory to the corresponding directory of Krypton Fabric
+6. If there is a velocity-native jar file in the Krypton Fabric directory, please delete it before doing this.
+7. Start your client/server again and it should work now
+
+For other Krypton Forks, since they are all made for Forge/NeoForge, you will also need to modify metadata.json.
 
 ## Benchmark
 
