@@ -21,20 +21,21 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 ## Feature
 
 - More basic optimizations
-- Support RecastLib (Velocity Native rewritten in Rust, compatible with Windows)
+- Support RecastLib (Velocity Native rewritten in Rust, compatible with Windows x64/arm64)
 - Support NeoForge/Forge
 
 ## Config
 
 Add the following parameters to the Java startup parameters to control the mixin enablement:
 
-| Parameter                     | Description                                                                                 |
-|-------------------------------|---------------------------------------------------------------------------------------------|
-| krypton.loginVT               | Enable Login VirtualThread optimization                                                     |
-| krypton.textFilterVT          | Enable TextFilter VirtualThread optimization                                                |
-| krypton.utilVT                | Enable Util VirtualThread optimization                                                      |
-| krypton.bestVarLong           | Enable VarLong optimization                                                                 |
-| velocity.linux-recast-enabled | Enable RecastLib (default: false; Only works on Linux, RecastLib for Windows is mandatory.) |
+| Parameter                     | Description                                  | Default value |
+|-------------------------------|----------------------------------------------|---------------|
+| krypton.loginVT               | Enable Login VirtualThread optimization      | true          |
+| krypton.textFilterVT          | Enable TextFilter VirtualThread optimization | true          |
+| krypton.utilVT                | Enable Util VirtualThread optimization       | true          |
+| krypton.bestVarLong           | Enable VarLong optimization                  | true          |
+| velocity.natives-disable      | Disable Native                               | false         |
+| velocity.linux-recast-enabled | Enable RecastLib for Linux                   | false         |
 
 example:
 
