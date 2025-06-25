@@ -3,12 +3,18 @@ package me.steinborn.krypton.mixin.shared.network.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import me.steinborn.krypton.mod.shared.network.util.QuietDecoderException;
+import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
+import net.minecraft.network.BandwidthDebugMonitor;
 import net.minecraft.network.Varint21FrameDecoder;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static io.netty.util.ByteProcessor.FIND_NON_NUL;
 import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.BAD_LENGTH_CACHED;
@@ -20,45 +26,11 @@ import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.V
  */
 @Mixin(Varint21FrameDecoder.class)
 public class SplitterHandlerMixin {
-    /**
-     * @author Andrew Steinborn
-     * @reason Use optimized Velocity varint decoder that reduces bounds checking
-     */
-    @Overwrite
-    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (!ctx.channel().isActive()) {
-            in.clear();
-            return;
-        }
-
-        // skip any runs of 0x00 we might find
-        int packetStart = in.forEachByte(FIND_NON_NUL);
-        if (packetStart == -1) {
-            in.clear();
-            return;
-        }
-        in.readerIndex(packetStart);
-
-        // try to read the length of the packet
-        in.markReaderIndex();
-        int preIndex = in.readerIndex();
-        int length = krypton_Multi$readRawVarInt21(in);
-        if (preIndex == in.readerIndex()) {
-            return;
-        }
-        if (length < 0) {
-            throw BAD_LENGTH_CACHED;
-        }
-
-        // note that zero-length packets are ignored
-        if (length > 0) {
-            if (in.readableBytes() < length) {
-                in.resetReaderIndex();
-            } else {
-                out.add(in.readRetainedSlice(length));
-            }
-        }
-    }
+    @Unique
+    private final ExecutorService krypton_FNP$executor = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
+    @Final
+    @Shadow
+    private BandwidthDebugMonitor monitor;
 
     /**
      * Reads a VarInt from the buffer of up to 21 bits in size.
@@ -130,5 +102,55 @@ public class SplitterHandlerMixin {
             return result | tmp << 14;
         }
         return result | (tmp & 0x7F) << 14;
+    }
+
+    /**
+     * @author Andrew Steinborn
+     * @reason Use optimized Velocity varint decoder that reduces bounds checking
+     */
+    @Overwrite
+    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        if (!ctx.channel().isActive()) {
+            in.clear();
+            return;
+        }
+
+        // skip any runs of 0x00 we might find
+        int packetStart = in.forEachByte(FIND_NON_NUL);
+        if (packetStart == -1) {
+            in.clear();
+            return;
+        }
+        in.readerIndex(packetStart);
+
+        // try to read the length of the packet
+        in.markReaderIndex();
+        int preIndex = in.readerIndex();
+        int length = krypton_Multi$readRawVarInt21(in);
+        if (preIndex == in.readerIndex()) {
+            return;
+        }
+        if (length < 0) {
+            throw BAD_LENGTH_CACHED;
+        }
+
+        // note that zero-length packets are ignored
+        if (length > 0) {
+            if (in.readableBytes() < length) {
+                in.resetReaderIndex();
+            } else {
+                if (this.monitor != null) {
+                    krypton_FNP$execute(length);
+                    //this.monitor.onReceive(length + VarIntUtil.getVarIntLength(length));
+                }
+
+                out.add(in.readRetainedSlice(length));
+            }
+        }
+    }
+
+    @Unique
+    private void krypton_FNP$execute(int l) {
+        this.krypton_FNP$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
     }
 }
