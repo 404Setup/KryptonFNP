@@ -25,7 +25,7 @@ import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.V
  * security fix to stop "nullping" attacks.
  */
 @Mixin(Varint21FrameDecoder.class)
-public class SplitterHandlerMixin {
+public class Varint21FrameDecoderMixin {
     @Unique
     private final ExecutorService krypton_FNP$executor = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
     @Final

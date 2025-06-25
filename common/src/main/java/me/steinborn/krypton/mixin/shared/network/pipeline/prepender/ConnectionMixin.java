@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(Connection.class)
-public class ClientConnectionMixin {
+public class ConnectionMixin {
     /**
      * @author Andrew Steinborn
      * @reason replace Mojang prepender with a more efficient one

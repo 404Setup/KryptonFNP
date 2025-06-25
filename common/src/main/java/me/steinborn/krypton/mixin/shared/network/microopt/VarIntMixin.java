@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(VarInt.class)
-public class VarIntsMixin {
+public class VarIntMixin {
 
     /**
      * @author Andrew Steinborn

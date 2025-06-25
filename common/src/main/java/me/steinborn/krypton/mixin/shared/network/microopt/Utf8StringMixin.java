@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import java.nio.charset.StandardCharsets;
 
 @Mixin(Utf8String.class)
-public class StringEncodingMixin {
+public class Utf8StringMixin {
     /**
      * @author Andrew Steinborn
      * @reason optimized version

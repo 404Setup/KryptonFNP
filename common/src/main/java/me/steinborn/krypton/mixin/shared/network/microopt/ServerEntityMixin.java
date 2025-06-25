@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.List;
 
 @Mixin(ServerEntity.class)
-public class EntityTrackerEntryMixin {
+public class ServerEntityMixin {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/Collections;emptyList()Ljava/util/List;"))
     public List<Entity> construct$initialPassengersListIsGuavaImmutableList() {
