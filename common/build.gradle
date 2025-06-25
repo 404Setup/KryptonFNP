@@ -1,4 +1,5 @@
 plugins {
+    id 'java'
     id 'multiloader-common'
     id 'net.neoforged.moddev'
     id "me.champeau.jmh" version "0.7.3"
