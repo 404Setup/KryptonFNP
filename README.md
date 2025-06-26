@@ -5,11 +5,23 @@ Krypton FNP
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
 
+<a href="https://modrinth.com/mod/krypton-fnp"><img src="https://badges.moddingx.org/modrinth/downloads/krypton-fnp" alt=""></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"><img src="https://badges.moddingx.org/curseforge/downloads/1269169" alt=""></a>
+
 This mod is an unofficial port of [Krypton Fabric](https://modrinth.com/mod/krypton), designed to provide Forge &
 NeoForge compatibility.
 
+If you are looking for KryptonFNP Fabric, visit from the following link:
+
+- Github: https://github.com/404Setup/FNP-Patcher
+- Modrinth: https://modrinth.com/mod/kryptonfnp-patcher
+- CurseForge: https://www.curseforge.com/minecraft/mc-mods/kryptonfnp-patcher
+
+---
+
 Krypton is a mod that attempts to optimize the Minecraft networking stack. It derives from work
-done in the [Velocity](https://velocitypowered.com/) and [Paper](https://papermc.io) projects.
+done in the [Velocity](https://velocitypowered.com/), [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast)
+and [Paper](https://papermc.io) projects.
 
 Krypton derives itself from Ancient Greek _kryptos_, which means "the hidden one". This makes
 it evident most of the benefit from Krypton is "hidden" but is noticeable by a server administrator.
@@ -21,6 +33,25 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 - More basic optimizations
 - Support RecastLib (Velocity Native rewritten in Rust, compatible with Windows x64/arm64)
 - Support NeoForge/Forge
+
+## About RecastLib
+
+RecastLib is written in Rust and coexists with VelocityNative to improve performance in some scenarios.
+
+Their benefits are obvious that both Server and Client can benefit, and that most popular PCs can run these native
+libraries due to the replacement compatibility.
+
+### RecastLib Compatibility
+
+- Windows x64
+- Windows ARM64
+- Linux x64
+
+### VelocityNative Compatibility
+
+- Linux x64
+- Linux ARM64
+- MacOS ARM64
 
 ## Config
 
@@ -48,23 +79,6 @@ Some configuration items support using environment variables instead of jvm args
 | JVM ARGS                      | Environment Variable |
 |-------------------------------|----------------------|
 | velocity.linux-recast-enabled | ENABLE_LINUX_RECAST  |
-
-## Use in Fabric
-To avoid KryptonFNP becoming a direct competitor to the upstream (Krypton Fabric), 
-I will not provide the Fabric version directly. 
-
-Before the Patch Mod is completed, 
-you can use the following method to manually add some KryptonFNP capabilities to Krypton Fabric.
-
-1. Download the latest Krypton Fabric and KryptonFNP
-2. Use compression software to open them at the same time
-3. Find the directory `META-INF\jarjar` in KryptonFNP
-4. Find the directory `META-INF\jars` in Krypton Fabric
-5. Copy the `velocity-native-3.4.0-SNAPSHOT.jar` file in the KryptonFNP directory to the corresponding directory of Krypton Fabric
-6. If there is a velocity-native jar file in the Krypton Fabric directory, please delete it before doing this.
-7. Start your client/server again and it should work now
-
-For other Krypton Forks, since they are all made for Forge/NeoForge, you will also need to modify metadata.json.
 
 ## Benchmark
 
@@ -95,5 +109,5 @@ After waiting for 50–90 minutes, the result will be generated to `common/build
 
 ## License
 
-This work has a restrictive license in addition to the original license to prevent some unexpected behavior, 
+This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
 see [404Setup Works Redistribution License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
