@@ -1,0 +1,14 @@
+{
+  "config.krypton_fnp.krypton_fnp": "Patcher Mod",
+
+  "config.krypton_fnp.krypton_fnp.general.label": "Mixin",
+  "config.krypton_fnp.krypton_fnp.bugfix.label": "错误修复",
+
+  "config.krypton_fnp.krypton_fnp.bestvarlong.label": "优化的VarLong实现 (需要重启)",
+  "config.krypton_fnp.krypton_fnp.utilvt.label": "将下载线程替换为虚拟线程 (需要重启)",
+  "config.krypton_fnp.krypton_fnp.loginvt.label": "将玩家登录时的验证线程替换为虚拟线程 (需要重启)",
+  "config.krypton_fnp.krypton_fnp.textfiltervt.label": "将文本过滤线程替换为虚拟线程 (需要重启)",
+
+  "config.krypton_fnp.krypton_fnp.kryptonissues128.label": "修复Krypton优化导致F3中的流量显示失效的问题",
+  "config.krypton_fnp.krypton_fnp.kryptonissues128sync.label": "同步处理流量显示"
+}

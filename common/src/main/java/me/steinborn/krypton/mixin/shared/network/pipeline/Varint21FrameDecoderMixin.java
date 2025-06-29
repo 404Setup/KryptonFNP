@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static io.netty.util.ByteProcessor.FIND_NON_NUL;
+import static me.steinborn.krypton.mod.shared.KryptonFNPModConfig.kryptonIssues128;
+import static me.steinborn.krypton.mod.shared.KryptonFNPModConfig.kryptonIssues128Sync;
 import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.BAD_LENGTH_CACHED;
 import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.VARINT_BIG_CACHED;
 
@@ -139,9 +141,8 @@ public class Varint21FrameDecoderMixin {
             if (in.readableBytes() < length) {
                 in.resetReaderIndex();
             } else {
-                if (this.monitor != null) {
+                if (kryptonIssues128 && this.monitor != null) {
                     krypton_FNP$execute(length);
-                    //this.monitor.onReceive(length + VarIntUtil.getVarIntLength(length));
                 }
 
                 out.add(in.readRetainedSlice(length));
@@ -151,6 +152,7 @@ public class Varint21FrameDecoderMixin {
 
     @Unique
     private void krypton_FNP$execute(int l) {
-        this.krypton_FNP$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
+        if (kryptonIssues128Sync) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
+        else this.krypton_FNP$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
     }
 }
