@@ -4,6 +4,7 @@ import com.velocitypowered.natives.util.Natives;
 import org.slf4j.Logger;
 
 public class KryptonSharedBootstrap {
+    public static final String MOD_ID = "krypton";
     public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(KryptonSharedBootstrap.class);
 
     static {
