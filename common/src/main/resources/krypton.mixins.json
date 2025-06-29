@@ -6,7 +6,6 @@
   "plugin": "me.steinborn.krypton.mod.shared.KryptonMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "shared.render.DebugScreenOverlayMixin"
   ],
   "mixins": [
     "shared.debugaid.SharedConstantsMixin",
