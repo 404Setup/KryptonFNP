@@ -1,14 +1,14 @@
 {
-  "config.krypton_fnp.krypton_fnp": "Patcher Mod",
+  "config.krypton.krypton_fnp": "Patcher Mod",
 
-  "config.krypton_fnp.krypton_fnp.general.label": "Mixin",
-  "config.krypton_fnp.krypton_fnp.bugfix.label": "BugFix",
+  "config.krypton.krypton_fnp.general.label": "Mixin",
+  "config.krypton.krypton_fnp.bugfix.label": "BugFix",
 
-  "config.krypton_fnp.krypton_fnp.bestvarlong.label": "Optimized VarLong implementation (requires restart)",
-  "config.krypton_fnp.krypton_fnp.utilvt.label": "Replace download thread with virtual thread (requires restart)",
-  "config.krypton_fnp.krypton_fnp.loginvt.label": "Replace player login validation thread with virtual thread (requires restart)",
-  "config.krypton_fnp.krypton_fnp.textfiltervt.label": "Replace text filter thread with virtual thread (requires restart)",
+  "config.krypton.krypton_fnp.bestvarlong.label": "Optimized VarLong implementation (requires restart)",
+  "config.krypton.krypton_fnp.utilvt.label": "Replace download thread with virtual thread (requires restart)",
+  "config.krypton.krypton_fnp.loginvt.label": "Replace player login validation thread with virtual thread (requires restart)",
+  "config.krypton.krypton_fnp.textfiltervt.label": "Replace text filter thread with virtual thread (requires restart)",
 
-  "config.krypton_fnp.krypton_fnp.kryptonissues128.label": "Fix Krypton optimization causing F3 bandwidth display to break",
-  "config.krypton_fnp.krypton_fnp.kryptonissues128sync.label": "Sync bandwidth display"
+  "config.krypton.krypton_fnp.kryptonissues128.label": "Fix Krypton optimization causing F3 bandwidth display to break",
+  "config.krypton.krypton_fnp.kryptonissues128sync.label": "Sync bandwidth display"
 }
