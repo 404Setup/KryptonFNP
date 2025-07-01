@@ -1,14 +1,22 @@
 {
-  "config.krypton.krypton_fnp": "Patcher Mod",
+  "config.krypton.krypton_fnp": "KryptonFNP",
 
   "config.krypton.krypton_fnp.general.label": "Mixin",
   "config.krypton.krypton_fnp.bugfix.label": "BugFix",
+  "config.krypton.krypton_fnp.compress.label": "Compress",
+  "config.krypton.krypton_fnp.netty.label": "Netty",
 
-  "config.krypton.krypton_fnp.bestvarlong.label": "Optimized VarLong implementation (requires restart)",
-  "config.krypton.krypton_fnp.utilvt.label": "Replace download thread with virtual thread (requires restart)",
-  "config.krypton.krypton_fnp.loginvt.label": "Replace player login validation thread with virtual thread (requires restart)",
-  "config.krypton.krypton_fnp.textfiltervt.label": "Replace text filter thread with virtual thread (requires restart)",
+  "config.krypton.krypton_fnp.bestvarlong.label": "Optimized VarLong implementation",
+  "config.krypton.krypton_fnp.utilvt.label": "Replace download thread with virtual thread",
+  "config.krypton.krypton_fnp.loginvt.label": "Replace player login validation thread with virtual thread",
+  "config.krypton.krypton_fnp.textfiltervt.label": "Replace text filter thread with virtual thread",
+  
+  "config.krypton.krypton_fnp.kryptonissues128.label": "Fix Traffic Statistics",
+  "config.krypton.krypton_fnp.kryptonissues128sync.label": "Sync Traffic Statistics",
+  "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.\nDisabling this may cause some unexpected results.",
 
-  "config.krypton.krypton_fnp.kryptonissues128.label": "Fix Krypton optimization causing F3 bandwidth display to break",
-  "config.krypton.krypton_fnp.kryptonissues128sync.label": "Sync bandwidth display"
+  "config.krypton.krypton_fnp.permitoversizedpackets.label": "Permit Oversized Packets",
+
+  "config.krypton.krypton_fnp.allocatormaxorder.label": "Memory Arena Size",
+  "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit."
 }

@@ -1,0 +1,22 @@
+{
+  "config.krypton.krypton_fnp": "KryptonFNP",
+
+  "config.krypton.krypton_fnp.general.label": "Mixin",
+  "config.krypton.krypton_fnp.bugfix.label": "錯誤修復",
+  "config.krypton.krypton_fnp.compress.label": "壓縮",
+  "config.krypton.krypton_fnp.netty.label": "Netty",
+
+  "config.krypton.krypton_fnp.bestvarlong.label": "優化的VarLong實現",
+  "config.krypton.krypton_fnp.utilvt.label": "將下載線程替換為虛擬線程",
+  "config.krypton.krypton_fnp.loginvt.label": "將玩家登錄時的驗證線程替換為虛擬線程",
+  "config.krypton.krypton_fnp.textfiltervt.label": "將文本過濾線程替換為虛擬線程",
+
+  "config.krypton.krypton_fnp.kryptonissues128.label": "修復流量統計失效",
+  "config.krypton.krypton_fnp.kryptonissues128sync.label": "同步統計流量",
+  "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "在同步線程上運行流量統計，這更接近原版行為。\n若關閉此項，可能導致一些意外的結果。",
+
+  "config.krypton.krypton_fnp.permitoversizedpackets.label": "允許超大數據包",
+
+  "config.krypton.krypton_fnp.allocatormaxorder.label": "內存區域大小",
+  "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "將Netty默認16MiB記憶體分配改為4MiB,因Minecraft最大包限制2MiB。"
+}

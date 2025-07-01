@@ -13,7 +13,6 @@ public class KryptonBootstrap implements ModInitializer {
         safetyCheck();
         ConfigRegistry.register(KryptonFNPModConfig.class, KryptonSharedBootstrap.MOD_ID);
         KryptonSharedBootstrap.run(FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT));
-        KryptonSharedBootstrap.setVersion(FabricLoader.getInstance().getModContainer("krypton").get().getMetadata().getVersion().getFriendlyString());
     }
 
     // This is a deliberate check.

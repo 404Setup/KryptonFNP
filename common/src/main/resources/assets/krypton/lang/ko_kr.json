@@ -1,0 +1,22 @@
+{
+  "config.krypton.krypton_fnp": "KryptonFNP",
+
+  "config.krypton.krypton_fnp.general.label": "Mixin",
+  "config.krypton.krypton_fnp.bugfix.label": "버그 수정",
+  "config.krypton.krypton_fnp.compress.label": "압축",
+  "config.krypton.krypton_fnp.netty.label": "Netty",
+
+  "config.krypton.krypton_fnp.bestvarlong.label": "최적화된 VarLong 구현",
+  "config.krypton.krypton_fnp.utilvt.label": "다운로드 스레드를 가상 스레드로 교체",
+  "config.krypton.krypton_fnp.loginvt.label": "플레이어 로그인 검증 스레드를 가상 스레드로 교체",
+  "config.krypton.krypton_fnp.textfiltervt.label": "텍스트 필터 스레드를 가상 스레드로 교체",
+
+  "config.krypton.krypton_fnp.kryptonissues128.label": "트래픽 통계 오류 수정",
+  "config.krypton.krypton_fnp.kryptonissues128sync.label": "동기화된 트래픽 통계",
+  "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "대역폭 통계를 동기 스레드에서 실행합니다. 이는 바닐라의 동작과 더 유사합니다.\n비활성화하면 예기치 않은 결과가 발생할 수 있습니다.",
+
+  "config.krypton.krypton_fnp.permitoversizedpackets.label": "초과 크기 패킷 허용",
+
+  "config.krypton.krypton_fnp.allocatormaxorder.label": "메모리 아레나 크기",
+  "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Netty의 기본 16MiB 메모리 할당을 4MiB로 변경합니다. Minecraft의 최대 패킷 크기가 2MiB로 제한되어 있기 때문입니다."
+}

@@ -1,14 +1,22 @@
 {
-  "config.krypton.krypton_fnp": "Patcher Mod",
+  "config.krypton.krypton_fnp": "KryptonFNP",
 
   "config.krypton.krypton_fnp.general.label": "Mixin",
   "config.krypton.krypton_fnp.bugfix.label": "Исправление ошибок",
+  "config.krypton.krypton_fnp.compress.label": "Сжатие",
+  "config.krypton.krypton_fnp.netty.label": "Netty",
 
-  "config.krypton.krypton_fnp.bestvarlong.label": "Оптимизированная реализация VarLong (требуется перезагрузка)",
-  "config.krypton.krypton_fnp.utilvt.label": "Заменить поток загрузки на виртуальный поток (требуется перезагрузка)",
-  "config.krypton.krypton_fnp.loginvt.label": "Заменить поток проверки при входе игрока на виртуальный поток (требуется перезагрузка)",
-  "config.krypton.krypton_fnp.textfiltervt.label": "Заменить поток фильтрации текста на виртуальный поток (требуется перезагрузка)",
+  "config.krypton.krypton_fnp.bestvarlong.label": "Оптимизированная реализация VarLong",
+  "config.krypton.krypton_fnp.utilvt.label": "Заменить поток загрузки на виртуальный поток",
+  "config.krypton.krypton_fnp.loginvt.label": "Заменить поток проверки при входе игрока на виртуальный поток",
+  "config.krypton.krypton_fnp.textfiltervt.label": "Заменить поток фильтрации текста на виртуальный поток",
 
-  "config.krypton.krypton_fnp.kryptonissues128.label": "Исправить проблему с отображением трафика в F3, вызванную оптимизацией Krypton",
-  "config.krypton.krypton_fnp.kryptonissues128sync.label": "Синхронное отображение трафика"
+  "config.krypton.krypton_fnp.kryptonissues128.label": "Исправить сбои статистики трафика",
+  "config.krypton.krypton_fnp.kryptonissues128sync.label": "Синхронная статистика трафика",
+  "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "Запускать статистику пропускной способности в синхронном потоке, что ближе к поведению Vanilla.\nОтключение этого может привести к некоторым непредвиденным результатам.",
+
+  "config.krypton.krypton_fnp.permitoversizedpackets.label": "Разрешить пакеты превышающие размер",
+
+  "config.krypton.krypton_fnp.allocatormaxorder.label": "Размер области памяти",
+  "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Изменить стандартное выделение памяти Netty с 16MiB на 4MiB, так как в Minecraft максимальный размер пакета ограничен 2MiB."
 }

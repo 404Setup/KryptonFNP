@@ -12,7 +12,6 @@ public class KryptonBootstrap {
         fmlSetup();
         ConfigRegistry.register(KryptonFNPModConfig.class, KryptonSharedBootstrap.MOD_ID);
         KryptonSharedBootstrap.run(FMLLoader.getDist().isClient());
-        KryptonSharedBootstrap.setVersion(FMLLoader.getLoadingModList().getModFileById("krypton").versionString());
     }
 
     // This is a deliberate check.

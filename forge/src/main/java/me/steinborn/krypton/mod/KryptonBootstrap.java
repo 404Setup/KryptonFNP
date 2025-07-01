@@ -12,7 +12,6 @@ public class KryptonBootstrap {
         fmlSetup();
         ConfigRegistry.register(KryptonFNPModConfig.class, KryptonSharedBootstrap.MOD_ID);
         KryptonSharedBootstrap.run(FMLLoader.getDist().isClient());
-        KryptonSharedBootstrap.setVersion(FMLLoader.getLoadingModList().getModFileById("krypton").versionString());
     }
 
     // This is a deliberate check.
@@ -22,7 +21,8 @@ public class KryptonBootstrap {
         try {
             Class.forName("org.bukkit.advancement.Advancement");
             throw new SecurityException("Unsupported mod detected: bukkit");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     protected void checkMod(String modid) {

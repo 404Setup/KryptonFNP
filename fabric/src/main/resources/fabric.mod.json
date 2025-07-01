@@ -28,7 +28,6 @@
   "accessWidener": "krypton.accesswidener",
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
-    "fabric-api": "*",
     "minecraft": "${fabric_game_version_range}",
     "resourceconfigapi": "*",
     "java": ">=${java_version}"

@@ -2,10 +2,11 @@ package me.steinborn.krypton.mod.shared;
 
 import com.velocitypowered.natives.util.Natives;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KryptonSharedBootstrap {
     public static final String MOD_ID = "krypton";
-    public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(KryptonSharedBootstrap.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(KryptonSharedBootstrap.class);
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much
@@ -16,17 +17,9 @@ public class KryptonSharedBootstrap {
         // compute the chunk size. We lower maxOrder from its default of 11 to 9. (We also use a null
         // check, so that the user is free to choose another setting if need be.)
         if (System.getProperty("io.netty.allocator.maxOrder") == null) {
-            System.setProperty("io.netty.allocator.maxOrder", "9");
-        }
-    }
-
-    public static String getVersion() {
-        return System.getProperty("krypton.version");
-    }
-
-    public static void setVersion(String version) {
-        if (System.getProperty("krypton.version") == null) {
-            System.setProperty("krypton.version", version);
+            if (KryptonFNPModConfig.allocatorMaxOrder < 1 || KryptonFNPModConfig.allocatorMaxOrder > 50)
+                KryptonFNPModConfig.allocatorMaxOrder = 9;
+            System.setProperty("io.netty.allocator.maxOrder", String.valueOf(KryptonFNPModConfig.allocatorMaxOrder));
         }
     }
 

@@ -57,19 +57,15 @@ libraries due to the replacement compatibility.
 
 Add the following parameters to the Java startup parameters to control the mixin enablement:
 
-| Parameter                     | Description                                  | Default value |
-|-------------------------------|----------------------------------------------|---------------|
-| krypton.loginVT               | Enable Login VirtualThread optimization      | true          |
-| krypton.textFilterVT          | Enable TextFilter VirtualThread optimization | true          |
-| krypton.utilVT                | Enable Util VirtualThread optimization       | true          |
-| krypton.bestVarLong           | Enable VarLong optimization                  | true          |
-| velocity.natives-disable      | Disable Native                               | false         |
-| velocity.linux-recast-enabled | Enable RecastLib for Linux                   | false         |
+| Parameter                     | Description                | Default value |
+|-------------------------------|----------------------------|---------------|
+| velocity.natives-disable      | Disable Native             | false         |
+| velocity.linux-recast-enabled | Enable RecastLib for Linux | false         |
 
 example:
 
 ```shell
-java -Dkrypton.loginVT=false -jar neoforge_launcher.jar
+java -Dvelocity.natives-disable=true -jar neoforge_launcher.jar
 ```
 
 ### Use env instead of jvm args
@@ -106,6 +102,11 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 
 After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
 After waiting for 50–90 minutes, the result will be generated to `common/build/results/jmh/results.json`
+
+## Dependencies
+
+- [Resource Config API](https://modrinth.com/mod/resource-config-api) - Required dependencies. Configuration GUI and
+  config file capabilities are provided by this mod.
 
 ## License
 
