@@ -15,7 +15,7 @@ import javax.crypto.SecretKey;
 import java.security.GeneralSecurityException;
 
 @Mixin(Connection.class)
-public class ClientConnectionMixin implements ClientConnectionEncryptionExtension {
+public class ConnectionMixin implements ClientConnectionEncryptionExtension {
     @Shadow private boolean encrypted;
     @Shadow private Channel channel;
 

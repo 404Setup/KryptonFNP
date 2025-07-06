@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.EncoderException;
 import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
+import me.steinborn.krypton.mod.shared.network.util.VarLongUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,10 +16,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-@Mixin(FriendlyByteBuf.class)
+@Mixin(value = FriendlyByteBuf.class, priority = 900)
 public abstract class FriendlyByteBufMixin extends ByteBuf {
-    @Unique
-    private static final int DATA_BITS_PER_BYTE = 7;
     @Shadow
     @Final
     private ByteBuf source;
@@ -34,36 +33,12 @@ public abstract class FriendlyByteBufMixin extends ByteBuf {
 
     /**
      * @author 404
-     * @reason test
+     * @reason optimized version for VarLong
      */
     @Overwrite
     public static int getVarLongSize(long data) {
-        if (data == 0) return 1;
-
-        int significantBits = 64 - Long.numberOfLeadingZeros(data);
-        return (significantBits + DATA_BITS_PER_BYTE - 1) / DATA_BITS_PER_BYTE;
+        return VarLongUtil.getVarLongLength(data);
     }
-
-    @Unique
-    private static void krypton_Multi$writeVarIntFull(ByteBuf buf, int value) {
-        // See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
-        if ((value & (0xFFFFFFFF << 21)) == 0) {
-            int w = (value & 0x7F | 0x80) << 16 | ((value >>> 7) & 0x7F | 0x80) << 8 | (value >>> 14);
-            buf.writeMedium(w);
-        } else if ((value & (0xFFFFFFFF << 28)) == 0) {
-            int w = (value & 0x7F | 0x80) << 24 | (((value >>> 7) & 0x7F | 0x80) << 16)
-                    | ((value >>> 14) & 0x7F | 0x80) << 8 | (value >>> 21);
-            buf.writeInt(w);
-        } else {
-            int w = (value & 0x7F | 0x80) << 24 | ((value >>> 7) & 0x7F | 0x80) << 16
-                    | ((value >>> 14) & 0x7F | 0x80) << 8 | ((value >>> 21) & 0x7F | 0x80);
-            buf.writeInt(w);
-            buf.writeByte(value >>> 28);
-        }
-    }
-
-    @Invoker("writeCharSequence")
-    public abstract int writeCharSequence(CharSequence charSequence, Charset charset);
 
     /**
      * @author Andrew
@@ -81,7 +56,7 @@ public abstract class FriendlyByteBufMixin extends ByteBuf {
         } else {
             this.writeVarInt(utf8Bytes);
             this.writeCharSequence(string, StandardCharsets.UTF_8);
-            return new FriendlyByteBuf(source);
+            return (FriendlyByteBuf) (Object) this;
         }
     }
 
@@ -93,14 +68,42 @@ public abstract class FriendlyByteBufMixin extends ByteBuf {
     public FriendlyByteBuf writeVarInt(int value) {
         // Peel the one and two byte count cases explicitly as they are the most common VarInt sizes
         // that the server will send, to improve inlining.
-        if ((value & (0xFFFFFFFF << 7)) == 0) {
-            source.writeByte(value);
-        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
-            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
-            source.writeShort(w);
+        if ((value & VarIntUtil.MASK_7_BITS) == 0) {
+            this.source.writeByte(value);
+        } else if ((value & VarIntUtil.MASK_14_BITS) == 0) {
+            this.source.writeShort((value & 0x7F | 0x80) << 8 | (value >>> 7));
+        } else if ((value & VarIntUtil.MASK_21_BITS) == 0) {
+            this.source.writeMedium((value & 0x7F | 0x80) << 16
+                    | ((value >>> 7) & 0x7F | 0x80) << 8
+                    | (value >>> 14));
+        } else if ((value & VarIntUtil.MASK_28_BITS) == 0) {
+            this.source.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | (value >>> 21));
         } else {
-            krypton_Multi$writeVarIntFull(source, value);
+            this.source.writeInt((value & 0x7F | 0x80) << 24
+                    | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8
+                    | ((value >>> 21) & 0x7F | 0x80));
+            this.source.writeByte(value >>> 28);
         }
-        return new FriendlyByteBuf(source);
+        return (FriendlyByteBuf) (Object) this;
+    }
+
+    /**
+     * @author 404
+     * @reason optimized version for VarLong
+     */
+    @Overwrite
+    public FriendlyByteBuf writeVarLong(long value) {
+        if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
+            this.source.writeByte((int) value);
+        } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
+            this.source.writeShort((int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7));
+        } else {
+            VarLongUtil.writeVarLongFull(this, value);
+        }
+        return (FriendlyByteBuf) (Object) this;
     }
 }

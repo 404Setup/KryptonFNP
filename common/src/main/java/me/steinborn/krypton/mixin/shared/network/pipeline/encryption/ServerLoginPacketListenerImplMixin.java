@@ -15,7 +15,7 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
-public class ServerLoginNetworkHandlerMixin {
+public class ServerLoginPacketListenerImplMixin {
     @Shadow @Final Connection connection;
 
     @Redirect(method = "handleKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))

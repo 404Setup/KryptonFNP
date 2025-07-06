@@ -6,13 +6,13 @@
   "client": [],
   "mixins": [
     "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
-    "shared.network.microopt.EntityTrackerEntryMixin",
     "shared.network.microopt.FriendlyByteBufMixin",
+    "shared.network.microopt.ServerEntityMixin",
     "shared.network.pipeline.LegacyQueryHandlerMixin",
-    "shared.network.pipeline.SplitterHandlerMixin",
-    "shared.network.pipeline.compression.ClientConnectionMixin",
-    "shared.network.pipeline.encryption.ClientConnectionMixin",
-    "shared.network.pipeline.encryption.ServerLoginNetworkHandlerMixin"
+    "shared.network.pipeline.Varint21FrameDecoderMixin",
+    "shared.network.pipeline.compression.ConnectionMixin",
+    "shared.network.pipeline.encryption.ConnectionMixin",
+    "shared.network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
   "refmap": "krypton.refmap.json",
   "injectors": {
