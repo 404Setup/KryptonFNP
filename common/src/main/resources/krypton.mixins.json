@@ -8,7 +8,6 @@
   "client": [
   ],
   "mixins": [
-    "shared.debugaid.SharedConstantsMixin",
     "shared.network.experimental.ServerLoginPacketListenerImplMixin",
     "shared.network.experimental.ServerTextFilterMixin",
     "shared.network.experimental.UtilMixin",
