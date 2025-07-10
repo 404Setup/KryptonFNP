@@ -16,6 +16,8 @@
   "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "Запускать статистику пропускной способности в синхронном потоке, что ближе к поведению Vanilla.\nОтключение этого может привести к некоторым непредвиденным результатам.",
 
   "config.krypton.krypton_fnp.permitoversizedpackets.label": "Разрешить пакеты превышающие размер",
+  "config.krypton.krypton_fnp.compressionlevel.label": "Уровень сжатия пакетов",
+  "config.krypton.krypton_fnp.compressionlevel.tooltip": "Уровень сжатия пакетов, от 1 до 9.",
 
   "config.krypton.krypton_fnp.allocatormaxorder.label": "Размер области памяти",
   "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Изменить стандартное выделение памяти Netty с 16MiB на 4MiB, так как в Minecraft максимальный размер пакета ограничен 2MiB."

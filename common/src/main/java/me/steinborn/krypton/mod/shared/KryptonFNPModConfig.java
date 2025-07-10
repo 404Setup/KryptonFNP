@@ -29,4 +29,7 @@ public class KryptonFNPModConfig {
 
     @ConfigEntry(category = "Compress", needsGameRestart = true)
     public static boolean permitOversizedPackets = false;
+
+    @ConfigEntry(category = "Compress", needsGameRestart = true)
+    public static int compressionLevel = 4;
 }

@@ -16,6 +16,8 @@
   "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "대역폭 통계를 동기 스레드에서 실행합니다. 이는 바닐라의 동작과 더 유사합니다.\n비활성화하면 예기치 않은 결과가 발생할 수 있습니다.",
 
   "config.krypton.krypton_fnp.permitoversizedpackets.label": "초과 크기 패킷 허용",
+  "config.krypton.krypton_fnp.compressionlevel.label": "패킷 압축 레벨",
+  "config.krypton.krypton_fnp.compressionlevel.tooltip": "패킷의 압축 레벨입니다. 1-9 사이의 값을 지정할 수 있습니다.",
 
   "config.krypton.krypton_fnp.allocatormaxorder.label": "메모리 아레나 크기",
   "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Netty의 기본 16MiB 메모리 할당을 4MiB로 변경합니다. Minecraft의 최대 패킷 크기가 2MiB로 제한되어 있기 때문입니다."

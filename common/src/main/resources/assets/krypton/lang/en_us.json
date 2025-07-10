@@ -16,6 +16,8 @@
   "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.\nDisabling this may cause some unexpected results.",
 
   "config.krypton.krypton_fnp.permitoversizedpackets.label": "Permit Oversized Packets",
+  "config.krypton.krypton_fnp.compressionlevel.label": "Packet Compression Level",
+  "config.krypton.krypton_fnp.compressionlevel.tooltip": "The compression level for packets, between 1-9.",
 
   "config.krypton.krypton_fnp.allocatormaxorder.label": "Memory Arena Size",
   "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit."

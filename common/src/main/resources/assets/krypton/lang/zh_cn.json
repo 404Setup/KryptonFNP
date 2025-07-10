@@ -16,6 +16,8 @@
   "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "在同步线程上运行流量统计，这更接近原版行为。\n若关闭此项，可能导致一些意外的结果。",
 
   "config.krypton.krypton_fnp.permitoversizedpackets.label": "允许超大数据包",
+  "config.krypton.krypton_fnp.compressionlevel.label": "数据包压缩等级",
+  "config.krypton.krypton_fnp.compressionlevel.tooltip": "数据包的压缩等级，范围在1-9之间。",
 
   "config.krypton.krypton_fnp.allocatormaxorder.label": "内存区域大小",
   "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "将Netty默认16MiB内存分配改为4MiB,因Minecraft最大包限制2MiB。"

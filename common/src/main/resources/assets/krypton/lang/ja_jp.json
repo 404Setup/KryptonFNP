@@ -15,6 +15,8 @@
   "config.krypton.krypton_fnp.kryptonissues128sync.tooltip": "帯域幅の統計を同期スレッドで実行します。これはVanillaの動作に近いものです。\n無効にすると予期しない結果が発生する可能性があります。",
 
   "config.krypton.krypton_fnp.permitoversizedpackets.label": "サイズ超過パケットを許可",
+  "config.krypton.krypton_fnp.compressionlevel.label": "パケット圧縮レベル",
+  "config.krypton.krypton_fnp.compressionlevel.tooltip": "パケットの圧縮レベルです。1から9の間で設定できます。",
 
   "config.krypton.krypton_fnp.allocatormaxorder.label": "メモリアリーナサイズ",
   "config.krypton.krypton_fnp.allocatormaxorder.tooltip": "Nettyのデフォルト16MiBメモリ割り当てを4MiBに変更します。Minecraftのパケットサイズ制限が2MiBのためです。"
