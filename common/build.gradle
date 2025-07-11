@@ -26,6 +26,7 @@ dependencies {
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
 
     compileOnly("org.yaml:snakeyaml:2.4")
+    compileOnly("one.pkg:sewlia-config:${config_api_version}")
 
     implementation("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'

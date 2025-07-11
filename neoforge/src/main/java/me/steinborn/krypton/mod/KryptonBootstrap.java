@@ -1,5 +1,6 @@
 package me.steinborn.krypton.mod;
 
+import me.steinborn.krypton.mod.shared.KryptonFNPModConfig;
 import me.steinborn.krypton.mod.shared.KryptonSharedBootstrap;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
@@ -8,6 +9,7 @@ import net.neoforged.fml.loading.FMLLoader;
 public class KryptonBootstrap {
     public KryptonBootstrap() {
         fmlSetup();
+        KryptonFNPModConfig.init();
         KryptonSharedBootstrap.run(FMLLoader.getDist().isClient());
     }
 

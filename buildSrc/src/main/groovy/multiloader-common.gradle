@@ -15,6 +15,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = "https://central.sonatype.com/repository/maven-snapshots/"
+    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {

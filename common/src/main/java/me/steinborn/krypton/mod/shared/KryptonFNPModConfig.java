@@ -1,35 +1,33 @@
 package me.steinborn.krypton.mod.shared;
 
-import net.xstopho.resourceconfigapi.annotations.Config;
-import net.xstopho.resourceconfigapi.annotations.ConfigEntry;
-import net.xstopho.resourceconfigapi.api.ConfigType;
+import me.steinborn.krypton.mod.shared.config.compress.CompressionLevel;
+import me.steinborn.krypton.mod.shared.config.compress.PermitOversizedPackets;
+import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128;
+import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128Sync;
+import me.steinborn.krypton.mod.shared.config.mixin.BestVarLong;
+import me.steinborn.krypton.mod.shared.config.mixin.LoginVt;
+import me.steinborn.krypton.mod.shared.config.mixin.TextFilterVt;
+import me.steinborn.krypton.mod.shared.config.mixin.UtilVt;
+import me.steinborn.krypton.mod.shared.config.netty.AllocatorMaxOrder;
+import one.pkg.config.SewliaConfig;
+import one.pkg.loader.Loader;
 
-@Config(fileName = "krypton_fnp", type = ConfigType.COMMON)
 public class KryptonFNPModConfig {
-    @ConfigEntry(category = "General", needsGameRestart = true)
-    public static boolean bestVarLong = true;
+    // It's a very simple thing that Forge can do but NeoForge can't, so I need to add all the configurations manually.
+    public static final SewliaConfig config = new SewliaConfig(
+            "me.steinborn.krypton.mod.shared.config",
+            Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml").toString(),
+            null,
+            CompressionLevel.class,
+            PermitOversizedPackets.class,
+            KryptonIssues128.class,
+            KryptonIssues128Sync.class,
+            BestVarLong.class,
+            LoginVt.class,
+            TextFilterVt.class,
+            UtilVt.class,
+            AllocatorMaxOrder.class);
 
-    @ConfigEntry(category = "General", needsGameRestart = true)
-    public static boolean utilVT = true;
-
-    @ConfigEntry(category = "General", needsGameRestart = true)
-    public static boolean loginVT = true;
-
-    @ConfigEntry(category = "General", needsGameRestart = true)
-    public static boolean textFilterVT = true;
-
-    @ConfigEntry(category = "Netty", needsGameRestart = true)
-    public static int allocatorMaxOrder = 9;
-
-    @ConfigEntry(category = "BugFix")
-    public static boolean kryptonIssues128 = false;
-
-    @ConfigEntry(category = "BugFix")
-    public static boolean kryptonIssues128Sync = true;
-
-    @ConfigEntry(category = "Compress", needsGameRestart = true)
-    public static boolean permitOversizedPackets = false;
-
-    @ConfigEntry(category = "Compress", needsGameRestart = true)
-    public static int compressionLevel = 4;
+    public static void init() {
+    }
 }
