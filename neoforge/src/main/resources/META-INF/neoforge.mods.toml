@@ -33,10 +33,3 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies."${mod_id}"]]
-modId = "resourceconfigapi"
-type = "required"
-versionRange = "[1,)"
-ordering = "NONE"
-side = "BOTH"
