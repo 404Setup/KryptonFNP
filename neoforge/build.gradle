@@ -7,7 +7,11 @@ dependencies {
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         exclude group: 'io.netty'
     }
-    compileOnly("maven.modrinth:resource-config-api:${config_api_version}-neoforge")
+    implementation(jarJar("com.google.auto.service:auto-service-annotations:1.1.1"))
+    implementation(jarJar("com.google.auto.service:auto-service:1.1.1"))
+    implementation(jarJar("org.yaml:snakeyaml:2.4"))
+    implementation(jarJar("com.github.bsommerfeld.jshepherd:core:${config_api_version}"))
+    implementation(jarJar("com.github.bsommerfeld.jshepherd:yaml:${config_api_version}"))
 }
 
 tasks.jarJar {

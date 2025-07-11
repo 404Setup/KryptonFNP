@@ -17,9 +17,7 @@ public class KryptonSharedBootstrap {
         // compute the chunk size. We lower maxOrder from its default of 11 to 9. (We also use a null
         // check, so that the user is free to choose another setting if need be.)
         if (System.getProperty("io.netty.allocator.maxOrder") == null) {
-            if (KryptonFNPModConfig.allocatorMaxOrder < 1 || KryptonFNPModConfig.allocatorMaxOrder > 50)
-                KryptonFNPModConfig.allocatorMaxOrder = 9;
-            System.setProperty("io.netty.allocator.maxOrder", String.valueOf(KryptonFNPModConfig.allocatorMaxOrder));
+            System.setProperty("io.netty.allocator.maxOrder", String.valueOf(KryptonFNPModConfig.INSTANCE.getAllocatorMaxOrder()));
         }
     }
 

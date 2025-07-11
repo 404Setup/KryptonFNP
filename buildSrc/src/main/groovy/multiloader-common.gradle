@@ -15,6 +15,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = "https://jitpack.io"
+    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
@@ -45,10 +48,6 @@ repositories {
     maven {
         name = 'Paper'
         url = 'https://repo.papermc.io/repository/maven-public/'
-    }
-    maven {
-        name = 'Modrinth'
-        url = 'https://api.modrinth.com/maven'
     }
     maven {
         name = 'VelocityRecast'

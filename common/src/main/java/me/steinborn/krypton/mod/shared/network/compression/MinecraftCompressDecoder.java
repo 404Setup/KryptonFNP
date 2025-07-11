@@ -22,7 +22,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
 
     private static final int UNCOMPRESSED_CAP =
-            Boolean.getBoolean("krypton.permit-oversized-packets") || KryptonFNPModConfig.permitOversizedPackets
+            Boolean.getBoolean("krypton.permit-oversized-packets") || KryptonFNPModConfig.INSTANCE.isPermitOversizedPackets()
                     ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
     private final VelocityCompressor compressor;
     private final boolean validate;
