@@ -91,9 +91,11 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    compileOnly "maven.modrinth:resource-config-api:${config_api_version}-forge"
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
         jarJar.ranged(it, "[0.4.1,)")
+    }
+    implementation(jarJar("org.yaml:snakeyaml:2.4")) {
+        jarJar.ranged(it, "[2.4,)")
     }
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         jarJar.ranged(it, "[3.4.0-SNAPSHOT,)")

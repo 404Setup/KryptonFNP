@@ -1,16 +1,13 @@
 package me.steinborn.krypton.mod;
 
-import me.steinborn.krypton.mod.shared.KryptonFNPModConfig;
 import me.steinborn.krypton.mod.shared.KryptonSharedBootstrap;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.xstopho.resourceconfigapi.api.ConfigRegistry;
 
 @Mod("krypton")
 public class KryptonBootstrap {
     public KryptonBootstrap() {
         fmlSetup();
-        ConfigRegistry.register(KryptonFNPModConfig.class, KryptonSharedBootstrap.MOD_ID);
         KryptonSharedBootstrap.run(FMLLoader.getDist().isClient());
     }
 

@@ -6,12 +6,8 @@
   "plugin": "me.steinborn.krypton.mod.shared.KryptonMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "shared.config.ClientCommonPacketListenerImplMixin",
-    "shared.config.ResourceConfigScreenMixin"
   ],
   "mixins": [
-    "shared.config.ConfigConstantsMixin",
-    "shared.config.ConfigUpdatePayloadMixin",
     "shared.network.experimental.ServerLoginPacketListenerImplMixin",
     "shared.network.experimental.ServerTextFilterMixin",
     "shared.network.experimental.UtilMixin",
