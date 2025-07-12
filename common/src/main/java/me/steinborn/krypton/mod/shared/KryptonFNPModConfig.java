@@ -10,23 +10,21 @@ import me.steinborn.krypton.mod.shared.config.mixin.TextFilterVt;
 import me.steinborn.krypton.mod.shared.config.mixin.UtilVt;
 import me.steinborn.krypton.mod.shared.config.netty.AllocatorMaxOrder;
 import one.pkg.config.SewliaConfig;
+import one.pkg.config.annotation.config.ConfigEntry;
+import one.pkg.config.annotation.config.ConfigTarget;
+import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.loader.Loader;
 
+@ConfigEntry(isCommonUsed = true)
 public class KryptonFNPModConfig {
-    // It's a very simple thing that Forge can do but NeoForge can't, so I need to add all the configurations manually.
     public static final SewliaConfig config = new SewliaConfig(
-            "me.steinborn.krypton.mod.shared.config",
-            Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml").toString(),
-            null,
-            CompressionLevel.class,
-            PermitOversizedPackets.class,
-            KryptonIssues128.class,
-            KryptonIssues128Sync.class,
-            BestVarLong.class,
-            LoginVt.class,
-            TextFilterVt.class,
-            UtilVt.class,
-            AllocatorMaxOrder.class);
+            new ConfigMeta(KryptonFNPModConfig.class,
+                    Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml").toString()
+            )
+    );
+
+    @ConfigTarget
+    public final static int compressionLevel = 4;
 
     public static void init() {
     }
