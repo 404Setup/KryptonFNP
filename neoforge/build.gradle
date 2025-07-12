@@ -7,6 +7,7 @@ dependencies {
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         exclude group: 'io.netty'
     }
+    implementation(jarJar("org.yaml:snakeyaml:2.4"))
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}"))
 }
 

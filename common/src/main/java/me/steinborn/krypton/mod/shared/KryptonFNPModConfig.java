@@ -39,7 +39,7 @@ public class KryptonFNPModConfig {
     @ConfigTarget(group = "netty")
     public final static int allocatorMaxOrder = 9;
 
-    @ReadWith("compress.compressionLevel")
+    @ReadWith("compressionLevel")
     public static void setCompressionLevel(TempMeta meta) {
         if (meta.getObject() instanceof Integer value) {
             if (value > 9 || value < 1)
@@ -49,7 +49,7 @@ public class KryptonFNPModConfig {
         }
     }
 
-    @ReadWith("netty.allocatorMaxOrder")
+    @ReadWith("allocatorMaxOrder")
     public static void setAllocatorMaxOrder(TempMeta meta) {
         if (meta.getObject() instanceof Integer value) {
             if (value > 51 || value < 9) {
