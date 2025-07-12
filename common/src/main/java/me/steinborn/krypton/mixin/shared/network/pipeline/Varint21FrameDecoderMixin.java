@@ -2,8 +2,7 @@ package me.steinborn.krypton.mixin.shared.network.pipeline;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128;
-import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128Sync;
+import me.steinborn.krypton.mod.shared.KryptonFNPModConfig;
 import me.steinborn.krypton.mod.shared.network.util.QuietDecoderException;
 import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
 import net.minecraft.network.BandwidthDebugMonitor;
@@ -141,7 +140,7 @@ public class Varint21FrameDecoderMixin {
             if (in.readableBytes() < length) {
                 in.resetReaderIndex();
             } else {
-                if (KryptonIssues128.value && this.monitor != null) {
+                if (KryptonFNPModConfig.issues128 && this.monitor != null) {
                     krypton_FNP$execute(length);
                 }
 
@@ -152,7 +151,7 @@ public class Varint21FrameDecoderMixin {
 
     @Unique
     private void krypton_FNP$execute(int l) {
-        if (KryptonIssues128Sync.value) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
+        if (KryptonFNPModConfig.issues128Sync) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
         else this.krypton_FNP$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
     }
 }

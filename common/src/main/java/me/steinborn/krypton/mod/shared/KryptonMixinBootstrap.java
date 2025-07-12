@@ -1,9 +1,5 @@
 package me.steinborn.krypton.mod.shared;
 
-import me.steinborn.krypton.mod.shared.config.mixin.BestVarLong;
-import me.steinborn.krypton.mod.shared.config.mixin.LoginVt;
-import me.steinborn.krypton.mod.shared.config.mixin.TextFilterVt;
-import me.steinborn.krypton.mod.shared.config.mixin.UtilVt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
@@ -62,10 +58,10 @@ public class KryptonMixinBootstrap implements IMixinConfigPlugin {
     }
 
     enum CONFIG {
-        Login_VT("me.steinborn.krypton.mixin.shared.network.experimental.ServerLoginPacketListenerImplMixin", "krypton.loginVT", getField(LoginVt.class)),
-        TextFilter_VT("me.steinborn.krypton.mixin.shared.network.experimental.ServerTextFilterMixin", "krypton.textFilterVT", getField(TextFilterVt.class)),
-        Util_VT("me.steinborn.krypton.mixin.shared.network.experimental.UtilMixin", "krypton.utilVT", getField(UtilVt.class)),
-        BestVarLong("me.steinborn.krypton.mixin.shared.network.experimental.VarLongMixin", "krypton.bestVarLong", getField(BestVarLong.class)),
+        Login_VT("me.steinborn.krypton.mixin.shared.network.experimental.ServerLoginPacketListenerImplMixin", "krypton.loginVT", getField("loginVT")),
+        TextFilter_VT("me.steinborn.krypton.mixin.shared.network.experimental.ServerTextFilterMixin", "krypton.textFilterVT", getField("textFilterVT")),
+        Util_VT("me.steinborn.krypton.mixin.shared.network.experimental.UtilMixin", "krypton.utilVT", getField("utilVT")),
+        BestVarLong("me.steinborn.krypton.mixin.shared.network.experimental.VarLongMixin", "krypton.bestVarLong", getField("bestVarLong")),
         ;
 
         public final String CLASS;
@@ -78,11 +74,11 @@ public class KryptonMixinBootstrap implements IMixinConfigPlugin {
             this.configTarget = configTarget;
         }
 
-        private static Field getField(@NotNull Class<?> clazz) {
+        private static Field getField(@NotNull String fieldName) {
             try {
-                var field = clazz.getDeclaredField("value");
+                var field = KryptonFNPModConfig.class.getDeclaredField(fieldName);
                 if (!Modifier.isStatic(field.getModifiers()))
-                    throw new IllegalArgumentException("Field value is not static.");
+                    throw new IllegalArgumentException("Field " + fieldName + " is not static.");
                 field.setAccessible(true);
                 return field;
             } catch (NoSuchFieldException e) {

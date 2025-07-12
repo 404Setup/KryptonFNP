@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import me.steinborn.krypton.mod.shared.KryptonFNPModConfig;
-import me.steinborn.krypton.mod.shared.config.compress.PermitOversizedPackets;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
 
     private static final int UNCOMPRESSED_CAP =
-            Boolean.getBoolean("krypton.permit-oversized-packets") || PermitOversizedPackets.value
+            Boolean.getBoolean("krypton.permit-oversized-packets") || KryptonFNPModConfig.permitOversizedPackets
                     ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
     private final VelocityCompressor compressor;
     private final boolean validate;

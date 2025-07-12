@@ -1,18 +1,11 @@
 package me.steinborn.krypton.mod.shared;
 
-import me.steinborn.krypton.mod.shared.config.compress.CompressionLevel;
-import me.steinborn.krypton.mod.shared.config.compress.PermitOversizedPackets;
-import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128;
-import me.steinborn.krypton.mod.shared.config.fix.KryptonIssues128Sync;
-import me.steinborn.krypton.mod.shared.config.mixin.BestVarLong;
-import me.steinborn.krypton.mod.shared.config.mixin.LoginVt;
-import me.steinborn.krypton.mod.shared.config.mixin.TextFilterVt;
-import me.steinborn.krypton.mod.shared.config.mixin.UtilVt;
-import me.steinborn.krypton.mod.shared.config.netty.AllocatorMaxOrder;
 import one.pkg.config.SewliaConfig;
 import one.pkg.config.annotation.config.ConfigEntry;
 import one.pkg.config.annotation.config.ConfigTarget;
+import one.pkg.config.annotation.loader.ReadWith;
 import one.pkg.config.metadata.ConfigMeta;
+import one.pkg.config.metadata.TempMeta;
 import one.pkg.loader.Loader;
 
 @ConfigEntry(isCommonUsed = true)
@@ -23,8 +16,49 @@ public class KryptonFNPModConfig {
             )
     );
 
-    @ConfigTarget
+    @ConfigTarget(group = "compress")
     public final static int compressionLevel = 4;
+
+    @ConfigTarget(group = "compress", reload = false)
+    public final static boolean permitOversizedPackets = false;
+
+    @ConfigTarget(group = "fix")
+    public final static boolean issues128 = false;
+    @ConfigTarget(group = "fix")
+    public final static boolean issues128Sync = true;
+
+    @ConfigTarget(group = "mixin", reload = false)
+    public final static boolean loginVT = true;
+    @ConfigTarget(group = "mixin", reload = false)
+    public final static boolean textFilterVT = true;
+    @ConfigTarget(group = "mixin", reload = false)
+    public final static boolean utilVT = true;
+    @ConfigTarget(group = "mixin", reload = false)
+    public final static boolean bestVarLong = true;
+
+    @ConfigTarget(group = "netty")
+    public final static int allocatorMaxOrder = 9;
+
+    @ReadWith("compress.compressionLevel")
+    public static void setCompressionLevel(TempMeta meta) {
+        if (meta.getObject() instanceof Integer value) {
+            if (value > 9 || value < 1)
+                meta.setObject(4);
+        } else {
+            meta.setCancelled(true);
+        }
+    }
+
+    @ReadWith("netty.allocatorMaxOrder")
+    public static void setAllocatorMaxOrder(TempMeta meta) {
+        if (meta.getObject() instanceof Integer value) {
+            if (value > 51 || value < 9) {
+                meta.setObject(9);
+            }
+        } else {
+            meta.setCancelled(true);
+        }
+    }
 
     public static void init() {
     }
