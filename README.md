@@ -1,6 +1,6 @@
 <img src="./common/src/main/resources/assets/krypton/icon.png" alt="Logo" align="right" width="150">
 
-Krypton FNP
+Krypton FNP (FFM)
 ====
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
@@ -16,6 +16,10 @@ If you are looking for KryptonFNP Fabric, visit from the following link:
 - Github: https://github.com/404Setup/FNP-Patcher
 - Modrinth: https://modrinth.com/mod/kryptonfnp-patcher
 - CurseForge: https://www.curseforge.com/minecraft/mc-mods/kryptonfnp-patcher
+
+---
+
+It doesn't seem to work in Forge/NeoForge, but VelocityNT Recast as a provider does start fine.
 
 ---
 
@@ -92,11 +96,13 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 
 [VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
 
-[Native Compress for Windows {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows_recastlib.json)
+[Native Compress for Windows {RecastLib2 JNI} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows_recastlib.json)
 
-[Native Compress for WSL2 {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_recastlib.json)
+[Native Compress for Windows {RecastLib2 FFMAPI} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/ffm/results/native_ffm_compress_windows_recastlib.json)
 
-[Native Compress for WSL2 {VelocityNative} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_vc.json)
+[Native Compress for WSL2 {RecastLib2 JNI} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_recastlib.json)
+
+[Native Compress for WSL2 {VelocityNative JNI} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_vc.json)
 
 ### How to run Benchmark?
 

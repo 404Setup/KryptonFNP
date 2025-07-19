@@ -59,6 +59,7 @@ configurations {
 
 jmh {
     resultFormat = "JSON"
+    jvmArgs.add("--enable-native-access=ALL-UNNAMED --enable-preview")
 }
 
 artifacts {

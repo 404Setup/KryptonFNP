@@ -51,7 +51,7 @@ repositories {
     }
     maven {
         name = 'VelocityRecast'
-        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/3.0.0/m2/'
+        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/22/m2/'
     }
 }
 

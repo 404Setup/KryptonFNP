@@ -24,6 +24,7 @@ dependencies {
 tasks.named('compileJava', JavaCompile) {
     dependsOn(configurations.commonJava)
     source(configurations.commonJava)
+    it.options.compilerArgs += "--enable-preview"
 }
 
 processResources {
