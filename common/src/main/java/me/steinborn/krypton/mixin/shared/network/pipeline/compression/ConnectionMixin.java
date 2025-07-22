@@ -54,7 +54,7 @@ public class ConnectionMixin {
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
-                VelocityCompressor compressor = Natives.compress.get().create(KryptonFNPModConfig.INSTANCE.getCompressionLevel());
+                VelocityCompressor compressor = Natives.compress.get().create(KryptonFNPModConfig.getCompressionLevel());
 
                 encoder = new MinecraftCompressEncoder(compressionThreshold, compressor);
                 decoder = new MinecraftCompressDecoder(compressionThreshold, validate, compressor);

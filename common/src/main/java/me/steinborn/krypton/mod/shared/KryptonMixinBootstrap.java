@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 public class KryptonMixinBootstrap implements IMixinConfigPlugin {
+    static {
+        KryptonFirstBootstrap.bootstrap();
+    }
+
     private final Logger logger = LoggerFactory.getLogger("KryptonMixinBootstrap");
 
     @Override
@@ -76,7 +80,9 @@ public class KryptonMixinBootstrap implements IMixinConfigPlugin {
 
         private static Field getField(@NotNull String fieldName) {
             try {
-                Field field = KryptonFNPModConfig.INSTANCE.getClass().getDeclaredField(fieldName);
+                var field = KryptonFNPModConfig.class.getDeclaredField(fieldName);
+                if (!Modifier.isStatic(field.getModifiers()))
+                    throw new IllegalArgumentException("Field " + fieldName + " is not static.");
                 field.setAccessible(true);
                 return field;
             } catch (NoSuchFieldException e) {
@@ -86,7 +92,7 @@ public class KryptonMixinBootstrap implements IMixinConfigPlugin {
 
         private static @Nullable Object getFieldValue(@NotNull Field field) {
             try {
-                return field.get(KryptonFNPModConfig.INSTANCE);
+                return field.get(null);
             } catch (IllegalAccessException e) {
                 return null;
             }

@@ -140,7 +140,7 @@ public class Varint21FrameDecoderMixin {
             if (in.readableBytes() < length) {
                 in.resetReaderIndex();
             } else {
-                if (KryptonFNPModConfig.INSTANCE.isIssues128() && this.monitor != null) {
+                if (KryptonFNPModConfig.isIssues128() && this.monitor != null) {
                     krypton_FNP$execute(length);
                 }
 
@@ -151,7 +151,7 @@ public class Varint21FrameDecoderMixin {
 
     @Unique
     private void krypton_FNP$execute(int l) {
-        if (KryptonFNPModConfig.INSTANCE.isIssues128Sync()) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
+        if (KryptonFNPModConfig.isIssues128Sync()) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
         else this.krypton_FNP$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
     }
 }

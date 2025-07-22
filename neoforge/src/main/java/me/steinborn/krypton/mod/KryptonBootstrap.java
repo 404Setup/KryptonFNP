@@ -1,5 +1,6 @@
 package me.steinborn.krypton.mod;
 
+import me.steinborn.krypton.mod.shared.KryptonFirstBootstrap;
 import me.steinborn.krypton.mod.shared.KryptonSharedBootstrap;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;

@@ -1,104 +1,96 @@
 package me.steinborn.krypton.mod.shared;
 
-import de.bsommerfeld.jshepherd.annotation.Comment;
-import de.bsommerfeld.jshepherd.annotation.Key;
-import de.bsommerfeld.jshepherd.annotation.PostInject;
-import de.bsommerfeld.jshepherd.core.ConfigurablePojo;
-import de.bsommerfeld.jshepherd.core.ConfigurationLoader;
-import one.pkg.loader.Loader;
+import one.pkg.config.annotation.config.ConfigEntry;
+import one.pkg.config.annotation.config.ConfigTarget;
+import one.pkg.config.annotation.loader.ReadWith;
+import one.pkg.config.metadata.DumpMeta;
 
-import java.nio.file.Path;
+@ConfigEntry
+public class KryptonFNPModConfig {
+    @ConfigTarget(group = "compress", comment = "The compression level for packets, between 1-9.")
+    private static int compressionLevel = 4;
+    @ConfigTarget(group = "compress", comment = "Permit Oversized Packets")
+    private static boolean permitOversizedPackets = false;
 
-public class KryptonFNPModConfig extends ConfigurablePojo<KryptonFNPModConfig> {
-    public static final KryptonFNPModConfig INSTANCE = init();
+    @ConfigTarget(group = "fix.issues128", value = "enabled", comment = "Fix Traffic Statistics")
+    private static boolean issues128 = false;
+    @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
+    private static boolean issues128Sync = true;
 
-    @Key("compress-compressionLevel")
-    @Comment("The compression level for packets, between 1-9.")
-    private int compressionLevel = 4;
-    @Key("compress-permitOversizedPackets")
-    @Comment("Permit Oversized Packets")
-    private boolean permitOversizedPackets = false;
-    @Key("fix-issues128-enabled")
-    @Comment("Fix Traffic Statistics")
-    private boolean issues128 = false;
-    @Key("fix-issues128-sync")
-    @Comment("Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
-    private boolean issues128Sync = true;
-    @Key("mixin-loginVT")
-    @Comment("Replace player login validation thread with virtual thread")
-    private boolean loginVT = true;
-    @Key("mixin-textFilterVT")
-    @Comment("Replace text filter thread with virtual thread")
-    private boolean textFilterVT = true;
-    @Key("mixin-utilVT")
-    @Comment("Replace download thread with virtual thread")
-    private boolean utilVT = true;
-    @Key("mixin-bestVarLong")
-    @Comment("Optimized VarLong implementation")
-    private boolean bestVarLong = true;
-    @Key("netty-allocatorMaxOrder")
-    @Comment("Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    private int allocatorMaxOrder = 9;
+    @ConfigTarget(group = "mixin", comment = "Replace player login validation thread with virtual thread")
+    private static boolean loginVT = true;
+    @ConfigTarget(group = "mixin", comment = "Replace text filter thread with virtual thread")
+    private static boolean textFilterVT = true;
+    @ConfigTarget(group = "mixin", comment = "Replace download thread with virtual thread")
+    private static boolean utilVT = true;
+    @ConfigTarget(group = "mixin", comment = "Optimized VarLong implementation")
+    private static boolean bestVarLong = true;
 
-    public KryptonFNPModConfig() {
+
+    @ConfigTarget(group = "netty", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
+    private static int allocatorMaxOrder = 9;
+
+    private KryptonFNPModConfig() {
     }
 
-    private static KryptonFNPModConfig init() {
-        Path configFile = Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml");
-
-        KryptonFNPModConfig config = ConfigurationLoader.load(configFile, KryptonFNPModConfig::new);
-        config.save();
-        config.reload();
-
-        return config;
-    }
-
-    public int getCompressionLevel() {
+    public static int getCompressionLevel() {
         return compressionLevel;
     }
 
-    public boolean isPermitOversizedPackets() {
+    @ReadWith("compressionLevel")
+    private static void setCompressionLevel(DumpMeta dumpMeta) {
+        if (!(dumpMeta.getObject() instanceof Integer))
+            dumpMeta.setCancelled(true);
+
+        int level = (Integer) dumpMeta.getObject();
+
+        if (level > 9 || level < 1) {
+            dumpMeta.setObject(4);
+            dumpMeta.setCancelled(true);
+        }
+    }
+
+    public static boolean isPermitOversizedPackets() {
         return permitOversizedPackets;
     }
 
-    public boolean isIssues128() {
+    public static boolean isIssues128() {
         return issues128;
     }
 
-    public boolean isIssues128Sync() {
+    public static boolean isIssues128Sync() {
         return issues128Sync;
     }
 
-    public boolean isLoginVT() {
+    public static boolean isLoginVT() {
         return loginVT;
     }
 
-    public boolean isTextFilterVT() {
+    public static boolean isTextFilterVT() {
         return textFilterVT;
     }
 
-    public boolean isUtilVT() {
+    public static boolean isUtilVT() {
         return utilVT;
     }
 
-    public boolean isBestVarLong() {
+    public static boolean isBestVarLong() {
         return bestVarLong;
     }
 
-    public int getAllocatorMaxOrder() {
+    public static int getAllocatorMaxOrder() {
         return allocatorMaxOrder;
     }
 
-    @PostInject
-    private void setCompressionLevel() {
-        if (compressionLevel > 9 || compressionLevel < 1)
-            compressionLevel = 4;
-    }
-
-    @PostInject
-    private void setAllocatorMaxOrder() {
-        if (allocatorMaxOrder > 51 || allocatorMaxOrder < 9)
-            allocatorMaxOrder = 9;
+    @ReadWith("allocatorMaxOrder")
+    private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
+        if (!(dumpMeta.getObject() instanceof Integer))
+            dumpMeta.setCancelled(true);
+        int level = (Integer) dumpMeta.getObject();
+        if (level > 51 || level < 9) {
+            dumpMeta.setObject(9);
+            dumpMeta.setCancelled(true);
+        }
 
     }
 }

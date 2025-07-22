@@ -26,8 +26,9 @@ dependencies {
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
 
     compileOnly("org.yaml:snakeyaml:2.4")
-    compileOnly("com.github.bsommerfeld.jshepherd:core:${config_api_version}")
-    compileOnly("com.github.bsommerfeld.jshepherd:yaml:${config_api_version}")
+    implementation("one.pkg:sewlia-config:${config_api_version}") {
+        exclude group: 'org.slf4j'
+    }
 
     implementation("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'
