@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '[6.0.37,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.38,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
@@ -39,7 +39,7 @@ jarJar.dependencies {
 jar.finalizedBy('jarJar')
 
 minecraft {
-    mappings channel: 'parchment', version: "${parchment_version}-${parchment_minecraft}"
+    mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
 
     copyIdeResources = true //Calls processResources when in dev
 
