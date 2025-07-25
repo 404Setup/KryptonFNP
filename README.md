@@ -106,4 +106,4 @@ After waiting for 50–90 minutes, the result will be generated to `common/build
 ## License
 
 This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
-see [404Setup Works Redistribution License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
+see [404Setup Public License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
