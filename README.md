@@ -81,22 +81,26 @@ Some configuration items support using environment variables instead of jvm args
 The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
-I don't have a native Linux development environment;
-all my Linux tests are done in WSL2 (Windows Subsystem for Linux), which can bring about ~15%-25% additional loss.
-
 Those tiny performance differences of about 1% can be considered as a random result.
 
 Benchmark cannot simulate all scenarios, and the results are used only as reference.
 
 ### View
 
-[VarInt & VarLong | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
+- VarInt & VarLong 
+[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
 
-[Native Compress for Windows {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_windows_recastlib.json)
+- Compress + Windows X64 + RecastLib2 JNI 
+[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.jni.json)
 
-[Native Compress for WSL2 {RecastLib2} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_recastlib.json)
+- Compress + Windows X64 + RecastLib2 FFNAPI 
+[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.ffm.json)
 
-[Native Compress for WSL2 {VelocityNative} | View in JMH Visualizer](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/native_compress_linux_vc.json)
+- Compress + WSL2 Ubuntu22 X64 + RecastLib2 JNI 
+[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.recastlib.jni.json)
+
+- Compress + WSL2 Ubuntu22 X64 + VelocityNative JNI 
+[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.velocity.jni.json)
 
 ### How to run Benchmark?
 
