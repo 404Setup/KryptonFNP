@@ -93,7 +93,7 @@ Benchmark cannot simulate all scenarios, and the results are used only as refere
 - Compress + Windows X64 + RecastLib2 JNI 
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.jni.json)
 
-- Compress + Windows X64 + RecastLib2 FFNAPI 
+- Compress + Windows X64 + RecastLib2 FFMAPI 
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.ffm.json)
 
 - Compress + WSL2 Ubuntu22 X64 + RecastLib2 JNI 
