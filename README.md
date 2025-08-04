@@ -31,7 +31,7 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 ## Feature
 
 - More basic optimizations
-- Support RecastLib (Velocity Native rewritten in Rust, compatible with Windows x64/arm64)
+- Support RecastLib (Velocity Native rewritten in Rust)
 - Support NeoForge/Forge
 
 ## About RecastLib
@@ -55,7 +55,7 @@ libraries due to the replacement compatibility.
 
 ## Config
 
-Add the following parameters to the Java startup parameters to control the mixin enablement:
+Add the following parameters to the Java startup parameters to control the feature enablement:
 
 | Parameter                     | Description                | Default value |
 |-------------------------------|----------------------------|---------------|
