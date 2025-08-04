@@ -43,12 +43,8 @@ repositories {
         url = 'https://maven.blamejared.com'
     }
     maven {
-        name = 'Paper'
-        url = 'https://repo.papermc.io/repository/maven-public/'
-    }
-    maven {
         name = 'VelocityRecast'
-        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/3.0.0/m2/'
+        url = 'https://mvn.pkg.one/snapshots'
     }
 }
 
@@ -96,9 +92,6 @@ processResources {
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'minecraft_version_range'      : minecraft_version_range,
-            'fabric_version'               : fabric_version,
-            'fabric_loader_version'        : fabric_loader_version,
-            'fabric_game_version_range'    : fabric_game_version_range,
             'mod_name'                     : mod_name,
             'mod_author'                   : mod_author,
             'mod_id'                       : mod_id,
@@ -121,7 +114,7 @@ processResources {
         expand expandProps
     }
 
-    filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+    filesMatching(['pack.mcmeta', '*.mixins.json']) {
         expand jsonExpandProps
     }
 
