@@ -5,14 +5,11 @@ import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.loader.Loader;
 
 public class KryptonFirstBootstrap {
-    public static final SewliaConfig config;
+    public static final SewliaConfig config = new SewliaConfig(ConfigMeta.of(
+            KryptonFNPModConfig.class,
+            Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
+    );
 
-    static {
-        config = new SewliaConfig(ConfigMeta.of(
-                KryptonFNPModConfig.class,
-                Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
-        );
+    public static void bootstrap() {
     }
-
-    public static void bootstrap() {}
 }

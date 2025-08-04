@@ -62,22 +62,6 @@ public class KryptonFNPModConfig {
         return issues128Sync;
     }
 
-    public static boolean isLoginVT() {
-        return loginVT;
-    }
-
-    public static boolean isTextFilterVT() {
-        return textFilterVT;
-    }
-
-    public static boolean isUtilVT() {
-        return utilVT;
-    }
-
-    public static boolean isBestVarLong() {
-        return bestVarLong;
-    }
-
     public static int getAllocatorMaxOrder() {
         return allocatorMaxOrder;
     }

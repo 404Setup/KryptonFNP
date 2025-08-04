@@ -16,9 +16,6 @@ java {
 repositories {
     mavenCentral()
     maven {
-        url = "https://central.sonatype.com/repository/maven-snapshots/"
-    }
-    maven {
         url = "https://jitpack.io"
     }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
@@ -54,7 +51,7 @@ repositories {
     }
     maven {
         name = 'VelocityRecast'
-        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/3.0.0/m2/'
+        url = 'https://mvn.pkg.one/snapshots'
     }
 }
 
