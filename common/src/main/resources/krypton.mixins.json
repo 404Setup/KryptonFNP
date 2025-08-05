@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "me.steinborn.krypton.mixin",
   "refmap": "krypton.refmap.json",
-  "plugin": "me.steinborn.krypton.mod.shared.KryptonMixinBootstrap",
+  "plugin": "me.steinborn.krypton.mod.shared.KryptonFNPMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
   ],

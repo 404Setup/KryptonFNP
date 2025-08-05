@@ -13,12 +13,12 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 
-public class KryptonMixinBootstrap implements IMixinConfigPlugin {
+public class KryptonFNPMixinBootstrap implements IMixinConfigPlugin {
     static {
-        KryptonFirstBootstrap.bootstrap();
+        KryptonFNPConfigBootstrap.bootstrap();
     }
 
-    private final Logger logger = LoggerFactory.getLogger("KryptonMixinBootstrap");
+    private final Logger logger = LoggerFactory.getLogger("KryptonFNPMixinBootstrap");
 
     @Override
     public void onLoad(String mixinPackage) {
