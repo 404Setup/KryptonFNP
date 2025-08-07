@@ -94,45 +94,9 @@ Some configuration items support using environment variables instead of jvm args
 | velocity.linux-recast-enabled | ENABLE_LINUX_RECAST  |
 
 ## Benchmark
-
-The Benchmark results are not necessarily accurate,
-and the final results are determined based on different JVM distributions, startup parameters, and random factors.
-
-Those tiny performance differences of about 1% can be considered as a random result.
-
-Benchmark cannot simulate all scenarios, and the results are used only as reference.
-
-### Result
-
-> VarInt & VarLong
->
-[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
-
-
-> Compress + Windows X64 + RecastLib JNI
->
-[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.jni.json)
-
-
-> Compress + Windows X64 + RecastLib FFMAPI
->
-[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.ffm.json)
-
-
-> Compress + WSL2 Ubuntu22 X64 + RecastLib JNI
->
-[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.recastlib.jni.json)
-
-
-> Compress + WSL2 Ubuntu22 X64 + VelocityNative JNI
->
-
-[View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.velocity.jni.json)
-
-### How to run Benchmark?
-
-After clone KryptonFNP repo, execute `./gradlew :common:jmh` in the mod directory.
-After waiting for 50–90 minutes, the result will be generated to `common/build/results/jmh/results.json`
+<a href="https://github.com/404Setup/KryptonFNP/blob/master/Benchmark.md">
+<img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
+</a>
 
 ## License
 
