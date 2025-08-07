@@ -1,4 +1,4 @@
-<img src="./common/src/main/resources/assets/krypton/icon.png" alt="Logo" align="right" width="150">
+<img src="./common/src/main/resources/assets/krypton_fnp/icon.png" alt="Logo" align="right" width="150">
 
 Krypton FNP
 ====
@@ -30,8 +30,8 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 
 ## Feature
 
-- More basic optimizations
-- Support RecastLib (Velocity Native rewritten in Rust)
+- More related minor optimizations
+- Implemented RecastLib (Velocity Native rewritten in Rust)
 - Support NeoForge/Forge
 
 ## About RecastLib
@@ -85,21 +85,31 @@ Those tiny performance differences of about 1% can be considered as a random res
 
 Benchmark cannot simulate all scenarios, and the results are used only as reference.
 
-### View
+### Result
 
-- VarInt & VarLong 
+> VarInt & VarLong
+>
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/var.json)
 
-- Compress + Windows X64 + RecastLib2 JNI 
+
+> Compress + Windows X64 + RecastLib JNI
+>
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.jni.json)
 
-- Compress + Windows X64 + RecastLib2 FFMAPI 
+
+> Compress + Windows X64 + RecastLib FFMAPI
+>
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/windows.recastlib.ffm.json)
 
-- Compress + WSL2 Ubuntu22 X64 + RecastLib2 JNI 
+
+> Compress + WSL2 Ubuntu22 X64 + RecastLib JNI
+>
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.recastlib.jni.json)
 
-- Compress + WSL2 Ubuntu22 X64 + VelocityNative JNI 
+
+> Compress + WSL2 Ubuntu22 X64 + VelocityNative JNI
+>
+
 [View](https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonFNP/refs/heads/master/results/compress/linux.velocity.jni.json)
 
 ### How to run Benchmark?

@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "one.pkg.mod.krypton_fnp.mixin",
+  "refmap": "krypton_fnp.refmap.json",
+  "plugin": "one.pkg.mod.krypton_fnp.shared.ModMixinBootstrap",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+  ],
+  "mixins": [
+    "network.experimental.ServerLoginPacketListenerImplMixin",
+    "network.experimental.ServerTextFilterMixin",
+    "network.experimental.UtilMixin",
+    "network.experimental.VarLongMixin",
+    "network.microopt.ServerEntityMixin",
+    "network.microopt.Utf8StringMixin",
+    "network.microopt.VarIntMixin",
+    "network.pipeline.LegacyQueryHandlerMixin",
+    "network.pipeline.Varint21FrameDecoderMixin",
+    "network.pipeline.compression.ConnectionMixin",
+    "network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
+    "network.pipeline.prepender.ConnectionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
