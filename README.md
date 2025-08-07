@@ -31,27 +31,38 @@ it evident most of the benefit from Krypton is "hidden" but is noticeable by a s
 ## Feature
 
 - More related minor optimizations
-- Implemented RecastLib (Velocity Native rewritten in Rust)
+- Implemented RecastLib
 - Support NeoForge/Forge
 
-## About RecastLib
+## What is RecastLib
 
-RecastLib is written in Rust and coexists with VelocityNative to improve performance in some scenarios.
+RecastLib is a native library I wrote in Rust that is compatible with Velocity Native JNI Bind.
+
+It aims to make up for some of the shortcomings of Velocity Native compatibility,
+thereby making the performance advantages of KryptonFNP more comprehensive.
+
+In KryptonFNP for Fabric, I’m also testing the stability of the FFM APIs available in Java 22,
+which, according to benchmarks, should provide more performance gains
+(ultimately Fabric only. Forge/NeoForge won’t be able to run them).
 
 Their benefits are obvious that both Server and Client can benefit, and that most popular PCs can run these native
 libraries due to the replacement compatibility.
 
-### RecastLib Compatibility
+### Compatibility
 
-- Windows x64
-- Windows ARM64
-- Linux x64
+| System & Arch               | RecastLib | Velocity Native |
+|-----------------------------|-----------|-----------------|
+| Windows x64                 | Yes       | No              |
+| Windows arm64               | Yes       | No              |
+| Linux x64                   | Yes       | Yes             |
+| Linux arm64                 | No        | Yes             |
+| MacOS arm64 (Apple Silicon) | No        | Yes             |
 
-### VelocityNative Compatibility
+Currently, there are no plans to provide compatibility for Android,
+32-bit architecture operating systems, or other architectures.
 
-- Linux x64
-- Linux ARM64
-- MacOS ARM64
+Please do not open any related issues or complain to me,
+even if you do, I can't help.
 
 ## Config
 
@@ -61,6 +72,12 @@ Add the following parameters to the Java startup parameters to control the featu
 |-------------------------------|----------------------------|---------------|
 | velocity.natives-disable      | Disable Native             | false         |
 | velocity.linux-recast-enabled | Enable RecastLib for Linux | false         |
+| krypton.loginVT               | -                          | true          |
+| krypton.textFilterVT          | -                          | true          |
+| krypton.utilVT                | -                          | true          |
+| krypton.bestVarLong           | -                          | true          |
+
+For more configuration, see the configuration file
 
 example:
 
