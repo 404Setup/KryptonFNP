@@ -5,8 +5,9 @@ and the final results are determined based on different JVM distributions, start
 
 Those tiny performance differences of about 3% can be considered as a random result.
 
-The data used in the benchmark test are all randomly generated simulated data and cannot truly
-reproduce the actual application scenarios in Minecraft. The results are for reference only.
+The data used in the benchmark tests are all randomly generated simulated data and are not the original implementation. 
+They can only represent the underlying performance of the corresponding implementation at that time. 
+The final results are for reference only.
 
 Some simulation scenes have been removed because they are too time consuming.
 
