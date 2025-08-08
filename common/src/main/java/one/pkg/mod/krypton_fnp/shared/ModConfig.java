@@ -8,13 +8,11 @@ import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.config.metadata.DumpMeta;
 import one.pkg.loader.Loader;
 
+import java.io.IOException;
+
 @ConfigEntry
 public class ModConfig {
-    public static final SewliaConfig config = new SewliaConfig(ConfigMeta.of(
-            ModConfig.class,
-            Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
-    );
-
+    public static final SewliaConfig config;
     @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
@@ -39,6 +37,18 @@ public class ModConfig {
     private static boolean var11 = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     private static int var12 = 9;
+
+    static {
+        config = new SewliaConfig(ConfigMeta.of(
+                ModConfig.class,
+                Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
+        );
+        try {
+            config.saveAllConfigurations();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private ModConfig() {
     }

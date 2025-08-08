@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ModSharedBootstrap {
     public static final String MOD_ID = "krypton_fnp";
-    public static final Logger LOGGER = LoggerFactory.getLogger(ModSharedBootstrap.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger("ModSharedBootstrap");
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much
