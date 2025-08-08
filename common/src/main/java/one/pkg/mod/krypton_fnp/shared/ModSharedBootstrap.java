@@ -22,6 +22,9 @@ public class ModSharedBootstrap {
     }
 
     public static void run(boolean client) {
+        LOGGER.info("KryptonFNP Licensed under LGPL-3.0 with FPL-1.2 License.");
+        LOGGER.info("LGPL-3.0: https://www.gnu.org/licenses/lgpl-3.0.en.html");
+        LOGGER.info("FPL-1.2: https://github.com/404Setup/404Setup/blob/main/LICENSE.md");
         if (!client) {
             LOGGER.info("KryptonFNP is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
         } else {
