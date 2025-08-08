@@ -15,51 +15,35 @@ public class ModConfig {
             Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
     );
 
-    @ConfigTarget(group = "compress", comment = "The compression level for packets, between 1-9.")
-    private static int compressionLevel = 4;
-    @ConfigTarget(group = "compress", comment = "Permit Oversized Packets")
-    private static boolean permitOversizedPackets = false;
-
+    @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
+    private static int var1 = 4;
+    @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
+    private static boolean var2 = false;
+    @ConfigTarget(group = "compress.blending-mode", value = "enabled", comment = "(Experimental) Delegate data packets with poor performance in the Native implementation to the Java implementation")
+    private static boolean var3 = false;
+    @ConfigTarget(group = "compress.blending-mode", value = "linux-fallback-min-size")
+    private static int var4 = 1024;
+    @ConfigTarget(group = "compress.blending-mode", value = "repetitive-threshold")
+    private static double var5 = 0.6;
     @ConfigTarget(group = "fix.issues128", value = "enabled", comment = "Fix Traffic Statistics")
-    private static boolean issues128 = false;
+    private static boolean var6 = false;
     @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
-    private static boolean issues128Sync = true;
-
-    @ConfigTarget(group = "mixin", comment = "Replace player login validation thread with virtual thread")
-    private static boolean loginVT = true;
-    @ConfigTarget(group = "mixin", comment = "Replace text filter thread with virtual thread")
-    private static boolean textFilterVT = true;
-    @ConfigTarget(group = "mixin", comment = "Replace download thread with virtual thread")
-    private static boolean utilVT = true;
-    @ConfigTarget(group = "mixin", comment = "Optimized VarLong implementation")
-    private static boolean bestVarLong = true;
-    @ConfigTarget(group = "netty", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    private static int allocatorMaxOrder = 9;
+    private static boolean var7 = true;
+    @ConfigTarget(group = "mixin", value = "loginVT", comment = "Replace player login validation thread with virtual thread")
+    private static boolean var8 = true;
+    @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
+    private static boolean var9 = true;
+    @ConfigTarget(group = "mixin", value = "utilVT", comment = "Replace download thread with virtual thread")
+    private static boolean var10 = true;
+    @ConfigTarget(group = "mixin", value = "bestVarLong", comment = "Optimized VarLong implementation")
+    private static boolean var11 = true;
+    @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
+    private static int var12 = 9;
 
     private ModConfig() {
     }
 
-    public static boolean isLoginVT() {
-        return loginVT;
-    }
-
-    public static boolean isTextFilterVT() {
-        return textFilterVT;
-    }
-
-    public static boolean isUtilVT() {
-        return utilVT;
-    }
-
-    public static boolean isBestVarLong() {
-        return bestVarLong;
-    }
-
-    public static int getCompressionLevel() {
-        return compressionLevel;
-    }
-
-    @ReadWith("compressionLevel")
+    @ReadWith("var1")
     private static void setCompressionLevel(DumpMeta dumpMeta) {
         if (!(dumpMeta.getObject() instanceof Integer))
             dumpMeta.setCancelled(true);
@@ -72,23 +56,7 @@ public class ModConfig {
         }
     }
 
-    public static boolean isPermitOversizedPackets() {
-        return permitOversizedPackets;
-    }
-
-    public static boolean isIssues128() {
-        return issues128;
-    }
-
-    public static boolean isIssues128Sync() {
-        return issues128Sync;
-    }
-
-    public static int getAllocatorMaxOrder() {
-        return allocatorMaxOrder;
-    }
-
-    @ReadWith("allocatorMaxOrder")
+    @ReadWith("var12")
     private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
         if (!(dumpMeta.getObject() instanceof Integer))
             dumpMeta.setCancelled(true);
@@ -97,6 +65,65 @@ public class ModConfig {
             dumpMeta.setObject(9);
             dumpMeta.setCancelled(true);
         }
+    }
 
+    public static class Compression {
+        public static int getLevel() {
+            return var1;
+        }
+
+        public static boolean isPermitOversizedPackets() {
+            return var2;
+        }
+
+        public static class BlendingMode {
+            public static boolean isEnabled() {
+                return var3;
+            }
+
+            public static int getLinuxFallbackMinSize() {
+                return var4;
+            }
+
+            public static double getRepetitiveThreshold() {
+                return var5;
+            }
+        }
+    }
+
+    public static class Fix {
+        public static class Issues128 {
+            public static boolean isEnabled() {
+                return var6;
+            }
+
+            public static boolean isSync() {
+                return var7;
+            }
+        }
+    }
+
+    public static class Mixin {
+        public static boolean isLoginVT() {
+            return var8;
+        }
+
+        public static boolean isTextFilterVT() {
+            return var9;
+        }
+
+        public static boolean isUtilVT() {
+            return var10;
+        }
+
+        public static boolean isBestVarLong() {
+            return var11;
+        }
+    }
+
+    public static class Netty {
+        public static int getAllocatorMaxOrder() {
+            return var12;
+        }
     }
 }

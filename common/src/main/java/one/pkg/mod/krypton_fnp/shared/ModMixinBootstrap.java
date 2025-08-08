@@ -8,15 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModMixinBootstrap implements IMixinConfigPlugin {
     static {
-        ModConfig.isIssues128();
+        ModConfig.config.addConfigurations(); // Initialize it
     }
 
     private final Logger logger = LoggerFactory.getLogger("ModMixinBootstrap");
@@ -63,10 +61,10 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     }
 
     enum CONFIG {
-        Login_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.ServerLoginPacketListenerImplMixin", "krypton.loginVT", ModConfig::isLoginVT),
-        TextFilter_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.ServerTextFilterMixin", "krypton.textFilterVT", ModConfig::isTextFilterVT),
-        Util_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.UtilMixin", "krypton.utilVT", ModConfig::isUtilVT),
-        BestVarLong("one.pkg.mod.krypton_fnp.mixin.network.experimental.VarLongMixin", "krypton.bestVarLong", ModConfig::isBestVarLong),
+        Login_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.ServerLoginPacketListenerImplMixin", "krypton.loginVT", ModConfig.Mixin::isLoginVT),
+        TextFilter_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.ServerTextFilterMixin", "krypton.textFilterVT", ModConfig.Mixin::isTextFilterVT),
+        Util_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.UtilMixin", "krypton.utilVT", ModConfig.Mixin::isUtilVT),
+        BestVarLong("one.pkg.mod.krypton_fnp.mixin.network.experimental.VarLongMixin", "krypton.bestVarLong", ModConfig.Mixin::isBestVarLong),
         ;
 
         public final String CLASS;

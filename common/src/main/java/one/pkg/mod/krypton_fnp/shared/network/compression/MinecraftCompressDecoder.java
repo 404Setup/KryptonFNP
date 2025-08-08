@@ -12,6 +12,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkState;
 import static com.velocitypowered.natives.util.MoreByteBufUtils.ensureCompatible;
 import static com.velocitypowered.natives.util.MoreByteBufUtils.preferredBuffer;
+import static one.pkg.mod.krypton_fnp.shared.network.util.SystemInfo.IS_LINUX;
 
 /**
  * Decompresses a Minecraft packet.
@@ -22,15 +23,19 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
 
     private static final int UNCOMPRESSED_CAP =
-            Boolean.getBoolean("krypton.permit-oversized-packets") || ModConfig.isPermitOversizedPackets()
+            Boolean.getBoolean("krypton.permit-oversized-packets") || ModConfig.Compression.isPermitOversizedPackets()
                     ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
+
     private final VelocityCompressor compressor;
+    private final VelocityCompressor jCompressor;
     private final boolean validate;
     private int threshold;
 
-    public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor) {
+
+    public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor, VelocityCompressor jCompressor) {
         this.threshold = threshold;
         this.compressor = compressor;
+        this.jCompressor = jCompressor;
         this.validate = validate;
     }
 
@@ -38,6 +43,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         FriendlyByteBuf bb = new FriendlyByteBuf(in);
         int claimedUncompressedSize = bb.readVarInt();
+
         if (claimedUncompressedSize == 0) {
             int actualUncompressedSize = in.readableBytes();
             checkState(actualUncompressedSize < threshold, "Actual uncompressed size %s is greater than"
@@ -54,6 +60,32 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
                     UNCOMPRESSED_CAP);
         }
 
+        boolean v = shouldUseJavaFallback(claimedUncompressedSize, in);
+        decompress(v ? jCompressor : compressor, ctx, in, out, claimedUncompressedSize);
+    }
+
+    private boolean detectRepetitiveData(ByteBuf compressed) {
+        int readableBytes = compressed.readableBytes();
+        if (readableBytes < 32) return false;
+
+        int readerIndex = compressed.readerIndex();
+        int sampleSize = Math.min(64, readableBytes);
+
+        int[] byteFreq = new int[256];
+        for (int i = 0; i < sampleSize; i++) {
+            int b = compressed.getUnsignedByte(readerIndex + i);
+            byteFreq[b]++;
+        }
+
+        int maxFreq = 0;
+        for (int freq : byteFreq) maxFreq = Math.max(maxFreq, freq);
+
+        double repetitiveRatio = (double) maxFreq / sampleSize;
+        return repetitiveRatio >= ModConfig.Compression.BlendingMode.getRepetitiveThreshold();
+    }
+
+    private void decompress(VelocityCompressor compressor, ChannelHandlerContext ctx, ByteBuf in, List<Object> out,
+                            int claimedUncompressedSize) throws Exception {
         ByteBuf compatibleIn = ensureCompatible(ctx.alloc(), compressor, in);
         ByteBuf uncompressed = preferredBuffer(ctx.alloc(), compressor, claimedUncompressedSize);
         try {
@@ -67,9 +99,20 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
     }
 
+
+    private boolean shouldUseJavaFallback(int claimedUncompressedSize, ByteBuf compressed) {
+        if (jCompressor == null || !IS_LINUX) return false;
+
+        if (claimedUncompressedSize < ModConfig.Compression.BlendingMode.getLinuxFallbackMinSize())
+            return false;
+
+        return detectRepetitiveData(compressed);
+    }
+
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         compressor.close();
+        if (jCompressor != null) jCompressor.close();
     }
 
     public void setThreshold(int threshold) {
