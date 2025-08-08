@@ -1,5 +1,11 @@
 # Benchmark
 
+> If you're worried about the poor performance of some parts of NativeLib, 
+> starting with 0.2.22, you can enable blending compression mode in the configuration file.
+>
+> Due to its complexity, I haven't yet written a similar benchmark code for it, 
+> so I can't tell if it works.
+
 The Benchmark results are not necessarily accurate,
 and the final results are determined based on different JVM distributions, startup parameters, and random factors.
 
