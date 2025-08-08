@@ -41,11 +41,11 @@ public class Varint21FrameDecoderMixin {
      * @throws QuietDecoderException if the VarInt is too big to be decoded
      */
     @Unique
-    private static int krypton_Multi$readRawVarInt21(ByteBuf buffer) {
+    private static int krypton_fnp$readRawVarInt21(ByteBuf buffer) {
         if (buffer.readableBytes() < 4) {
             // we don't have enough that we can read a potentially full varint, so fall back to
             // the slow path.
-            return krypton_Multi$readRawVarintSmallBuf(buffer);
+            return krypton_fnp$readRawVarintSmallBuf(buffer);
         }
         int wholeOrMore = buffer.getIntLE(buffer.readerIndex());
 
@@ -76,7 +76,7 @@ public class Varint21FrameDecoderMixin {
     }
 
     @Unique
-    private static int krypton_Multi$readRawVarintSmallBuf(ByteBuf buffer) {
+    private static int krypton_fnp$readRawVarintSmallBuf(ByteBuf buffer) {
         if (!buffer.isReadable()) {
             return 0;
         }
@@ -127,7 +127,7 @@ public class Varint21FrameDecoderMixin {
         // try to read the length of the packet
         in.markReaderIndex();
         int preIndex = in.readerIndex();
-        int length = krypton_Multi$readRawVarInt21(in);
+        int length = krypton_fnp$readRawVarInt21(in);
         if (preIndex == in.readerIndex()) {
             return;
         }

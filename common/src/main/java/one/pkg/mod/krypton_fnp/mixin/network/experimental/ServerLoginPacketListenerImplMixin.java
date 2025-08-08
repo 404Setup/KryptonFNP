@@ -36,7 +36,7 @@ public abstract class ServerLoginPacketListenerImplMixin {
     @Shadow
     private static AtomicInteger UNIQUE_THREAD_ID;
     //@Unique
-    //private static final ExecutorService krypton_Multi$authenticatorPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).build());
+    //private static final ExecutorService krypton_fnp$authenticatorPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).build());
     @Final
     @Shadow
     Connection connection;
@@ -47,37 +47,37 @@ public abstract class ServerLoginPacketListenerImplMixin {
     String requestedUsername;
 
     @Invoker("startClientVerification")
-    abstract void krypton_Multi$startClientVerification(GameProfile authenticatedProfile);
+    abstract void krypton_fnp$startClientVerification(GameProfile authenticatedProfile);
 
     @Invoker("disconnect")
-    abstract void krypton_Multi$disconnect(Component reason);
+    abstract void krypton_fnp$disconnect(Component reason);
 
     @Inject(method = "handleKey",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setEncryptionKey(Ljavax/crypto/Cipher;Ljavax/crypto/Cipher;)V", shift = At.Shift.AFTER),
             cancellable = true)
-    private void krypton_Multi$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local String s) {
+    private void krypton_fnp$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local String s) {
         Runnable runnable = () -> {
             String s1 = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
             try {
-                ProfileResult profileresult = server.getSessionService().hasJoinedServer(s1, s, krypton_Multi$getAddress());
+                ProfileResult profileresult = server.getSessionService().hasJoinedServer(s1, s, krypton_fnp$getAddress());
                 if (profileresult != null) {
                     GameProfile gameprofile = profileresult.profile();
                     LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
-                    krypton_Multi$startClientVerification(gameprofile);
+                    krypton_fnp$startClientVerification(gameprofile);
                 } else if (server.isSingleplayer()) {
                     LOGGER.warn("Failed to verify username but will let them in anyway!");
-                    krypton_Multi$startClientVerification(UUIDUtil.createOfflineProfile(s1));
+                    krypton_fnp$startClientVerification(UUIDUtil.createOfflineProfile(s1));
                 } else {
-                    krypton_Multi$disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
+                    krypton_fnp$disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
                     LOGGER.error("Username '{}' tried to join with an invalid session", s1);
                 }
             } catch (AuthenticationUnavailableException authenticationunavailableexception) {
                 if (server.isSingleplayer()) {
                     LOGGER.warn("Authentication servers are down but will let them in anyway!");
-                    krypton_Multi$startClientVerification(UUIDUtil.createOfflineProfile(s1));
+                    krypton_fnp$startClientVerification(UUIDUtil.createOfflineProfile(s1));
                 } else {
-                    krypton_Multi$disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
+                    krypton_fnp$disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
                     LOGGER.error("Couldn't verify username because servers are unavailable");
                 }
             }
@@ -85,12 +85,12 @@ public abstract class ServerLoginPacketListenerImplMixin {
 
         // for Java 21
         Thread.ofVirtual().name("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet()).uncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).start(runnable);
-        //krypton_Multi$authenticatorPool.execute(runnable);
+        //krypton_fnp$authenticatorPool.execute(runnable);
         ci.cancel();
     }
 
     @Unique
-    private InetAddress krypton_Multi$getAddress() {
+    private InetAddress krypton_fnp$getAddress() {
         SocketAddress socketaddress = connection.getRemoteAddress();
         return server.getPreventProxyConnections() && socketaddress instanceof InetSocketAddress
                 ? ((InetSocketAddress) socketaddress).getAddress()
