@@ -1,5 +1,12 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/krypton-fnp",
+  "why": [
+    "I decided not to release the mod from Modrinth for the time being,",
+    "which means that when I update the mod,",
+    "the user cannot actively receive the mod update (unless they check for updates from the launcher they are using).",
+    "That's why I'm hosting this json file in my own Maven repository."
+  ],
+  "json_url": "https://mvnc.pkg.one/update/mod/krypton_fnp/forge_update.json",
   "promos": {
     "1.19.2-latest": "0.2.20-lite",
     "1.19.2-recommended": "0.2.20-lite",

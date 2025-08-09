@@ -1,16 +1,17 @@
 modLoader = "javafml"
 loaderVersion = "${neoforge_loader_version_range}"
 license = "${license}"
-issueTrackerURL="https://github.com/404Setup/KryptonFNP/issues"
+issueTrackerURL = "${issue_tracker}"
+
 
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
-updateJSONURL = "https://mvn.pkg.one/update/mod/krypton_fnp/forge_update.json"
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"
-logoFile="assets/krypton_fnp/icon.png"
-credits="${credits}"
+updateJSONURL = "${update_url}"
+displayURL = "${mod_url}"
+logoFile = "assets/krypton_fnp/icon.png"
+credits = "${credits}"
 authors = "${mod_author}"
 description = '''${description}'''
 
