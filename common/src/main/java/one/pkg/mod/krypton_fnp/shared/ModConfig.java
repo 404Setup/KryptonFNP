@@ -10,7 +10,7 @@ import one.pkg.loader.Loader;
 
 import java.io.IOException;
 
-@ConfigEntry
+@ConfigEntry("krypton_fnp")
 public class ModConfig {
     public static final SewliaConfig config;
     @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
