@@ -8,8 +8,6 @@ import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.config.metadata.DumpMeta;
 import one.pkg.loader.Loader;
 
-import java.io.IOException;
-
 @ConfigEntry("krypton_fnp")
 public class ModConfig {
     public static final SewliaConfig config;
@@ -43,11 +41,6 @@ public class ModConfig {
                 ModConfig.class,
                 Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
         );
-        try {
-            config.saveAllConfigurations();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private ModConfig() {
