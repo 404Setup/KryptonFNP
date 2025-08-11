@@ -5,13 +5,12 @@ Krypton FNP
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
 
-<a href="https://modrinth.com/mod/krypton-fnp"><img src="https://badges.moddingx.org/modrinth/downloads/krypton-fnp" alt=""></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"><img src="https://badges.moddingx.org/curseforge/downloads/1269169" alt=""></a>
+[![](https://badges.moddingx.org/modrinth/downloads/krypton-fnp)](https://modrinth.com/mod/krypton-fnp) 
+[![](https://badges.moddingx.org/curseforge/downloads/1269169)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
 
-<a href="https://modrinth.com/mod/krypton-fnp"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"/></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"><img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg" /></a>
-<a href="https://github.com/404Setup/KryptonFNP/releases"><img alt="github" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg"></a>
-
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/krypton-fnp) 
+[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp) 
+[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/404Setup/KryptonFNP/releases)
 
 This mod is an unofficial port of [Krypton Fabric](https://modrinth.com/mod/krypton), designed to provide Forge &
 NeoForge compatibility.
