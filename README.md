@@ -8,6 +8,12 @@ Krypton FNP
 <a href="https://modrinth.com/mod/krypton-fnp"><img src="https://badges.moddingx.org/modrinth/downloads/krypton-fnp" alt=""></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"><img src="https://badges.moddingx.org/curseforge/downloads/1269169" alt=""></a>
 
+<a href="https://modrinth.com/mod/krypton-fnp"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"/></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/krypton-fnp"><img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg" /></a>
+<a href="https://www.nexusmods.com/minecraft/mods/888"><img alt="nexusmods" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/nexusmods_vector.svg"></a>
+<a href="https://github.com/404Setup/KryptonFNP/releases"><img alt="github" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg"></a>
+
+
 This mod is an unofficial port of [Krypton Fabric](https://modrinth.com/mod/krypton), designed to provide Forge &
 NeoForge compatibility.
 
