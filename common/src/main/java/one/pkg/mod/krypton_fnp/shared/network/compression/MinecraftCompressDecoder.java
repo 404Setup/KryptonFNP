@@ -71,17 +71,35 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         int readerIndex = compressed.readerIndex();
         int sampleSize = Math.min(64, readableBytes);
 
+        double threshold = ModConfig.Compression.BlendingMode.getRepetitiveThreshold();
+        int minRequiredFreq = (int) Math.ceil(sampleSize * threshold);
+
+        if (sampleSize >= 8) {
+            int firstByte = compressed.getUnsignedByte(readerIndex);
+            int consecutiveCount = 1;
+
+            for (int i = 1; i < Math.min(8, sampleSize); i++) {
+                if (compressed.getUnsignedByte(readerIndex + i) == firstByte) {
+                    consecutiveCount++;
+                } else {
+                    break;
+                }
+            }
+
+            if (consecutiveCount >= minRequiredFreq || consecutiveCount >= sampleSize / 2) {
+                return true;
+            }
+        }
+
         int[] byteFreq = new int[256];
         for (int i = 0; i < sampleSize; i++) {
             int b = compressed.getUnsignedByte(readerIndex + i);
-            byteFreq[b]++;
+            if (++byteFreq[b] >= minRequiredFreq) {
+                return true;
+            }
         }
 
-        int maxFreq = 0;
-        for (int freq : byteFreq) maxFreq = Math.max(maxFreq, freq);
-
-        double repetitiveRatio = (double) maxFreq / sampleSize;
-        return repetitiveRatio >= ModConfig.Compression.BlendingMode.getRepetitiveThreshold();
+        return false;
     }
 
     private void decompress(VelocityCompressor compressor, ChannelHandlerContext ctx, ByteBuf in, List<Object> out,
@@ -101,9 +119,9 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
 
 
     private boolean shouldUseJavaFallback(int claimedUncompressedSize, ByteBuf compressed) {
-        if (jCompressor == null || !IS_LINUX) return false;
-
-        if (claimedUncompressedSize < ModConfig.Compression.BlendingMode.getLinuxFallbackMinSize())
+        if (jCompressor == null
+                || !IS_LINUX
+                || claimedUncompressedSize < ModConfig.Compression.BlendingMode.getLinuxFallbackMinSize())
             return false;
 
         return detectRepetitiveData(compressed);
