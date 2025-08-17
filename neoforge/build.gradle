@@ -24,21 +24,6 @@ neoForge {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
     }
-    runs {
-        configureEach {
-            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
-        }
-        client {
-            client()
-        }
-        data {
-            data()
-        }
-        server {
-            server()
-        }
-    }
     mods {
         "${mod_id}" {
             sourceSet sourceSets.main

@@ -92,9 +92,6 @@ processResources {
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'minecraft_version_range'      : minecraft_version_range,
-            'fabric_version'               : fabric_version,
-            'fabric_loader_version'        : fabric_loader_version,
-            'fabric_game_version_range'    : fabric_game_version_range,
             'mod_name'                     : mod_name,
             'mod_author'                   : mod_author,
             'mod_id'                       : mod_id,
@@ -117,7 +114,7 @@ processResources {
         expand expandProps
     }
 
-    filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+    filesMatching(['pack.mcmeta', '*.mixins.json']) {
         expand jsonExpandProps
     }
 
@@ -137,3 +134,36 @@ publishing {
         }
     }
 }
+
+tasks.register('cleanJarsPath') {
+    dependsOn clean
+
+    doFirst {
+        def jarsDir = rootProject.file('jars')
+        if (jarsDir.exists()) {
+            jarsDir.deleteDir()
+        }
+
+        if (!jarsDir.exists()) jarsDir.mkdirs()
+    }
+}
+
+clean.finalizedBy(cleanJarsPath)
+
+tasks.register('copyToJarsFolder', Copy) {
+    dependsOn tasks.withType(Jar)
+
+    from layout.buildDirectory.dir('libs')
+    into rootProject.file('jars')
+    include '*.jar'
+    exclude '*-sources.jar'
+    exclude '*-common-*.jar'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    doFirst {
+        rootProject.file('jars').mkdirs()
+    }
+}
+
+build.finalizedBy(copyToJarsFolder)
