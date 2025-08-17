@@ -134,3 +134,36 @@ publishing {
         }
     }
 }
+
+tasks.register('cleanJarsPath') {
+    dependsOn clean
+
+    doFirst {
+        def jarsDir = rootProject.file('jars')
+        if (jarsDir.exists()) {
+            jarsDir.deleteDir()
+        }
+
+        if (!jarsDir.exists()) jarsDir.mkdirs()
+    }
+}
+
+clean.finalizedBy(cleanJarsPath)
+
+tasks.register('copyToJarsFolder', Copy) {
+    dependsOn tasks.withType(Jar)
+
+    from layout.buildDirectory.dir('libs')
+    into rootProject.file('jars')
+    include '*.jar'
+    exclude '*-sources.jar'
+    exclude '*-common-*.jar'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    doFirst {
+        rootProject.file('jars').mkdirs()
+    }
+}
+
+build.finalizedBy(copyToJarsFolder)
