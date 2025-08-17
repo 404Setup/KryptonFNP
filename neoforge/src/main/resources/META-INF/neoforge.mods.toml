@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "${neoforge_loader_version_range}"
 license = "${license}"
-issueTrackerURL = "${issue_tracker}"
+issueTrackerURL = "${issues_url}"
 
 
 [[mods]]
@@ -9,8 +9,8 @@ modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
 updateJSONURL = "${update_url}"
-displayURL = "${mod_url}"
-logoFile = "assets/krypton_fnp/icon.png"
+displayURL = "${homepage_url}"
+logoFile = "assets/${mod_id}/icon.png"
 credits = "${credits}"
 authors = "${mod_author}"
 description = '''${description}'''

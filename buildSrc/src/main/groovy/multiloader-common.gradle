@@ -15,9 +15,6 @@ java {
 
 repositories {
     mavenCentral()
-    maven {
-        url = "https://jitpack.io"
-    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
@@ -27,6 +24,17 @@ repositories {
             }
         }
         filter { includeGroupAndSubgroups('org.spongepowered') }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
     }
     exclusiveContent {
         forRepositories(
@@ -46,11 +54,7 @@ repositories {
         url = 'https://maven.blamejared.com'
     }
     maven {
-        name = 'Paper'
-        url = 'https://repo.papermc.io/repository/maven-public/'
-    }
-    maven {
-        name = 'VelocityRecast'
+        name = 'OneSnapshots'
         url = 'https://mvn.pkg.one/snapshots'
     }
 }
@@ -104,15 +108,15 @@ processResources {
             'mod_id'                       : mod_id,
             'license'                      : license,
             'description'                  : project.description,
+            'homepage_url'                 : homepage_url,
+            'issues_url'                   : issues_url,
+            'update_url'                   : update_url,
             'neoforge_version'             : neoforge_version,
             'neoforge_version_range'       : neoforge_version_range,
             'neoforge_loader_version_range': neoforge_loader_version_range,
             "forge_version"                : forge_version,
             "forge_loader_version_range"   : forge_loader_version_range,
             'credits'                      : credits,
-            'update_url'                   : update_url,
-            'issue_tracker'                : issue_tracker,
-            'mod_url'                      : mod_url,
             'java_version'                 : java_version
     ]
 
@@ -144,3 +148,28 @@ publishing {
         }
     }
 }
+
+tasks.register('copyToJarsFolder', Copy) {
+    dependsOn tasks.withType(Jar)
+
+    from layout.buildDirectory.dir('libs')
+    into rootProject.file('jars')
+    include '*.jar'
+    exclude '*-sources.jar'
+    exclude '*-common-*.jar'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    doFirst {
+        rootProject.file('jars').mkdirs()
+        def existingFiles = rootProject.file('jars').listFiles()?.collect { it.name } ?: []
+
+        eachFile { fileCopyDetails ->
+            if (existingFiles.contains(fileCopyDetails.name)) {
+                fileCopyDetails.exclude()
+            }
+        }
+    }
+}
+
+build.finalizedBy copyToJarsFolder
