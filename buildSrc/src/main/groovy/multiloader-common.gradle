@@ -149,6 +149,21 @@ publishing {
     }
 }
 
+tasks.register('cleanJarsPath') {
+    dependsOn clean
+
+    doFirst {
+        def jarsDir = rootProject.file('jars')
+        if (jarsDir.exists()) {
+            jarsDir.deleteDir()
+        }
+
+        if (!jarsDir.exists()) jarsDir.mkdirs()
+    }
+}
+
+clean.finalizedBy(cleanJarsPath)
+
 tasks.register('copyToJarsFolder', Copy) {
     dependsOn tasks.withType(Jar)
 
@@ -162,14 +177,7 @@ tasks.register('copyToJarsFolder', Copy) {
 
     doFirst {
         rootProject.file('jars').mkdirs()
-        def existingFiles = rootProject.file('jars').listFiles()?.collect { it.name } ?: []
-
-        eachFile { fileCopyDetails ->
-            if (existingFiles.contains(fileCopyDetails.name)) {
-                fileCopyDetails.exclude()
-            }
-        }
     }
 }
 
-build.finalizedBy copyToJarsFolder
+build.finalizedBy(copyToJarsFolder)
