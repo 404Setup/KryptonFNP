@@ -43,8 +43,8 @@ repositories {
         url = 'https://maven.blamejared.com'
     }
     maven {
-        name = 'VelocityRecast'
-        url = 'https://mvn.pkg.one/snapshots'
+        name = 'OneSnapshots'
+        url = 'https://mvnc.pkg.one/snapshots'
     }
 }
 
@@ -97,6 +97,9 @@ processResources {
             'mod_id'                       : mod_id,
             'license'                      : license,
             'description'                  : project.description,
+            'homepage_url'                 : homepage_url,
+            'issues_url'                   : issues_url,
+            'update_url'                   : update_url,
             'neoforge_version'             : neoforge_version,
             'neoforge_version_range'       : neoforge_version_range,
             'neoforge_loader_version_range': neoforge_loader_version_range,

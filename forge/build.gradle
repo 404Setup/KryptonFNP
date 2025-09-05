@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '[6.0.35,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.38,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
@@ -30,6 +30,12 @@ tasks.named('jarJar') {
     archiveClassifier = ''
 }
 
+jarJar.dependencies {
+    exclude(dependency('com.google.guava:guava:32.0.1-jre'))
+    exclude(dependency('org.yaml:snakeyaml:2.3'))
+
+}
+
 jar.finalizedBy('jarJar')
 
 minecraft {
@@ -49,8 +55,16 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
-        jarJar.ranged(it, "[0.4.1,)")
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
+        jarJar.ranged(it, "[0.5.0,)")
+    }
+    implementation(jarJar("org.yaml:snakeyaml:2.4")) {
+        jarJar.ranged(it, "[2.4,)")
+    }
+    implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
+        jarJar.ranged(it, "[${config_api_version},)")
+        exclude group: 'org.yaml'
+        exclude group: 'org.slf4j'
     }
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         jarJar.ranged(it, "[3.4.0-SNAPSHOT,)")

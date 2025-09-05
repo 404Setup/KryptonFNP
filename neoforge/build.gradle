@@ -4,6 +4,10 @@ plugins {
 }
 
 dependencies {
+    implementation(jarJar("org.yaml:snakeyaml:2.4"))
+    implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
+        exclude group: 'org.slf4j'
+    }
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         exclude group: 'io.netty'
     }
