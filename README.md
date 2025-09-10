@@ -1,4 +1,4 @@
-<img src="./common/src/main/resources/assets/krypton/icon.png" alt="Logo" align="right" width="150">
+<img src="./common/src/main/resources/assets/krypton_fnp/icon.png" alt="Logo" align="right" width="150">
 
 Krypton FNP
 ====
