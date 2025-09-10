@@ -55,7 +55,7 @@ repositories {
     }
     maven {
         name = 'OneSnapshots'
-        url = 'https://mvn.pkg.one/snapshots'
+        url = 'https://mvnc.pkg.one/snapshots'
     }
 }
 
