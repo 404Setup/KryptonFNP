@@ -4,8 +4,8 @@
   "promos": {
     "1.19.2-latest": "0.2.20-lite",
     "1.19.2-recommended": "0.2.20-lite",
-    "1.20.1-latest": "0.2.23-lite",
-    "1.20.1-recommended": "0.2.23-lite",
+    "1.20.1-latest": "0.2.23.1-lite",
+    "1.20.1-recommended": "0.2.23.1-lite",
     "1.20.2-latest": "0.2.11",
     "1.20.2-recommended": "0.2.11",
     "1.20.3-latest": "0.2.11",
