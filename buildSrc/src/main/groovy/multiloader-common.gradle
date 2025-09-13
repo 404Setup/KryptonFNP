@@ -42,18 +42,9 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = 'Paper'
-                url = 'https://repo.papermc.io/repository/maven-public/'
-            }
-        }
-        filter { includeGroupAndSubgroups('com.velocitypowered') }
-    }
     maven {
-        name = 'VelocityRecast'
-        url = 'https://github.com/404Setup/VelocityNT-Recast/raw/refs/heads/dev/3.0.0/m2/'
+        name = 'OneSnapshots'
+        url = 'https://mvnc.pkg.one/snapshots'
     }
 }
 
@@ -106,6 +97,9 @@ processResources {
             'mod_id'                       : mod_id,
             'license'                      : license,
             'description'                  : project.description,
+            'homepage_url'                 : homepage_url,
+            'issues_url'                   : issues_url,
+            'update_url'                   : update_url,
             "forge_version"                : forge_version,
             "forge_loader_version_range"   : forge_loader_version_range,
             'credits'                      : credits,
