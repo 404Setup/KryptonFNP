@@ -3,6 +3,7 @@ package one.pkg.mod.krypton_fnp.mixin.network.pipeline.compression;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import com.velocitypowered.natives.util.Natives;
 import io.netty.channel.Channel;
+import one.pkg.mod.krypton_fnp.shared.ModConfig;
 import one.pkg.mod.krypton_fnp.shared.misc.KryptonPipelineEvent;
 import one.pkg.mod.krypton_fnp.shared.network.compression.MinecraftCompressDecoder;
 import one.pkg.mod.krypton_fnp.shared.network.compression.MinecraftCompressEncoder;
@@ -53,7 +54,7 @@ public class ConnectionMixin {
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
-                VelocityCompressor compressor = Natives.compress.get().create(4);
+                VelocityCompressor compressor = Natives.compress.get().create(ModConfig.Compression.getLevel());
 
                 encoder = new MinecraftCompressEncoder(compressionThreshold, compressor);
                 decoder = new MinecraftCompressDecoder(compressionThreshold, validate, compressor);
