@@ -52,8 +52,12 @@ public class Varint21FrameDecoderMixin {
         // take the last three bytes and check if any of them have the high bit set
         int atStop = ~wholeOrMore & 0x808080;
         if (atStop == 0) {
-            // all bytes have the high bit set, so the varint we are trying to decode is too wide
-            throw VARINT_BIG_CACHED;
+            if (ModConfig.Compatibility.AllowWideVarInt()) {
+                return krypton_fnp$readRawVarintSmallBuf(buffer);
+            } else {
+                // all bytes have the high bit set, so the varint we are trying to decode is too wide
+                throw VARINT_BIG_CACHED;
+            }
         }
 
         int bitsToKeep = Integer.numberOfTrailingZeros(atStop) + 1;

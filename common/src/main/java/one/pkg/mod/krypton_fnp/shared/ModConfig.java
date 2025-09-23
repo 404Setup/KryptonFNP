@@ -25,16 +25,18 @@ public class ModConfig {
     private static boolean var6 = false;
     @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
     private static boolean var7 = true;
+    @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
+    private static boolean var8 = false;
     @ConfigTarget(group = "mixin", value = "loginVT", comment = "Replace player login validation thread with virtual thread")
-    private static boolean var8 = true;
-    @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
     private static boolean var9 = true;
-    @ConfigTarget(group = "mixin", value = "utilVT", comment = "Replace download thread with virtual thread")
+    @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
     private static boolean var10 = true;
-    @ConfigTarget(group = "mixin", value = "bestVarLong", comment = "Optimized VarLong implementation")
+    @ConfigTarget(group = "mixin", value = "utilVT", comment = "Replace download thread with virtual thread")
     private static boolean var11 = true;
+    @ConfigTarget(group = "mixin", value = "bestVarLong", comment = "Optimized VarLong implementation")
+    private static boolean var12 = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    private static int var12 = 9;
+    private static int var13 = 9;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -106,27 +108,33 @@ public class ModConfig {
         }
     }
 
-    public static class Mixin {
-        public static boolean isLoginVT() {
+    public static class Compatibility {
+        public static boolean AllowWideVarInt() {
             return var8;
         }
+    }
 
-        public static boolean isTextFilterVT() {
+    public static class Mixin {
+        public static boolean isLoginVT() {
             return var9;
         }
 
-        public static boolean isUtilVT() {
+        public static boolean isTextFilterVT() {
             return var10;
         }
 
-        public static boolean isBestVarLong() {
+        public static boolean isUtilVT() {
             return var11;
+        }
+
+        public static boolean isBestVarLong() {
+            return var12;
         }
     }
 
     public static class Netty {
         public static int getAllocatorMaxOrder() {
-            return var12;
+            return var13;
         }
     }
 }
