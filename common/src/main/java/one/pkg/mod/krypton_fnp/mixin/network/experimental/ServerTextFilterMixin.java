@@ -17,5 +17,5 @@ public class ServerTextFilterMixin {
     @Final
     @Mutable
     @Shadow
-    private static ThreadFactory THREAD_FACTORY = r -> Thread.ofVirtual().name("Chat-Filter-Worker-" + WORKER_COUNT.getAndIncrement()).unstarted(r);;
+    private static ThreadFactory THREAD_FACTORY = r -> Thread.ofVirtual().name("Chat-Filter-Worker-" + WORKER_COUNT.getAndIncrement()).unstarted(r);
 }

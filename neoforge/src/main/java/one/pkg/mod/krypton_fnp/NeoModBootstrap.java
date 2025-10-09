@@ -9,6 +9,6 @@ import one.pkg.mod.krypton_fnp.shared.ModSharedBootstrap;
 public class NeoModBootstrap {
     public NeoModBootstrap() {
         FMLTest.test();
-        ModSharedBootstrap.run(FMLLoader.getDist().isClient());
+        ModSharedBootstrap.run(FMLLoader.getCurrent().getDist().isClient());
     }
 }

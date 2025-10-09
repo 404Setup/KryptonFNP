@@ -60,10 +60,10 @@ public abstract class ServerLoginPacketListenerImplMixin {
             String s1 = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
             try {
-                ProfileResult profileresult = server.getSessionService().hasJoinedServer(s1, s, krypton_fnp$getAddress());
+                ProfileResult profileresult = server.services().sessionService().hasJoinedServer(s1, s, krypton_fnp$getAddress());
                 if (profileresult != null) {
                     GameProfile gameprofile = profileresult.profile();
-                    LOGGER.info("UUID of player {} is {}", gameprofile.getName(), gameprofile.getId());
+                    LOGGER.info("UUID of player {} is {}", gameprofile.name(), gameprofile.id());
                     krypton_fnp$startClientVerification(gameprofile);
                 } else if (server.isSingleplayer()) {
                     LOGGER.warn("Failed to verify username but will let them in anyway!");

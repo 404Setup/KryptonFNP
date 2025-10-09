@@ -39,7 +39,8 @@ jarJar.dependencies {
 jar.finalizedBy('jarJar')
 
 minecraft {
-    mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
+    mappings 'official', minecraft_version
+    //mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
     copyIdeResources = true
     reobf = false
 
@@ -50,6 +51,12 @@ minecraft {
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
+
+repositories {
+    maven {
+        url = "https://maven.neoforged.net/releases/"
+    }
+}
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
