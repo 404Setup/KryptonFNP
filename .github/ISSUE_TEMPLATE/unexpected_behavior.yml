@@ -70,6 +70,9 @@ body:
       description: |
         Please include other helpful information below, if any.
         The more information we receive, the quicker and more effective we can be at finding the solution to the issue.
+        
+        If your mod list exceeds 20, please provide your modpack to help troubleshoot the problem
+        (installable CurseForge modpack or Modrinth modpack, file or link).
     validations:
       required: false
 
