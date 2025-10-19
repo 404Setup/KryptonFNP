@@ -10,7 +10,7 @@ public class ModConfig {
     public static final SewliaConfig config;
     @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
     private static int var1 = 4;
-    @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
+    @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
 
     static {
@@ -27,10 +27,8 @@ public class ModConfig {
         public static int getLevel() {
             return var1;
         }
-    }
 
-    public static class Compatibility {
-        public static boolean AllowWideVarInt() {
+        public static boolean isPermitOversizedPackets() {
             return var2;
         }
     }
