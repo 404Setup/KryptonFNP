@@ -2,6 +2,8 @@
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/krypton-fnp",
   "json_url": "https://mvnc.pkg.one/update/mod/krypton_fnp/forge_update.json",
   "promos": {
+    "1.18.2-latest": "0.2.24-1.18.2",
+    "1.18.2-recommended": "0.2.24-1.18.2",
     "1.19.2-latest": "0.2.23-lite",
     "1.19.2-recommended": "0.2.23-lite",
     "1.19.3-latest": "0.2.23-lite",
