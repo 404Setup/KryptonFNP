@@ -3,8 +3,11 @@ package one.pkg.mod.krypton_fnp.shared;
 import com.velocitypowered.natives.util.Natives;
 import org.slf4j.Logger;
 
-public class KryptonSharedBootstrap {
-    public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(KryptonSharedBootstrap.class);
+import java.nio.file.Path;
+
+public class ModSharedBootstrap {
+    public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ModSharedBootstrap.class);
+    public static Path CONFIG_PATH;
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much

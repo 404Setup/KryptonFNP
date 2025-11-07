@@ -16,7 +16,8 @@ import java.security.Key;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public class ServerLoginPacketListenerImplMixin {
-    @Shadow @Final Connection connection;
+    @Shadow @Final
+    public Connection connection;
 
     @Redirect(method = "handleKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))
     private Cipher onKey$initializeVelocityCipher(int ignored1, Key secretKey) throws GeneralSecurityException {
