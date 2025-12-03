@@ -23,6 +23,12 @@ public class ModSharedBootstrap {
     }
 
     public static void run(boolean client) {
+        LOGGER.warn("================= KRYPTON FNP =================");
+        LOGGER.warn("Do not send messages about your game malfunctioning due to KryptonFNP in places the author cannot see.");
+        LOGGER.warn("The author is unaware of this bug and therefore cannot fix it!");
+        LOGGER.warn("Please send feedback via CurseForge, Github, or Discord so the author can quickly locate the issue!");
+        LOGGER.warn("===============================================");
+
         if (!client) {
             LOGGER.info("Krypton is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
         } else {

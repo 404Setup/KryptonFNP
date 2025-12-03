@@ -9,6 +9,9 @@ import net.minecraft.network.Varint21FrameDecoder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
@@ -20,18 +23,20 @@ import static one.pkg.mod.krypton_fnp.shared.network.util.WellKnownExceptions.VA
  * Overrides the Varint21FrameDecoder to use optimized packet splitting from Velocity 1.1.0. In addition this applies a
  * security fix to stop "nullping" attacks.
  */
-@Mixin(Varint21FrameDecoder.class)
+@Mixin(value = Varint21FrameDecoder.class)
 public class Varint21FrameDecoderMixin {
+    @Unique
     private final VarIntByteDecoder reader = new VarIntByteDecoder();
 
     /**
      * @author Andrew Steinborn
      * @reason Use optimized Velocity varint decoder that reduces bounds checking
      */
-    @Overwrite
-    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    @Inject(method = "decode", at = @At(value = "HEAD"), cancellable = true)
+    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out, CallbackInfo ci) throws Exception {
         if (!ctx.channel().isActive()) {
             in.clear();
+            ci.cancel();
             return;
         }
 
@@ -46,6 +51,7 @@ public class Varint21FrameDecoderMixin {
                 // Special case where the entire packet is just a run of zeroes. We ignore them all.
                 in.clear();
             }
+            ci.cancel();
             return;
         }
 
@@ -72,5 +78,6 @@ public class Varint21FrameDecoderMixin {
             in.clear();
             throw VARINT_BIG_CACHED;
         }
+        ci.cancel();
     }
 }
