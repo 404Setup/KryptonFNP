@@ -61,7 +61,7 @@ public class ModConfig {
         }
     }
 
-    @ReadWith("var12")
+    @ReadWith("var13")
     private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
         if (!(dumpMeta.getObject() instanceof Integer))
             dumpMeta.setCancelled(true);
