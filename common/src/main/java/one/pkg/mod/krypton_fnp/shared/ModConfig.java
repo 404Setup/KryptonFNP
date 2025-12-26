@@ -29,8 +29,10 @@ public class ModConfig {
     private static boolean var8 = true;
     @ConfigTarget(group = "mixin", value = "bestVarLong", comment = "Optimized VarLong implementation")
     private static boolean var9 = true;
+    @ConfigTarget(group = "mixin", value = "clientEncrypt", comment = "Enable new encryption optimizations on the client side")
+    private static boolean var10 = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    private static int var10 = 9;
+    private static int var11 = 9;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -55,7 +57,7 @@ public class ModConfig {
         }
     }
 
-    @ReadWith("var10")
+    @ReadWith("var11")
     private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
         if (!(dumpMeta.getObject() instanceof Integer))
             dumpMeta.setCancelled(true);
@@ -110,11 +112,15 @@ public class ModConfig {
         public static boolean isBestVarLong() {
             return var9;
         }
+
+        public static boolean isClientEncrypt() {
+            return var10;
+        }
     }
 
     public static class Netty {
         public static int getAllocatorMaxOrder() {
-            return var10;
+            return var11;
         }
     }
 }

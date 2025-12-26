@@ -6,6 +6,7 @@
   "plugin": "one.pkg.mod.krypton_fnp.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
     "network.experimental.ServerLoginPacketListenerImplMixin",

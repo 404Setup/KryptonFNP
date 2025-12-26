@@ -63,6 +63,7 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     enum CONFIG {
         Login_VT("one.pkg.mod.krypton_fnp.mixin.network.experimental.ServerLoginPacketListenerImplMixin", ModConfig.Mixin::isLoginVT),
         BestVarLong("one.pkg.mod.krypton_fnp.mixin.network.experimental.VarLongMixin", ModConfig.Mixin::isBestVarLong),
+        ClientEncrypt("one.pkg.mod.krypton_fnp.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
         ;
 
         public final String CLASS;
