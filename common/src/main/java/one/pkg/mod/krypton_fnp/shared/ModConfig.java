@@ -4,6 +4,7 @@ import one.pkg.config.SewliaConfig;
 import one.pkg.config.annotation.config.ConfigEntry;
 import one.pkg.config.annotation.config.ConfigTarget;
 import one.pkg.config.metadata.ConfigMeta;
+import one.pkg.loader.Loader;
 
 @ConfigEntry("krypton_fnp")
 public class ModConfig {
@@ -12,11 +13,13 @@ public class ModConfig {
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
+    @ConfigTarget(group = "mixin", value = "clientEncrypt", comment = "Enable new encryption optimizations on the client side")
+    private static boolean var3 = true;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
                 ModConfig.class,
-                ModSharedBootstrap.CONFIG_PATH.resolve("krypton_fnp.yaml"))
+                Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
         );
     }
 
@@ -30,6 +33,12 @@ public class ModConfig {
 
         public static boolean isPermitOversizedPackets() {
             return var2;
+        }
+    }
+
+    public static class Mixin {
+        public static boolean isClientEncrypt() {
+            return var3;
         }
     }
 }

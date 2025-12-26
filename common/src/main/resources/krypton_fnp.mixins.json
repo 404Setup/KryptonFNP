@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "one.pkg.mod.krypton_fnp.mixin",
   "compatibilityLevel": "JAVA_17",
-  "client": [],
+  "client": [
+    "network.pipeline.encryption.ClientLoginMixin"
+  ],
   "mixins": [
     "network.microopt.FriendlyByteBufMixin",
     "network.microopt.ServerEntityMixin",
@@ -13,6 +15,7 @@
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
+  "plugin": "one.pkg.mod.krypton_fnp.shared.ModMixinBootstrap",
   "refmap": "krypton_fnp.refmap.json",
   "injectors": {
     "defaultRequire": 1

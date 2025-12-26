@@ -7,7 +7,6 @@ import java.nio.file.Path;
 
 public class ModSharedBootstrap {
     public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ModSharedBootstrap.class);
-    public static Path CONFIG_PATH;
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much
