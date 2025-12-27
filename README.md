@@ -178,6 +178,22 @@ FNP won't break something there, or that they break Krypton FNP.
 
 ----
 
+### 6
+
+**Q:** I can't seem to load the native library (Velocity Native or RecastLib), what should I do?
+
+**A:** Generally, this should be caused by missing dependent libraries on the machine.
+
+- For Windows: You should probably
+  install [MSVC 170](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-supported-redistributable-version)
+  and [OpenSSL 3 Win32](https://slproweb.com/products/Win32OpenSSL.html)
+- For Linux: You should have at least OpenSSL3 installed (most operating systems should come with it)
+- For MacOS: You should do nothing, just make sure the system is up to date.
+
+These libraries should be compatible with x64 and arm64 architectures, so you don’t need to worry about them.
+
+----
+
 ## Credit
 
 - [Krypton Fabric](https://modrinth.com/mod/krypton)
