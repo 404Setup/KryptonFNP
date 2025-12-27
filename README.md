@@ -5,38 +5,29 @@ Krypton FNP
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
 
-[![](https://badges.moddingx.org/modrinth/downloads/krypton-fnp)](https://modrinth.com/mod/krypton-fnp) 
+[![](https://badges.moddingx.org/modrinth/downloads/krypton-fnp)](https://modrinth.com/mod/krypton-fnp)
 [![](https://badges.moddingx.org/curseforge/downloads/1269169)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
 
-[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/krypton-fnp) 
-[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp) 
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/krypton-fnp)
+[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
 [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/404Setup/KryptonFNP/releases)
 
-This mod is an unofficial port of [Krypton Fabric](https://modrinth.com/mod/krypton), designed to provide Forge &
-NeoForge compatibility.
+Krypton FNP provides powerful network optimization capabilities for all major systems.
 
-If you are looking for KryptonFNP Fabric, visit from the following link:
-
-- Github: https://github.com/404Setup/FNP-Patcher
-- Modrinth: https://modrinth.com/mod/kryptonfnp-patcher
-- CurseForge: https://www.curseforge.com/minecraft/mc-mods/kryptonfnp-patcher
+Ported from [Krypton Fabric](https://modrinth.com/mod/krypton), with some unique optimizations added. Supports
+NeoForge/Forge; for Fabric/Paper Server, please see
+the [KryptonFNP Patcher](https://modrinth.com/mod/kryptonfnp-patcher); for Velocity Server, please see
+the [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast).
 
 ---
 
-Krypton is a mod that attempts to optimize the Minecraft networking stack. It derives from work
-done in the [Velocity](https://velocitypowered.com/), [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast)
-and [Paper](https://papermc.io) projects.
+## Differentiation
 
-Krypton derives itself from Ancient Greek _kryptos_, which means "the hidden one". This makes
-it evident most of the benefit from Krypton is "hidden" but is noticeable by a server administrator.
+> This refers to the differences between "us" and upstream "Krypton Fabric" and other Krypton Forks
 
-[The wiki contains important information &ndash; read it](https://github.com/astei/krypton/wiki).
-
-## Feature
-
-- More related minor optimizations
-- Implemented RecastLib
-- Support NeoForge/Forge
+- Continuously provide compatibility for stable versions (1.20.1, 1.21.1) and the latest versions
+- RecastLib provides acceleration features for **Windows** (x64/arm64)
+- Further scalability optimizations
 
 ## What is RecastLib
 
@@ -62,6 +53,9 @@ libraries due to the replacement compatibility.
 | Linux arm64                 | No        | Yes             |
 | MacOS arm64 (Apple Silicon) | No        | Yes             |
 
+**Compatibility is "hybrid"; they provide compatibility in areas where the other does not support them,
+so you don't need to worry about losing compatibility.**
+
 Currently, there are no plans to provide compatibility for Android,
 32-bit architecture operating systems, or other architectures.
 
@@ -70,23 +64,39 @@ even if you do, I can't help.
 
 ## Config
 
-Add the following parameters to the Java startup parameters to control the feature enablement:
-
-| Parameter                     | Description                | Default value |
-|-------------------------------|----------------------------|---------------|
-| velocity.natives-disable      | Disable Native             | false         |
-| velocity.linux-recast-enabled | Enable RecastLib for Linux | false         |
-| krypton.loginVT               | -                          | true          |
-| krypton.textFilterVT          | -                          | true          |
-| krypton.utilVT                | -                          | true          |
-| krypton.bestVarLong           | -                          | true          |
-
-For more configuration, see the configuration file
-
-example:
-
-```shell
-java -Dvelocity.natives-disable=true -jar neoforge_launcher.jar
+```yaml
+mixin:
+  # Replace player login validation thread with virtual thread
+  loginVT: true
+  # Replace text filter thread with virtual thread
+  textFilterVT: true
+  # Replace download thread with virtual thread
+  utilVT: true
+  # Optimized VarLong implementation
+  bestVarLong: true
+  # Enable new encryption optimizations on the client side
+  clientEncrypt: true
+fix:
+  issues128:
+    # Fix Traffic Statistics
+    enabled: false
+    # Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.
+    sync: true
+compress:
+  # The compression level for packets, between 1-9.
+  compressionLevel: 4
+  # Permit Oversized Packets
+  permitOversizedPackets: false
+  blending-mode:
+    # (Experimental) Delegate data packets with poor performance in the Native implementation to the Java implementation
+    enabled: false
+    linux-fallback-min-size: 1024
+    repetitive-threshold: 0.6
+compatibility:
+  allow-wide-var-int: false
+netty:
+  # Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
+  allocatorMaxOrder: 9
 ```
 
 ### Use env instead of jvm args
@@ -97,12 +107,99 @@ Some configuration items support using environment variables instead of jvm args
 |-------------------------------|----------------------|
 | velocity.linux-recast-enabled | ENABLE_LINUX_RECAST  |
 
+```shell
+java -Dvelocity.natives-disable=false -Dvelocity.linux-recast-enabled=true -jar neoforge_launcher.jar
+```
+
+or
+
+```shell
+ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
+```
+
 ## Benchmark
+
 <a href="https://github.com/404Setup/KryptonFNP/blob/master/Benchmark.md">
 <img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
 </a>
 
+## Q&A
+
+### 1
+
+**Q:** If I install this mod on the client but not on the server, will I be unable to join the server?
+
+**A:** I deliberately designed it to be "consistent" with Krypton Fabric, so you can connect (be connected to) even if
+the
+other end doesn't have this mod, unless the server administrator has installed an anti-cheat mod that detects the mod
+list, in which case you should contact them to request permission.
+
+----
+
+### 2
+
+**Q:** Will it help me reduce ping latency?
+
+**A:** Krypton FNP's optimizations can save some hardware performance, which should reduce high latency caused by CPU
+core
+preemption. However, if your hardware resources are already very limited, or your network quality is truly poor, then
+Krypton FNP can't save you much. It can't push the physical limits.
+
+----
+
+### 3
+
+**Q:** Which mods is Krypton FNP compatible with?
+
+**A:** There are a lot! You basically only need to worry about whether they will conflict with each other, without
+having to
+worry about Krypton FNP.
+
+Incompatible Mods: Krypton Reforged, Ceres, Pluto, KryptonFoxified, Chionanthus, Krypton Fabric with Connector
+
+----
+
+### 4
+
+**Q:** Will it cause some different behavior?
+
+**A:** This is unavoidable, I have tried to keep the implementation as aligned as possible, and in most cases you only
+need
+to modify the configuration to continue using it.
+
+----
+
+### 5
+
+**Q:** Can I use Krypton FNP in servers that mix Bukkit API with Forge/NeoForge?
+
+**A:** No, absolutely not. The Bukkit API was simply not designed to support Mods, and I can't guarantee that Krypton
+FNP won't break something there, or that they break Krypton FNP.
+
+----
+
+## Credit
+
+- [Krypton Fabric](https://modrinth.com/mod/krypton)
+- [Velocity](https://github.com/PaperMC/Velocity)
+- [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast)
+- [Paper](https://github.com/PaperMC/Paper)
+- [RecastSSL](https://github.com/404Setup/RecastSSL)
+
+## For Modpack
+
+If you comply with the license, you can use it freely for Modpack.
+
+Modpacks that redistribute Minecraft game body (i.e. packages that package the entire Minecraft game including Mod
+files, Config, ShaderPacks, ResourcePacks, Library and launcher into a whole zip file) are not allowed to use this mod.
+
 ## License
 
-This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
-see [404Setup Public License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
+> This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
+> see [404Setup Public License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
+
+- **Krypton FNP:** 2025-2026. Licensed "as is". Provided by 404Setup under LGPL-3.0 Only.
+- **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Limited, non-profit redistribution is permitted, but
+  source and copyright information may not be removed.
+- **RecastLib RecastSSL:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a BSD-3-Clause
+  License.
