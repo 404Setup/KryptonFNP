@@ -38,7 +38,7 @@ dependencies {
     jmh("io.netty:netty-codec:4.2.7.Final")
     jmh("io.netty:netty-handler:4.2.7.Final")
     jmh("io.netty:netty-resolver:4.2.7.Final")
-    jmh("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
+    jmh("one.pkg.velocity_rc:velocity-native:3.4.0-J25-20251231.121721-3") {
         exclude group: 'io.netty'
     }
     jmh("org.openjdk.jmh:jmh-core:1.37")
