@@ -42,7 +42,7 @@ def main():
 
         params = item.get('params', {})
         batch_size = params.get('batchSize', '')
-        compression_threshold = params.get('threshold', '')
+        compression_threshold = params.get('compressionThreshold', '')
         data_size = params.get('dataSize', '')
         data_type = params.get('dataType', '')
 
