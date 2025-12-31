@@ -14,17 +14,6 @@ pluginManagement {
 				includeGroupAndSubgroups("org.spongepowered")
 			}
 		}
-		exclusiveContent {
-			forRepository {
-				maven {
-					name = 'Forge'
-					url = uri('https://maven.minecraftforge.net')
-				}
-			}
-			filter {
-				includeGroupAndSubgroups('net.minecraftforge')
-			}
-		}
 	}
 }
 
@@ -36,4 +25,3 @@ plugins {
 rootProject.name = 'Krypton-FNP'
 include('common')
 include('neoforge')
-include('forge')

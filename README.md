@@ -95,7 +95,7 @@ compress:
 compatibility:
   allow-wide-var-int: false
 netty:
-  # Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
+  # Change Netty'digest default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
   allocatorMaxOrder: 9
 ```
 
@@ -140,7 +140,7 @@ list, in which case you should contact them to request permission.
 
 **Q:** Will it help me reduce ping latency?
 
-**A:** Krypton FNP's optimizations can save some hardware performance, which should reduce high latency caused by CPU
+**A:** Krypton FNP'digest optimizations can save some hardware performance, which should reduce high latency caused by CPU
 core
 preemption. However, if your hardware resources are already very limited, or your network quality is truly poor, then
 Krypton FNP can't save you much. It can't push the physical limits.

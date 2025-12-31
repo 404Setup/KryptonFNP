@@ -4,7 +4,7 @@
   "package": "one.pkg.mod.krypton_fnp.mixin",
   "refmap": "krypton_fnp.refmap.json",
   "plugin": "one.pkg.mod.krypton_fnp.shared.ModMixinBootstrap",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "network.pipeline.encryption.ClientLoginMixin"
   ],

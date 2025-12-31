@@ -34,8 +34,8 @@ public class ConnectionMixin {
     }
 
     @Inject(method = "setupCompression", at = @At("HEAD"), cancellable = true)
-    public void setCompressionThreshold(int compressionThreshold, boolean validate, CallbackInfo ci) {
-        if (compressionThreshold < 0) {
+    public void setCompressionThreshold(int threshold, boolean validateDecompressed, CallbackInfo ci) {
+        if (threshold < 0) {
             if (krypton_fnp$isKryptonOrVanillaDecompressor(this.channel.pipeline().get("decompress"))) {
                 this.channel.pipeline().remove("decompress");
             }
@@ -50,8 +50,8 @@ public class ConnectionMixin {
             MinecraftCompressEncoder encoder = (MinecraftCompressEncoder) channel.pipeline()
                     .get("compress");
             if (decoder != null && encoder != null) {
-                decoder.setThreshold(compressionThreshold);
-                encoder.setThreshold(compressionThreshold);
+                decoder.setThreshold(threshold);
+                encoder.setThreshold(threshold);
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
@@ -60,8 +60,8 @@ public class ConnectionMixin {
                         && compressor instanceof JavaVelocityCompressor 
                         ? null : JavaVelocityCompressor.FACTORY.create(ModConfig.Compression.getLevel());
 
-                encoder = new MinecraftCompressEncoder(compressionThreshold, compressor, jCompressor);
-                decoder = new MinecraftCompressDecoder(compressionThreshold, validate, compressor, jCompressor);
+                encoder = new MinecraftCompressEncoder(threshold, compressor, jCompressor);
+                decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor, jCompressor);
 
                 channel.pipeline().addBefore("decoder", "decompress", decoder);
                 channel.pipeline().addBefore("encoder", "compress", encoder);

@@ -26,9 +26,9 @@ public class ClientLoginMixin {
     private Key kfnp$secretKey;
 
     @Redirect(method = "handleHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))
-    private Cipher handleHello$initKey(int ignored1, Key secretKey) {
+    private Cipher handleHello$initKey(int cip, Key var3) {
         if (this.kfnp$secretKey == null)
-            this.kfnp$secretKey = secretKey;
+            this.kfnp$secretKey = var3;
         return null;
     }
 

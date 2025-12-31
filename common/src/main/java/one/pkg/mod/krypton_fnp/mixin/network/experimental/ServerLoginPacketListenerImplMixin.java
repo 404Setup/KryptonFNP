@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class ServerLoginPacketListenerImplMixin {
     @Final
     @Shadow
-    static Logger LOGGER;
+    private static Logger LOGGER;
     @Final
     @Shadow
     private static AtomicInteger UNIQUE_THREAD_ID;
@@ -39,12 +39,12 @@ public abstract class ServerLoginPacketListenerImplMixin {
     //private static final ExecutorService krypton_fnp$authenticatorPool = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).build());
     @Final
     @Shadow
-    Connection connection;
+    private Connection connection;
     @Final
     @Shadow
-    MinecraftServer server;
+    private MinecraftServer server;
     @Shadow
-    String requestedUsername;
+    private String requestedUsername;
 
     @Invoker("startClientVerification")
     abstract void krypton_fnp$startClientVerification(GameProfile authenticatedProfile);
@@ -55,12 +55,12 @@ public abstract class ServerLoginPacketListenerImplMixin {
     @Inject(method = "handleKey",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setEncryptionKey(Ljavax/crypto/Cipher;Ljavax/crypto/Cipher;)V", shift = At.Shift.AFTER),
             cancellable = true)
-    private void krypton_fnp$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local String s) {
+    private void krypton_fnp$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local(name = "digest") String digest) {
         Runnable runnable = () -> {
             String s1 = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
             try {
-                ProfileResult profileresult = server.services().sessionService().hasJoinedServer(s1, s, krypton_fnp$getAddress());
+                ProfileResult profileresult = server.services().sessionService().hasJoinedServer(s1, digest, krypton_fnp$getAddress());
                 if (profileresult != null) {
                     GameProfile gameprofile = profileresult.profile();
                     LOGGER.info("UUID of player {} is {}", gameprofile.name(), gameprofile.id());
