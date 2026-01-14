@@ -16,7 +16,7 @@ public class RconClientMixin {
     @Unique
     private static final int PACKET_OVERHEAD = 10;
     @Unique
-    private final byte[] chunkBuffer = new byte[CHUNK_SIZE];
+    private final byte[] krypton_fnp$chunkBuffer = new byte[CHUNK_SIZE];
 
     @Shadow
     @Final
@@ -74,8 +74,8 @@ public class RconClientMixin {
             int offset = 0;
             while (offset < len) {
                 int chunkSize = Math.min(CHUNK_SIZE, len - offset);
-                System.arraycopy(fullBytes, offset, chunkBuffer, 0, chunkSize);
-                this.send(id, 0, chunkBuffer, chunkSize);
+                System.arraycopy(fullBytes, offset, krypton_fnp$chunkBuffer, 0, chunkSize);
+                this.send(id, 0, krypton_fnp$chunkBuffer, chunkSize);
                 offset += chunkSize;
             }
         }

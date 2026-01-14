@@ -11,26 +11,26 @@ import java.util.List;
 
 public class MinecraftCipherEncoder extends MessageToMessageEncoder<ByteBuf> {
 
-  private final VelocityCipher cipher;
+    private final VelocityCipher cipher;
 
-  public MinecraftCipherEncoder(VelocityCipher cipher) {
-    this.cipher = Preconditions.checkNotNull(cipher, "cipher");
-  }
-
-  @Override
-  protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-    ByteBuf compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), cipher, msg);
-    try {
-      cipher.process(compatible);
-      out.add(compatible);
-    } catch (Exception e) {
-      compatible.release(); // compatible will never be used if we throw an exception
-      throw e;
+    public MinecraftCipherEncoder(VelocityCipher cipher) {
+        this.cipher = Preconditions.checkNotNull(cipher, "cipher");
     }
-  }
 
-  @Override
-  public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-    cipher.close();
-  }
+    @Override
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        ByteBuf compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), cipher, msg);
+        try {
+            cipher.process(compatible);
+            out.add(compatible);
+        } catch (Exception e) {
+            compatible.release(); // compatible will never be used if we throw an exception
+            throw e;
+        }
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        cipher.close();
+    }
 }
