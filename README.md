@@ -15,7 +15,7 @@ Krypton FNP
 Krypton FNP provides powerful network optimization capabilities for all major systems.
 
 Ported from [Krypton Fabric](https://modrinth.com/mod/krypton), with some unique optimizations added. Supports
-NeoForge/Forge; 
+NeoForge/Forge;
 
 For Fabric/Paper Server, please see the [KryptonFNP Patcher](https://modrinth.com/mod/kryptonfnp-patcher)
 
@@ -219,7 +219,6 @@ files, Config, ShaderPacks, ResourcePacks, Library and launcher into a whole zip
 > see [404Setup Public License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
 
 - **Krypton FNP:** 2025-2026. Licensed "as is". Provided by 404Setup under LGPL-3.0 Only.
-- **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Limited, non-profit redistribution is permitted, but
-  source and copyright information may not be removed.
+- **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a MPL-2.0 License.
 - **RecastLib RecastSSL:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a BSD-3-Clause
   License.
