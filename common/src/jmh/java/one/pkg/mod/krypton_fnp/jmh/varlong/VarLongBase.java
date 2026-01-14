@@ -7,9 +7,6 @@ import one.pkg.mod.krypton_fnp.shared.network.util.VarLongUtil;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VarLongBase {
-    static final long MASK_21_BITS = -1L << 21;
-    static final long MASK_28_BITS = -1L << 28;
-
     static final long[] SIZE_MASKS = {
             0L,
             -1L << 7,
@@ -24,13 +21,12 @@ public class VarLongBase {
     };
 
     long[] testValues;
-    long[] smallValues;      // 1-2
-    long[] mediumValues;     // 3-5
+    long[] smallValues;
+    long[] mediumValues;
 
-    long[] largeValues;      // 6-10
+    long[] largeValues;
     ByteBuf buffer;
 
-    // ========== method ==========
     static int getByteSizeMinecraft(long data) {
         for (int i = 1; i < 10; ++i) {
             if ((data & -1L << i * 7) == 0L) {
@@ -64,30 +60,6 @@ public class VarLongBase {
         buffer.writeByte((int) value);
     }
 
-    static void write0213(ByteBuf buffer, long value) {
-        if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
-            buffer.writeByte((int) value);
-        } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
-            buffer.writeShort((int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7));
-        } else if ((value & MASK_21_BITS) == 0L) {
-            VarLongUtil.writeThreeBytes(buffer, value);
-        } else if ((value & MASK_28_BITS) == 0L) {
-            VarLongUtil.writeFourBytes(buffer, value);
-        } else {
-            writeMinecraft(buffer, value);
-        }
-    }
-
-    static void write0214(ByteBuf buffer, long value) {
-        if ((value & VarLongUtil.MASK_7_BITS) == 0L) {
-            buffer.writeByte((int) value);
-        } else if ((value & VarLongUtil.MASK_14_BITS) == 0L) {
-            buffer.writeShort((int) ((value & 0x7FL) | 0x80L) << 8 | (int) (value >>> 7));
-        } else {
-            VarLongUtil.writeVarLongFull(buffer, value);
-        }
-    }
-
     public void setup() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -99,18 +71,15 @@ public class VarLongBase {
                 case 2:
                 case 3:
                 case 4:
-                    // 50% small values (1-2 bytes)
-                    testValues[i] = random.nextLong(16384); // 0 to 2^14-1
+                    testValues[i] = random.nextLong(16384);
                     break;
                 case 5:
                 case 6:
                 case 7:
-                    // 30% medium values (3-5 bytes)
-                    testValues[i] = random.nextLong(268435456L); // 0 to 2^28-1
+                    testValues[i] = random.nextLong(268435456L);
                     break;
                 case 8:
                 case 9:
-                    // 20% large values (6-10 bytes)
                     testValues[i] = random.nextLong();
                     break;
             }

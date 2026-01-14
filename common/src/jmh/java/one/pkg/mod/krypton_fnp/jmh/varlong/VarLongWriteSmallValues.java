@@ -1,17 +1,7 @@
 package one.pkg.mod.krypton_fnp.jmh.varlong;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
+import one.pkg.mod.krypton_fnp.shared.network.util.VarLongUtil;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
@@ -45,19 +35,10 @@ public class VarLongWriteSmallValues extends VarLongBase {
     }
 
     @Benchmark
-    public void V0213(Blackhole bh) {
+    public void VLatest(Blackhole bh) {
         buffer.clear();
         for (long value : smallValues) {
-            write0213(buffer, value);
-        }
-        bh.consume(buffer.writerIndex());
-    }
-
-    @Benchmark
-    public void V0214(Blackhole bh) {
-        buffer.clear();
-        for (long value : smallValues) {
-            write0214(buffer, value);
+            VarLongUtil.writeVarLongFull(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }

@@ -9,6 +9,7 @@
     "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
+    "network.experimental.RconClientMixin",
     "network.experimental.ServerLoginPacketListenerImplMixin",
     "network.experimental.ServerTextFilterMixin",
     "network.experimental.UtilMixin",

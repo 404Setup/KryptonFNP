@@ -39,8 +39,8 @@ jarJar.dependencies {
 jar.finalizedBy('jarJar')
 
 minecraft {
-    mappings 'official', minecraft_version
-    //mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
+    //mappings 'official', minecraft_version
+    mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
     copyIdeResources = true
     reobf = false
 

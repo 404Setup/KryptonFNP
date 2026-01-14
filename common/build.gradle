@@ -11,10 +11,10 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    /*parchment {
+    parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
-    }*/
+    }
 }
 
 dependencies {
@@ -32,6 +32,10 @@ dependencies {
     implementation("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'
     }
+
+    testImplementation(platform("org.junit:junit-bom:6.0.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     jmh("io.netty:netty-buffer:4.1.118.Final")
     jmh("io.netty:netty-common:4.1.118.Final")

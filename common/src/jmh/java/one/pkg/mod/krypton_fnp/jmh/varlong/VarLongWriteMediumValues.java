@@ -1,5 +1,6 @@
 package one.pkg.mod.krypton_fnp.jmh.varlong;
 
+import one.pkg.mod.krypton_fnp.shared.network.util.VarLongUtil;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -45,19 +46,10 @@ public class VarLongWriteMediumValues extends VarLongBase {
     }
 
     @Benchmark
-    public void V0213(Blackhole bh) {
+    public void VLatest(Blackhole bh) {
         buffer.clear();
         for (long value : mediumValues) {
-            write0213(buffer, value);
-        }
-        bh.consume(buffer.writerIndex());
-    }
-
-    @Benchmark
-    public void V0214(Blackhole bh) {
-        buffer.clear();
-        for (long value : mediumValues) {
-            write0214(buffer, value);
+            VarLongUtil.writeVarLongFull(buffer, value);
         }
         bh.consume(buffer.writerIndex());
     }
