@@ -15,9 +15,11 @@ Krypton FNP
 Krypton FNP provides powerful network optimization capabilities for all major systems.
 
 Ported from [Krypton Fabric](https://modrinth.com/mod/krypton), with some unique optimizations added. Supports
-NeoForge/Forge; for Fabric/Paper Server, please see
-the [KryptonFNP Patcher](https://modrinth.com/mod/kryptonfnp-patcher); for Velocity Server, please see
-the [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast).
+NeoForge/Forge; 
+
+For Fabric/Paper Server, please see the [KryptonFNP Patcher](https://modrinth.com/mod/kryptonfnp-patcher)
+
+For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast).
 
 ---
 
@@ -49,7 +51,7 @@ libraries due to the replacement compatibility.
 |-----------------------------|-----------|-----------------|
 | Windows x64                 | Yes       | No              |
 | Windows arm64               | Yes       | No              |
-| Linux x64                   | Yes       | Yes             |
+| Linux x64                   | No        | Yes             |
 | Linux arm64                 | No        | Yes             |
 | MacOS arm64 (Apple Silicon) | No        | Yes             |
 
@@ -76,6 +78,8 @@ mixin:
   bestVarLong: true
   # Enable new encryption optimizations on the client side
   clientEncrypt: true
+  # Optimized RconClient implementation
+  rconClient: false
 fix:
   issues128:
     # Fix Traffic Statistics
