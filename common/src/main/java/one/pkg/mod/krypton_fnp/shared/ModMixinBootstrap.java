@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModMixinBootstrap implements IMixinConfigPlugin {
-    private final Logger logger = LoggerFactory.getLogger("ModMixinBootstrap");
+    private final Logger logger = LoggerFactory.getLogger("KryptonFNPMixinBootstrap");
 
     public ModMixinBootstrap() {
         ModConfig.config.addConfigurations(); // Initialize it
@@ -32,12 +32,10 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         CONFIG config = CONFIG.find(mixinClassName);
-        if (config != null) {
-            var b = config.isEnabled();
-            logger.info("Mixin {} {}", mixinClassName, b ? "enabled" : "disabled");
-            return b;
-        }
-        return true;
+        boolean b = true;
+        if (config != null && !config.isEnabled()) b = false;
+        logger.info("Mixin {} {}", mixinClassName, b ? "enabled" : "disabled");
+        return b;
     }
 
     @Override
