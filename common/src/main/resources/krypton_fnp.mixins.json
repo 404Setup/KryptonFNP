@@ -2,7 +2,6 @@
   "required": true,
   "minVersion": "0.8",
   "package": "one.pkg.kfnp.mixin",
-  "refmap": "krypton_fnp.refmap.json",
   "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
