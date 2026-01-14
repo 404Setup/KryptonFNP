@@ -1,0 +1,8 @@
+package one.pkg.kfnp.jmh.compression;
+
+public enum DataType {
+    REPETITIVE,
+    RANDOM,
+    MIXED,
+    MINECRAFT_LIKE
+}

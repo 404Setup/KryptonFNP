@@ -4,4 +4,6 @@ import java.nio.file.Path;
 
 public interface LoaderImpl {
     Path getConfigPath();
+
+    boolean isClient();
 }

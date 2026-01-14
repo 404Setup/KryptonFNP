@@ -1,0 +1,89 @@
+package one.pkg.kfnp.shared;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.tree.ClassNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+
+public class ModMixinBootstrap implements IMixinConfigPlugin {
+    private final Logger logger = LoggerFactory.getLogger("KryptonFNP MixinBootstrap");
+
+    public ModMixinBootstrap() {
+        ModConfig.config.addConfigurations(); // Initialize it
+    }
+
+    @Override
+    public void onLoad(String mixinPackage) {
+
+    }
+
+    @Override
+    public String getRefMapperConfig() {
+        return "";
+    }
+
+    @Override
+    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        CONFIG config = CONFIG.find(mixinClassName);
+        boolean b = config == null || config.isEnabled();
+        logger.info("Mixin {} {}", mixinClassName, b ? "enabled" : "disabled");
+        return b;
+    }
+
+    @Override
+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
+
+    }
+
+    @Override
+    public List<String> getMixins() {
+        return List.of();
+    }
+
+    @Override
+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+
+    }
+
+    @Override
+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+
+    }
+
+    enum CONFIG {
+        Login_VT("one.pkg.kfnp.mixin.network.thread.ServerLoginPacketListenerImplMixin", ModConfig.Mixin::isLoginVT),
+        TextFilter_VT("one.pkg.kfnp.mixin.network.thread.ServerTextFilterMixin", ModConfig.Mixin::isTextFilterVT),
+        Util_VT("one.pkg.kfnp.mixin.network.thread.UtilMixin", ModConfig.Mixin::isUtilVT),
+        BestVarLong("one.pkg.kfnp.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),
+        ClientEncrypt("one.pkg.kfnp.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
+        RconClient("one.pkg.kfnp.mixin.network.experimental.RconClientMixin", ModConfig.Mixin::isRconClient),
+        ;
+
+        public final String CLASS;
+        public final Supplier<Boolean> configTarget;
+
+        CONFIG(String clazz, @NotNull Supplier<Boolean> configTarget) {
+            this.CLASS = clazz;
+            this.configTarget = configTarget;
+        }
+
+        @Nullable
+        public static CONFIG find(String clazz) {
+            for (CONFIG config : values()) {
+                if (config.CLASS.equals(clazz)) return config;
+            }
+            return null;
+        }
+
+        public boolean isEnabled() {
+            return this.configTarget.get();
+        }
+    }
+}
