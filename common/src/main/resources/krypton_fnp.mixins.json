@@ -1,13 +1,17 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "one.pkg.mod.krypton_fnp.mixin",
+  "package": "one.pkg.kfnp.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "gui.OptionsScreenMixin",
     "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
-    "network.microopt.FriendlyByteBufMixin",
+    "network.experimental.RconClientMixin",
+    "network.microopt.FriendlyByteBufUtfMixin",
+    "network.microopt.FriendlyByteBufVarIntMixin",
+    "network.microopt.FriendlyByteBufVarLongMixin",
     "network.microopt.ServerEntityMixin",
     "network.pipeline.LegacyQueryHandlerMixin",
     "network.pipeline.Varint21FrameDecoderMixin",
@@ -15,7 +19,7 @@
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
-  "plugin": "one.pkg.mod.krypton_fnp.shared.ModMixinBootstrap",
+  "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
   "refmap": "krypton_fnp.refmap.json",
   "injectors": {
     "defaultRequire": 1

@@ -61,9 +61,9 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
-        jarJar.ranged(it, "[0.4.1,)")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.2"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.2")) {
+        jarJar.ranged(it, "[0.5.2,)")
     }
     implementation(jarJar("org.yaml:snakeyaml:2.4")) {
         jarJar.ranged(it, "[2.4,)")
