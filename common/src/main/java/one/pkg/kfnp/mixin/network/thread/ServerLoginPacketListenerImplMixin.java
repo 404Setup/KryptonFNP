@@ -55,7 +55,7 @@ public abstract class ServerLoginPacketListenerImplMixin {
     @Inject(method = "handleKey",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setEncryptionKey(Ljavax/crypto/Cipher;Ljavax/crypto/Cipher;)V", shift = At.Shift.AFTER),
             cancellable = true)
-    private void krypton_Multi$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local(name = "s") String s) {
+    private void krypton_Multi$cacheAuthenticatorThread(ServerboundKeyPacket packet, CallbackInfo ci, @Local String s) {
         Runnable runnable = () -> {
             String s1 = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
