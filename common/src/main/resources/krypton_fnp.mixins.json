@@ -5,7 +5,7 @@
   "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "one.pkg.kfnp.unused.mixin.network.pipeline.encryption.ClientLoginMixin"
+    "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
     "network.experimental.RconClientMixin",
