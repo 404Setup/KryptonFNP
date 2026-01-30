@@ -1,8 +1,8 @@
 package one.pkg.kfnp.shared.gui;
 
-import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import one.pkg.loader.Loader;
 
 public class KFNPConfigGUI extends Screen {

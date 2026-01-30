@@ -4,6 +4,7 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
+
 base {
     archivesName = "${mod_name}-forge-${minecraft_version}"
 }
@@ -39,8 +40,8 @@ jarJar.dependencies {
 jar.finalizedBy('jarJar')
 
 minecraft {
-    //mappings 'official', minecraft_version
-    mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
+    mappings 'official', minecraft_version
+    //mappings 'parchment', "${parchment_version}-${parchment_minecraft}"
     copyIdeResources = true
     reobf = false
 

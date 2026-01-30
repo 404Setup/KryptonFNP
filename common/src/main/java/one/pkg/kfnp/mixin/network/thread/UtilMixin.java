@@ -2,7 +2,7 @@ package one.pkg.kfnp.mixin.network.thread;
 
 import com.mojang.jtracy.TracyClient;
 import net.minecraft.TracingExecutor;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.gen.Invoker;
