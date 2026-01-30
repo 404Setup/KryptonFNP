@@ -123,7 +123,7 @@ ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
 
 ## Benchmark
 
-<a href="https://github.com/404Setup/KryptonFNP/blob/master/Benchmark.md">
+<a href="https://github.com/404Setup/KryptonFNP/blob/1.21.11/Benchmark.md">
 <img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
 </a>
 
@@ -216,7 +216,7 @@ files, Config, ShaderPacks, ResourcePacks, Library and launcher into a whole zip
 ## License
 
 > This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
-> see [404Setup Public License](https://github.com/404Setup/404Setup/blob/main/LICENSE.md)
+> see [404Setup Public License](https://github.com/404Setup/404Setup/blob/1.21.11/LICENSE.md)
 
 - **Krypton FNP:** 2025-2026. Licensed "as is". Provided by 404Setup under LGPL-3.0 Only.
 - **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a MPL-2.0 License.
