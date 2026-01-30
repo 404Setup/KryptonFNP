@@ -2,7 +2,6 @@ package one.pkg.kfnp.shared;
 
 import com.velocitypowered.natives.util.Natives;
 import one.pkg.loader.Loader;
-import one.pkg.loader.LoaderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

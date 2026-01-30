@@ -62,7 +62,6 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
         TextFilter_VT("one.pkg.kfnp.mixin.network.thread.ServerTextFilterMixin", ModConfig.Mixin::isTextFilterVT),
         Util_VT("one.pkg.kfnp.mixin.network.thread.UtilMixin", ModConfig.Mixin::isUtilVT),
         BestVarLong("one.pkg.kfnp.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),
-        ClientEncrypt("one.pkg.kfnp.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
         RconClient("one.pkg.kfnp.mixin.network.experimental.RconClientMixin", ModConfig.Mixin::isRconClient),
         ;
 
