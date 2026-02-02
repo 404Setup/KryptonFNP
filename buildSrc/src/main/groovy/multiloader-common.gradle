@@ -53,6 +53,7 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
+    maven { url = "https://maven.bawnorton.com/releases" }
     maven {
         name = 'OneSnapshots'
         url = 'https://mvnc.pkg.one/snapshots'

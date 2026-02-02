@@ -4,6 +4,11 @@ plugins {
 }
 
 dependencies {
+    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))
+    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.7-beta.1"))
+
+    compileOnly("maven.modrinth:e4mc:6.0.4-neoforge")
+
     implementation(jarJar("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT")) {
         exclude group: 'io.netty'
     }
