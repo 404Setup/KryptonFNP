@@ -7,6 +7,8 @@
     "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
+    "compatibility.pipeline.encryption.E4MCConnectionMixin",
+    "compatibility.pipeline.encryption.E4MCServerLoginPacketListenerImplMixin",
     "network.experimental.RconClientMixin",
     "network.microopt.FriendlyByteBufUtfMixin",
     "network.microopt.FriendlyByteBufVarIntMixin",

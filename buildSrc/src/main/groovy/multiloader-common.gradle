@@ -26,6 +26,17 @@ repositories {
         filter { includeGroupAndSubgroups('org.spongepowered') }
     }
     exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+    exclusiveContent {
         forRepositories(
                 maven {
                     name = 'ParchmentMC'
@@ -51,6 +62,7 @@ repositories {
         }
         filter { includeGroupAndSubgroups('com.velocitypowered') }
     }
+    maven { url = "https://maven.bawnorton.com/releases" }
     maven {
         name = 'OneSnapshots'
         url = 'https://mvnc.pkg.one/snapshots'
