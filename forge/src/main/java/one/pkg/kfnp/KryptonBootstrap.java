@@ -6,11 +6,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import one.pkg.kfnp.shared.ModSharedBootstrap;
 import one.pkg.kfnp.shared.gui.KFNPConfigGUI;
+import one.pkg.loader.FMLTest;
 import one.pkg.loader.Loader;
 
 @Mod("krypton_fnp")
 public class KryptonBootstrap {
     public KryptonBootstrap() {
+        FMLTest.test();
         ModSharedBootstrap.run();
 
         if (Loader.INSTANCE.isClient()) init();
