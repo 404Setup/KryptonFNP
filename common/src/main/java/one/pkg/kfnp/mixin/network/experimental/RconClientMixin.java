@@ -50,9 +50,7 @@ public class RconClientMixin {
             if (buf.hasArray()) {
                 this.client.getOutputStream().write(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes());
             } else {
-                byte[] temp = new byte[buf.readableBytes()];
-                buf.getBytes(buf.readerIndex(), temp);
-                this.client.getOutputStream().write(temp);
+                buf.readBytes(this.client.getOutputStream(), buf.readableBytes());
             }
         } finally {
             buf.release();
