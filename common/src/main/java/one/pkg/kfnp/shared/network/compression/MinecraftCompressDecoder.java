@@ -4,8 +4,8 @@ import com.velocitypowered.natives.compression.VelocityCompressor;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import net.minecraft.network.FriendlyByteBuf;
 import one.pkg.kfnp.shared.ModConfig;
+import one.pkg.kfnp.shared.network.util.VarIntUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,8 +43,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        FriendlyByteBuf bb = new FriendlyByteBuf(in);
-        int claimedUncompressedSize = bb.readVarInt();
+        int claimedUncompressedSize = VarIntUtil.readVarInt(in);
 
         if (claimedUncompressedSize == 0) {
             int actualUncompressedSize = in.readableBytes();

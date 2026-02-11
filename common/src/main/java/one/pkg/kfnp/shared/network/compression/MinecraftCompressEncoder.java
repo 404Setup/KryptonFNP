@@ -5,8 +5,8 @@ import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.minecraft.network.FriendlyByteBuf;
 import one.pkg.kfnp.shared.ModConfig;
+import one.pkg.kfnp.shared.network.util.VarIntUtil;
 
 import static one.pkg.kfnp.shared.network.util.SystemInfo.IS_WINDOWS;
 
@@ -24,14 +24,13 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
-        FriendlyByteBuf wrappedBuf = new FriendlyByteBuf(out);
         int uncompressed = msg.readableBytes();
         if (uncompressed < threshold) {
             // Under the threshold, there is nothing to do.
-            wrappedBuf.writeVarInt(0);
+            VarIntUtil.writeVarInt(out, 0);
             out.writeBytes(msg);
         } else {
-            wrappedBuf.writeVarInt(uncompressed);
+            VarIntUtil.writeVarInt(out, uncompressed);
 
             VelocityCompressor selectedCompressor = getSelectedCompressor(uncompressed);
             ByteBuf compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), selectedCompressor, msg);
