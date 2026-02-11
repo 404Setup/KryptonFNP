@@ -7,6 +7,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import net.minecraft.network.FriendlyByteBuf;
 import one.pkg.kfnp.shared.ModConfig;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -30,6 +31,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private final VelocityCompressor jCompressor;
     private final boolean validate;
     private int threshold;
+    private final int[] byteFreq = new int[256];
 
 
     public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor, VelocityCompressor jCompressor) {
@@ -91,10 +93,10 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
             }
         }
 
-        int[] byteFreq = new int[256];
+        Arrays.fill(this.byteFreq, 0);
         for (int i = 0; i < sampleSize; i++) {
             int b = compressed.getUnsignedByte(readerIndex + i);
-            if (++byteFreq[b] >= minRequiredFreq) {
+            if (++this.byteFreq[b] >= minRequiredFreq) {
                 return true;
             }
         }
