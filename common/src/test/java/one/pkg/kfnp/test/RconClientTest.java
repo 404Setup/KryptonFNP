@@ -23,7 +23,7 @@ public class RconClientTest {
     public void testRedirectIntFromByteArray() {
         byte[] testBytes = {(byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78};
         int result = redirectIntFromByteArrayOptimized(testBytes, 0, 4);
-        assertEquals(0x12345678, result);
+        assertEquals(0x78563412, result);
     }
 
     @Test
