@@ -75,7 +75,7 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
 
         }
 
-        // We allocate bytes to be compressed plus 1 byte. This covers two cases:
+        // We allocate bytes to be compressed plus 64 bytes. This covers two cases:
         //
         // - Compression
         //    According to https://github.com/ebiggers/libdeflate/blob/master/libdeflate.h#L103,
@@ -83,7 +83,12 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         //    size the compressed size will ever be is the input size minus one.
         // - Uncompressed
         //    This is fairly obvious - we will then have one more than the uncompressed size.
-        int initialBufferSize = msg.readableBytes() + 1;
+        //
+        // However, we also need to account for the VarInt header that precedes the compressed data.
+        // A single byte margin is insufficient if the VarInt length is > 1 byte (which is true for packets > 127 bytes).
+        // Adding 64 bytes provides a safe margin for the VarInt header and any potential compression overhead,
+        // preventing expensive reallocations.
+        int initialBufferSize = msg.readableBytes() + 64;
         return MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, initialBufferSize);
     }
 
