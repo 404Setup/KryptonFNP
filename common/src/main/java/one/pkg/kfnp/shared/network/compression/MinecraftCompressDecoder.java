@@ -32,7 +32,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private final VelocityCompressor jCompressor;
     private final boolean validate;
     private int threshold;
-    private final int[] byteFreq = new int[256];
+    private int[] byteFreq;
 
 
     public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor, VelocityCompressor jCompressor) {
@@ -97,7 +97,42 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
             }
         }
 
-        Arrays.fill(this.byteFreq, 0);
+        // Optimized Path: Boyer-Moore Voting Algorithm (valid for > 50%)
+        if (minRequiredFreq > sampleSize / 2) {
+            int candidate = -1;
+            int count = 0;
+            for (int i = 0; i < sampleSize; i++) {
+                int b = compressed.getUnsignedByte(readerIndex + i);
+                if (count == 0) {
+                    candidate = b;
+                    count = 1;
+                } else if (b == candidate) {
+                    count++;
+                } else {
+                    count--;
+                }
+            }
+
+            if (count < 2 * minRequiredFreq - sampleSize) {
+                return false;
+            }
+
+            int freq = 0;
+            for (int i = 0; i < sampleSize; i++) {
+                int b = compressed.getUnsignedByte(readerIndex + i);
+                if (b == candidate) {
+                    if (++freq >= minRequiredFreq) return true;
+                }
+            }
+
+            return false;
+        }
+
+        if (this.byteFreq == null) {
+            this.byteFreq = new int[256];
+        } else {
+            Arrays.fill(this.byteFreq, 0);
+        }
         for (int i = 0; i < sampleSize; i++) {
             int b = compressed.getUnsignedByte(readerIndex + i);
             if (++this.byteFreq[b] >= minRequiredFreq) {
