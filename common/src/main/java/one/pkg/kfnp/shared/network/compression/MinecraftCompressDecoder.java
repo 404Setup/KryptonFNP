@@ -3,6 +3,7 @@ package one.pkg.kfnp.shared.network.compression;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.util.VarIntUtil;
@@ -51,6 +52,10 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
                     + " threshold %s", actualUncompressedSize, threshold);
             out.add(in.retain());
             return;
+        }
+
+        if (claimedUncompressedSize > HARD_MAXIMUM_UNCOMPRESSED_SIZE) {
+            throw new DecoderException("Uncompressed size " + claimedUncompressedSize + " exceeds hard maximum size of " + HARD_MAXIMUM_UNCOMPRESSED_SIZE);
         }
 
         if (validate) {
