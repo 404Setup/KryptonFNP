@@ -38,7 +38,7 @@ public class RconClientMixin {
 
     @Unique
     private void send(int id, int type, byte[] messageBytes, int length) throws IOException {
-        ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(length + PACKET_OVERHEAD + 2);
+        ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(length + PACKET_OVERHEAD + 4);
         try {
             buf.writeIntLE(length + PACKET_OVERHEAD);
             buf.writeIntLE(id);
