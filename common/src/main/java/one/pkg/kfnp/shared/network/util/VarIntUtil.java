@@ -26,22 +26,36 @@ public class VarIntUtil {
     }
 
     public static int readVarInt(ByteBuf buf) {
-        int i = 0;
-        int max = 5;
-        int result = 0;
-        int shift = 0;
-        int b;
+        int b = buf.readByte();
+        if ((b & 0x80) == 0) {
+            return b;
+        }
+        int result = b & 0x7F;
 
-        do {
-            if (i >= max) {
-                throw new DecoderException("VarInt is too big");
-            }
-            b = buf.readByte();
-            result |= (b & 127) << shift;
-            shift += 7;
-            i++;
-        } while ((b & 128) != 0);
-        return result;
+        b = buf.readByte();
+        if ((b & 0x80) == 0) {
+            return result | (b << 7);
+        }
+        result |= (b & 0x7F) << 7;
+
+        b = buf.readByte();
+        if ((b & 0x80) == 0) {
+            return result | (b << 14);
+        }
+        result |= (b & 0x7F) << 14;
+
+        b = buf.readByte();
+        if ((b & 0x80) == 0) {
+            return result | (b << 21);
+        }
+        result |= (b & 0x7F) << 21;
+
+        b = buf.readByte();
+        if ((b & 0x80) == 0) {
+            return result | (b << 28);
+        }
+
+        throw new DecoderException("VarInt is too big");
     }
 
     public static void writeVarInt(ByteBuf buf, int value) {
