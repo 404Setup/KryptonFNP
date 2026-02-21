@@ -77,13 +77,11 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
         ServerLoginEncryptionWithE4MC(
                 "one.pkg.kfnp.mixin.network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
                 "e4mc",
-                CompatibilityType.ChangeMixinTarget,
-                "one.pkg.kfnp.mixin.compatibility.pipeline.encryption.E4MCServerLoginPacketListenerImplMixin"),
+                CompatibilityType.DISABLE),
         ConnectionEncryptionWithE4MC(
                 "one.pkg.kfnp.mixin.network.pipeline.encryption.ConnectionMixin",
                 "e4mc",
-                CompatibilityType.ChangeMixinTarget,
-                "one.pkg.kfnp.mixin.compatibility.pipeline.encryption.E4MCConnectionMixin"),
+                CompatibilityType.DISABLE),
         ;
 
         public final String mixinClass;
