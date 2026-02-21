@@ -4,11 +4,6 @@ plugins {
 }
 
 dependencies {
-    compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1"))
-    implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:0.3.7-beta.1"))
-
-    compileOnly("maven.modrinth:e4mc:6.0.4-neoforge")
-
     implementation(jarJar("org.yaml:snakeyaml:2.4"))
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         exclude group: 'org.slf4j'
