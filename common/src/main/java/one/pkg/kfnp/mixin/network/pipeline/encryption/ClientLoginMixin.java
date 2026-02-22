@@ -1,5 +1,6 @@
 package one.pkg.kfnp.mixin.network.pipeline.encryption;
 
+import io.netty.channel.ChannelFutureListener;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
@@ -31,8 +32,8 @@ public class ClientLoginMixin {
         return null;
     }
 
-    @Redirect(method = "setEncryption", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketSendListener;thenRun(Ljava/lang/Runnable;)Lnet/minecraft/network/PacketSendListener;"))
-    public PacketSendListener initEncryption(Runnable onSuccessOrFailure) {
+    @Redirect(method = "setEncryption", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketSendListener;thenRun(Ljava/lang/Runnable;)Lio/netty/channel/ChannelFutureListener;"))
+    public ChannelFutureListener initEncryption(Runnable pAction) {
         return PacketSendListener.thenRun(() -> {
             try {
                 ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) kfnp$secretKey);
