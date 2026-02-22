@@ -3,10 +3,12 @@ package one.pkg.kfnp.shared.network.compression;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import net.minecraft.network.FriendlyByteBuf;
 import one.pkg.kfnp.shared.ModConfig;
+import one.pkg.kfnp.shared.network.util.VarIntUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -30,6 +32,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private final VelocityCompressor jCompressor;
     private final boolean validate;
     private int threshold;
+    private int[] byteFreq;
 
 
     public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor, VelocityCompressor jCompressor) {
@@ -41,8 +44,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        FriendlyByteBuf bb = new FriendlyByteBuf(in);
-        int claimedUncompressedSize = bb.readVarInt();
+        int claimedUncompressedSize = VarIntUtil.readVarInt(in);
 
         if (claimedUncompressedSize == 0) {
             int actualUncompressedSize = in.readableBytes();
@@ -50,6 +52,10 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
                     + " threshold %s", actualUncompressedSize, threshold);
             out.add(in.retain());
             return;
+        }
+
+        if (claimedUncompressedSize > HARD_MAXIMUM_UNCOMPRESSED_SIZE) {
+            throw new DecoderException("Uncompressed size " + claimedUncompressedSize + " exceeds hard maximum size of " + HARD_MAXIMUM_UNCOMPRESSED_SIZE);
         }
 
         if (validate) {
@@ -91,10 +97,45 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
             }
         }
 
-        int[] byteFreq = new int[256];
+        // Optimized Path: Boyer-Moore Voting Algorithm (valid for > 50%)
+        if (minRequiredFreq > sampleSize / 2) {
+            int candidate = -1;
+            int count = 0;
+            for (int i = 0; i < sampleSize; i++) {
+                int b = compressed.getUnsignedByte(readerIndex + i);
+                if (count == 0) {
+                    candidate = b;
+                    count = 1;
+                } else if (b == candidate) {
+                    count++;
+                } else {
+                    count--;
+                }
+            }
+
+            if (count < 2 * minRequiredFreq - sampleSize) {
+                return false;
+            }
+
+            int freq = 0;
+            for (int i = 0; i < sampleSize; i++) {
+                int b = compressed.getUnsignedByte(readerIndex + i);
+                if (b == candidate) {
+                    if (++freq >= minRequiredFreq) return true;
+                }
+            }
+
+            return false;
+        }
+
+        if (this.byteFreq == null) {
+            this.byteFreq = new int[256];
+        } else {
+            Arrays.fill(this.byteFreq, 0);
+        }
         for (int i = 0; i < sampleSize; i++) {
             int b = compressed.getUnsignedByte(readerIndex + i);
-            if (++byteFreq[b] >= minRequiredFreq) {
+            if (++this.byteFreq[b] >= minRequiredFreq) {
                 return true;
             }
         }

@@ -102,7 +102,29 @@ public class Varint21FrameDecoderMixin {
         if ((tmp = buffer.readByte()) >= 0) {
             return result | tmp << 14;
         }
-        return result | (tmp & 0x7F) << 14;
+        if (!ModConfig.Compatibility.AllowWideVarInt()) {
+            throw VARINT_BIG_CACHED;
+        }
+        result |= (tmp & 0x7F) << 14;
+
+        if (!buffer.isReadable()) {
+            buffer.resetReaderIndex();
+            return 0;
+        }
+        if ((tmp = buffer.readByte()) >= 0) {
+            return result | tmp << 21;
+        }
+        result |= (tmp & 0x7F) << 21;
+
+        if (!buffer.isReadable()) {
+            buffer.resetReaderIndex();
+            return 0;
+        }
+        if ((tmp = buffer.readByte()) >= 0) {
+            return result | tmp << 28;
+        }
+
+        throw VARINT_BIG_CACHED;
     }
 
     /**

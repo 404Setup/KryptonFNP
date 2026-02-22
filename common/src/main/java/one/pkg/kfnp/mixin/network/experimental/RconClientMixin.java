@@ -15,8 +15,6 @@ public class RconClientMixin {
     private static final int CHUNK_SIZE = 4096;
     @Unique
     private static final int PACKET_OVERHEAD = 10;
-    @Unique
-    private final byte[] krypton_fnp$chunkBuffer = new byte[CHUNK_SIZE];
 
     @Shadow
     @Final
@@ -33,26 +31,24 @@ public class RconClientMixin {
     @Overwrite
     private void send(int id, int type, String message) throws IOException {
         byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
-        this.send(id, type, bytes, bytes.length);
+        this.send(id, type, bytes, 0, bytes.length);
     }
 
     @Unique
-    private void send(int id, int type, byte[] messageBytes, int length) throws IOException {
-        ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(length + PACKET_OVERHEAD + 2);
+    private void send(int id, int type, byte[] messageBytes, int offset, int length) throws IOException {
+        ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(length + PACKET_OVERHEAD + 4);
         try {
             buf.writeIntLE(length + PACKET_OVERHEAD);
             buf.writeIntLE(id);
             buf.writeIntLE(type);
-            buf.writeBytes(messageBytes, 0, length);
+            buf.writeBytes(messageBytes, offset, length);
             buf.writeByte(0);
             buf.writeByte(0);
 
             if (buf.hasArray()) {
                 this.client.getOutputStream().write(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes());
             } else {
-                byte[] temp = new byte[buf.readableBytes()];
-                buf.getBytes(buf.readerIndex(), temp);
-                this.client.getOutputStream().write(temp);
+                buf.readBytes(this.client.getOutputStream(), buf.readableBytes());
             }
         } finally {
             buf.release();
@@ -69,13 +65,12 @@ public class RconClientMixin {
         int len = fullBytes.length;
 
         if (len <= CHUNK_SIZE) {
-            this.send(id, 0, fullBytes, len);
+            this.send(id, 0, fullBytes, 0, len);
         } else {
             int offset = 0;
             while (offset < len) {
                 int chunkSize = Math.min(CHUNK_SIZE, len - offset);
-                System.arraycopy(fullBytes, offset, krypton_fnp$chunkBuffer, 0, chunkSize);
-                this.send(id, 0, krypton_fnp$chunkBuffer, chunkSize);
+                this.send(id, 0, fullBytes, offset, chunkSize);
                 offset += chunkSize;
             }
         }
