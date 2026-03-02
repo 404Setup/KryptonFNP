@@ -9,8 +9,12 @@ import net.minecraft.network.CompressionEncoder;
 import net.minecraft.network.Connection;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.misc.KryptonPipelineEvent;
+import one.pkg.kfnp.shared.network.compression.DeflateCompressor;
+import one.pkg.kfnp.shared.network.compression.KryptonCompressor;
+import one.pkg.kfnp.shared.network.compression.KryptonCompressorFactory;
 import one.pkg.kfnp.shared.network.compression.MinecraftCompressDecoder;
 import one.pkg.kfnp.shared.network.compression.MinecraftCompressEncoder;
+import one.pkg.kfnp.shared.network.compression.ConnectionCompressorExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,9 +23,34 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Connection.class)
-public class ConnectionMixin {
+public class ConnectionMixin implements ConnectionCompressorExtension {
     @Shadow
     private Channel channel;
+
+    @Unique
+    private String kfnp$compressor = ModConfig.Compression.getCompressor();
+    @Unique
+    private boolean kfnp$peerSupportsSmartReplay = false;
+
+    @Override
+    public void kfnp$setCompressor(String compressor) {
+        this.kfnp$compressor = compressor;
+    }
+
+    @Override
+    public String kfnp$getCompressor() {
+        return this.kfnp$compressor;
+    }
+
+    @Override
+    public void kfnp$setPeerSupportsSmartReplay(boolean supports) {
+        this.kfnp$peerSupportsSmartReplay = supports;
+    }
+
+    @Override
+    public boolean kfnp$peerSupportsSmartReplay() {
+        return this.kfnp$peerSupportsSmartReplay;
+    }
 
     @Unique
     private static boolean krypton_fnp$isKryptonOrVanillaDecompressor(Object o) {
@@ -55,16 +84,27 @@ public class ConnectionMixin {
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
-                VelocityCompressor compressor = Natives.compress.get().create(ModConfig.Compression.getLevel());
-                VelocityCompressor jCompressor = !ModConfig.Compression.BlendingMode.isEnabled()
-                        && compressor instanceof JavaVelocityCompressor
-                        ? null : JavaVelocityCompressor.FACTORY.create(ModConfig.Compression.getLevel());
+                String requestedCompressor = this.kfnp$compressor != null ? this.kfnp$compressor : ModConfig.Compression.getCompressor();
+                KryptonCompressor compressor = KryptonCompressorFactory.create(requestedCompressor, ModConfig.Compression.getLevel());
+
+                KryptonCompressor jCompressor = null;
+                if (compressor instanceof DeflateCompressor) {
+                    VelocityCompressor vCompressor = ((DeflateCompressor) compressor).getDelegate();
+                    if (ModConfig.Compression.BlendingMode.isEnabled() || !(vCompressor instanceof JavaVelocityCompressor)) {
+                        jCompressor = new DeflateCompressor(JavaVelocityCompressor.FACTORY.create(ModConfig.Compression.getLevel()));
+                    }
+                }
 
                 encoder = new MinecraftCompressEncoder(threshold, compressor, jCompressor);
                 decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor, jCompressor);
 
                 channel.pipeline().addBefore("decoder", "decompress", decoder);
                 channel.pipeline().addBefore("encoder", "compress", encoder);
+
+                if (ModConfig.Compression.isSmartReplay() && this.kfnp$peerSupportsSmartReplay) {
+                    channel.pipeline().addBefore("compress", "smart_replay_encoder", new one.pkg.kfnp.shared.network.compression.SmartReplayEncoder());
+                    channel.pipeline().addAfter("decompress", "smart_replay_decoder", new one.pkg.kfnp.shared.network.compression.SmartReplayDecoder());
+                }
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_ENABLED);
             }

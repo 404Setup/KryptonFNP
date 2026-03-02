@@ -15,6 +15,10 @@ public class ModConfig {
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
+    @ConfigTarget(group = "compress", value = "algorithm", comment = "The preferred compression algorithm: deflate, lz4, zstd, brotli.")
+    private static String var16 = "deflate";
+    @ConfigTarget(group = "compress", value = "smartReplay", comment = "Group multiple identical packets into one and replay them on the client side.")
+    private static boolean var17 = false;
     @ConfigTarget(group = "compress.blending-mode", value = "enabled", comment = "(Experimental) Delegate data packets with poor performance in the Native implementation to the Java implementation")
     private static boolean var3 = false;
     @ConfigTarget(group = "compress.blending-mode", value = "linux-fallback-min-size")
@@ -83,6 +87,14 @@ public class ModConfig {
 
         public static boolean isPermitOversizedPackets() {
             return var2;
+        }
+
+        public static String getCompressor() {
+            return var16;
+        }
+
+        public static boolean isSmartReplay() {
+            return var17;
         }
 
         public static class BlendingMode {

@@ -31,7 +31,7 @@ public class MinecraftCompressDecoderTest {
         ByteBufAllocator mockAllocator = (ByteBufAllocator) createAllocator(requestedSize);
         ChannelHandlerContext ctx = (ChannelHandlerContext) createContext(mockAllocator);
 
-        MinecraftCompressDecoder decoder = new MinecraftCompressDecoder(256, false, compressor, null);
+        MinecraftCompressDecoder decoder = new MinecraftCompressDecoder(256, false, new one.pkg.kfnp.shared.network.compression.DeflateCompressor(compressor), null);
 
         ByteBuf input = Unpooled.buffer();
         writeVarInt(input, hugeSize);
@@ -70,7 +70,7 @@ public class MinecraftCompressDecoderTest {
         ByteBufAllocator mockAllocator = (ByteBufAllocator) createAllocator(requestedSize);
         ChannelHandlerContext ctx = (ChannelHandlerContext) createContext(mockAllocator);
 
-        MinecraftCompressDecoder decoder = new MinecraftCompressDecoder(256, false, compressor, null);
+        MinecraftCompressDecoder decoder = new MinecraftCompressDecoder(256, false, new one.pkg.kfnp.shared.network.compression.DeflateCompressor(compressor), null);
 
         ByteBuf input = Unpooled.buffer();
         writeVarInt(input, smallSize);

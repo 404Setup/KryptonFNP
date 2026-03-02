@@ -12,11 +12,11 @@ import static one.pkg.kfnp.shared.network.util.SystemInfo.IS_WINDOWS;
 
 public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
 
-    private final VelocityCompressor compressor;
-    private final VelocityCompressor jCompressor;
+    private final KryptonCompressor compressor;
+    private final KryptonCompressor jCompressor;
     private int threshold;
 
-    public MinecraftCompressEncoder(int threshold, VelocityCompressor compressor, VelocityCompressor jCompressor) {
+    public MinecraftCompressEncoder(int threshold, KryptonCompressor compressor, KryptonCompressor jCompressor) {
         this.threshold = threshold;
         this.compressor = compressor;
         this.jCompressor = jCompressor;
@@ -32,8 +32,13 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         } else {
             VarIntUtil.writeVarInt(out, uncompressed);
 
-            VelocityCompressor selectedCompressor = getSelectedCompressor(uncompressed);
-            ByteBuf compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), selectedCompressor, msg);
+            KryptonCompressor selectedCompressor = getSelectedCompressor(uncompressed);
+            VelocityCompressor velocityCompressor = null;
+            if (selectedCompressor instanceof DeflateCompressor) {
+                velocityCompressor = ((DeflateCompressor) selectedCompressor).getDelegate();
+            }
+
+            ByteBuf compatibleIn = velocityCompressor != null ? MoreByteBufUtils.ensureCompatible(ctx.alloc(), velocityCompressor, msg) : msg.retain();
             try {
                 selectedCompressor.deflate(compatibleIn, out);
             } finally {
@@ -42,7 +47,7 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         }
     }
 
-    private VelocityCompressor getSelectedCompressor(int dataSize) {
+    private KryptonCompressor getSelectedCompressor(int dataSize) {
         return ModConfig.Compression.BlendingMode.isEnabled() || jCompressor == null || shouldUseNativeCompression(dataSize)
                 ? compressor
                 : jCompressor;
@@ -55,7 +60,7 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         if (ModConfig.Compression.BlendingMode.isEnabled()) {
             int readableBytes = msg.readableBytes();
             int initialBufferSize;
-            VelocityCompressor targetCompressor;
+            KryptonCompressor targetCompressor;
 
             if (readableBytes < threshold) {
                 targetCompressor = compressor;
@@ -71,8 +76,10 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
                     initialBufferSize = Math.max((int) (readableBytes * 0.4), 512) + 256;
             }
 
-            return MoreByteBufUtils.preferredBuffer(ctx.alloc(), targetCompressor, initialBufferSize);
-
+            if (targetCompressor instanceof DeflateCompressor) {
+                return MoreByteBufUtils.preferredBuffer(ctx.alloc(), ((DeflateCompressor) targetCompressor).getDelegate(), initialBufferSize);
+            }
+            return ctx.alloc().directBuffer(initialBufferSize);
         }
 
         // We allocate bytes to be compressed plus 64 bytes. This covers two cases:
@@ -89,7 +96,10 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         // Adding 64 bytes provides a safe margin for the VarInt header and any potential compression overhead,
         // preventing expensive reallocations.
         int initialBufferSize = msg.readableBytes() + 64;
-        return MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, initialBufferSize);
+        if (compressor instanceof DeflateCompressor) {
+            return MoreByteBufUtils.preferredBuffer(ctx.alloc(), ((DeflateCompressor) compressor).getDelegate(), initialBufferSize);
+        }
+        return ctx.alloc().directBuffer(initialBufferSize);
     }
 
     private boolean shouldUseNativeCompression(int dataSize) {
