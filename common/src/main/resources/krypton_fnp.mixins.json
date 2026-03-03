@@ -5,13 +5,13 @@
   "compatibilityLevel": "JAVA_17",
   "client": [],
   "mixins": [
-    "network.microopt.FriendlyByteBufMixin",
-    "network.microopt.ServerEntityMixin",
-    "network.pipeline.LegacyQueryHandlerMixin",
-    "network.pipeline.Varint21FrameDecoderMixin",
-    "network.pipeline.compression.ConnectionMixin",
-    "network.pipeline.encryption.ConnectionMixin",
-    "network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
+    "one.pkg.kfnp.mixin.network.microopt.FriendlyByteBufMixin",
+    "one.pkg.kfnp.mixin.network.microopt.ServerEntityMixin",
+    "one.pkg.kfnp.mixin.network.pipeline.LegacyQueryHandlerMixin",
+    "one.pkg.kfnp.mixin.network.pipeline.Varint21FrameDecoderMixin",
+    "one.pkg.kfnp.mixin.network.pipeline.compression.ConnectionMixin",
+    "one.pkg.kfnp.mixin.network.pipeline.encryption.ConnectionMixin",
+    "one.pkg.kfnp.mixin.network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
   "refmap": "krypton_fnp.refmap.json",
   "injectors": {
