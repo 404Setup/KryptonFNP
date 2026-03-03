@@ -14,7 +14,6 @@ dependencies {
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         exclude group: 'org.slf4j'
     }
-    //compileOnly("maven.modrinth:lithium:mc1.19.2-0.10.0")
 }
 
 tasks.jarJar {
