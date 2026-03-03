@@ -7,6 +7,7 @@ import net.minecraft.network.CompressionDecoder;
 import net.minecraft.network.CompressionEncoder;
 import net.minecraft.network.Connection;
 import one.pkg.kfnp.shared.ModConfig;
+import one.pkg.kfnp.shared.ModSharedBootstrap;
 import one.pkg.kfnp.shared.misc.KryptonPipelineEvent;
 import one.pkg.kfnp.shared.network.compression.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,11 +17,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.net.SocketAddress;
+
 @Mixin(Connection.class)
 public class ConnectionMixin implements ConnectionCompressorExtension {
     @Shadow
     private Channel channel;
 
+    @Shadow
+    private SocketAddress address;
     @Unique
     private String kfnp$compressor = ModConfig.Compression.getCompressor();
     @Unique
@@ -79,6 +84,9 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
                 String requestedCompressor = this.kfnp$compressor != null ? this.kfnp$compressor : ModConfig.Compression.getCompressor();
+                ModSharedBootstrap.LOGGER.info("Player {} negotiates in {} compression mode, SmartReplay status: {}",
+                        this.address, requestedCompressor, kfnp$peerSupportsSmartReplay);
+
                 KFNPCompressor compressor = KFNPCompressorFactory.create(requestedCompressor, ModConfig.Compression.getLevel());
 
                 KFNPCompressor jCompressor = null;
