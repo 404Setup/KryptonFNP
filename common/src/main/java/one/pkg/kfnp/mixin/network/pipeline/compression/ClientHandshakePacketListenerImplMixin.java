@@ -1,12 +1,13 @@
 package one.pkg.kfnp.mixin.network.pipeline.compression;
 
+import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.network.Connection;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
+import net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload;
 import net.minecraft.network.protocol.login.custom.CustomQueryPayload;
 import net.minecraft.network.protocol.login.custom.DiscardedQueryPayload;
-import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
+import net.minecraft.resources.Identifier;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.compression.ConnectionCompressorExtension;
 import org.spongepowered.asm.mixin.Final;
@@ -20,13 +21,16 @@ import java.nio.charset.StandardCharsets;
 
 @Mixin(ClientHandshakePacketListenerImpl.class)
 public class ClientHandshakePacketListenerImplMixin {
-    @Shadow @Final private Connection connection;
+    @Shadow
+    @Final
+    private Connection connection;
 
     @Inject(method = "handleCustomQuery", at = @At("HEAD"), cancellable = true)
     public void onHandleCustomQuery(ClientboundCustomQueryPacket packet, CallbackInfo ci) {
         CustomQueryPayload payload = packet.payload();
         if (payload instanceof DiscardedQueryPayload dqp) {
-            if (dqp.id().getNamespace().equals("krypton_fnp") && dqp.id().getPath().equals("compression_negotiation")) {
+            var id = dqp.id();
+            if (id.getNamespace().equals("krypton_fnp") && id.getPath().equals("compression_negotiation")) {
 
                 String clientPreferred = ModConfig.Compression.getCompressor();
                 boolean clientWantsSmartReplay = ModConfig.Compression.isSmartReplay();
@@ -48,12 +52,7 @@ public class ClientHandshakePacketListenerImplMixin {
                 byte[] responseBytes = responseStr.getBytes(StandardCharsets.UTF_8);
 
                 // Construct a custom answer payload for the response
-                net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload responsePayload = new net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload() {
-                    @Override
-                    public void write(FriendlyByteBuf buf) {
-                        buf.writeByteArray(responseBytes);
-                    }
-                };
+                CustomQueryAnswerPayload responsePayload = buf -> buf.writeByteArray(responseBytes);
 
                 this.connection.send(new ServerboundCustomQueryAnswerPacket(packet.transactionId(), responsePayload));
                 ci.cancel();

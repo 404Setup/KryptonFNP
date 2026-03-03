@@ -51,15 +51,16 @@ public class MinecraftCompressEncoderTest {
                 VelocityCompressor.class.getClassLoader(),
                 new Class[]{VelocityCompressor.class},
                 (proxy, method, args) -> {
-                    if (method.getName().equals("preferredBufferType")) {
-                        return BufferPreference.values()[0]; // HEAP or DIRECT, doesn't matter for size check usually
-                    }
-                    if (method.getName().equals("preferredBuffer")) {
-                         // Some implementations might call this
-                        return Unpooled.buffer(10);
-                    }
-                    if (method.getName().equals("close")) return null;
-                    return null;
+                    return switch (method.getName()) {
+                        case "preferredBufferType" ->
+                                BufferPreference.values()[0]; // HEAP or DIRECT, doesn't matter for size check usually
+
+                        case "preferredBuffer" ->
+                            // Some implementations might call this
+                                Unpooled.buffer(10);
+                        case "close" -> null;
+                        default -> null;
+                    };
                 });
     }
 
@@ -68,12 +69,12 @@ public class MinecraftCompressEncoderTest {
                 ByteBufAllocator.class.getClassLoader(),
                 new Class[]{ByteBufAllocator.class},
                 (proxy, method, args) -> {
-                     if (method.getName().contains("Buffer") && args != null && args.length > 0 && args[0] instanceof Integer) {
-                         int size = (Integer) args[0];
-                         requestedSize.set(size);
-                         return Unpooled.buffer(10);
-                     }
-                     return Unpooled.buffer(10);
+                    if (method.getName().contains("Buffer") && args != null && args.length > 0 && args[0] instanceof Integer) {
+                        int size = (Integer) args[0];
+                        requestedSize.set(size);
+                        return Unpooled.buffer(10);
+                    }
+                    return Unpooled.buffer(10);
                 });
     }
 

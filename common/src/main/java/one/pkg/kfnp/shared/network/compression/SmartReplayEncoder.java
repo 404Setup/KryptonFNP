@@ -32,12 +32,12 @@ public class SmartReplayEncoder extends MessageToByteEncoder<ByteBuf> {
 
             // Check if this packet happens to start with our magic sequence to escape it
             if (isMagic(msg)) {
-                 out.writeByte(0x4B);
-                 out.writeByte(0x46);
-                 out.writeByte(0x4E);
-                 out.writeByte(0x51); // escaped KFNQ
-                 out.writeBytes(msg, msg.readerIndex() + 4, msg.readableBytes() - 4);
-                 return;
+                out.writeByte(0x4B);
+                out.writeByte(0x46);
+                out.writeByte(0x4E);
+                out.writeByte(0x51); // escaped KFNQ
+                out.writeBytes(msg, msg.readerIndex() + 4, msg.readableBytes() - 4);
+                return;
             }
 
             queue.add(msg.retain());
@@ -48,18 +48,18 @@ public class SmartReplayEncoder extends MessageToByteEncoder<ByteBuf> {
     private boolean isMagic(ByteBuf buf) {
         if (buf.readableBytes() < 4) return false;
         int i = buf.readerIndex();
-        return buf.getByte(i) == 0x4B && buf.getByte(i+1) == 0x46 && buf.getByte(i+2) == 0x4E && (buf.getByte(i+3) == 0x50 || buf.getByte(i+3) == 0x51);
+        return buf.getByte(i) == 0x4B && buf.getByte(i + 1) == 0x46 && buf.getByte(i + 2) == 0x4E && (buf.getByte(i + 3) == 0x50 || buf.getByte(i + 3) == 0x51);
     }
 
     private void writeNormal(ByteBuf msg, ByteBuf out) {
         if (isMagic(msg)) {
-             out.writeByte(0x4B);
-             out.writeByte(0x46);
-             out.writeByte(0x4E);
-             out.writeByte(0x51); // escaped
-             out.writeBytes(msg, msg.readerIndex() + 4, msg.readableBytes() - 4);
+            out.writeByte(0x4B);
+            out.writeByte(0x46);
+            out.writeByte(0x4E);
+            out.writeByte(0x51); // escaped
+            out.writeBytes(msg, msg.readerIndex() + 4, msg.readableBytes() - 4);
         } else {
-             out.writeBytes(msg);
+            out.writeBytes(msg);
         }
     }
 

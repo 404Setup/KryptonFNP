@@ -5,12 +5,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.zip.DataFormatException;
 
-public class DeflateCompressor implements KryptonCompressor {
-    private final VelocityCompressor delegate;
-
-    public DeflateCompressor(VelocityCompressor delegate) {
-        this.delegate = delegate;
-    }
+public record DeflateCompressor(VelocityCompressor delegate) implements KFNPCompressor {
 
     @Override
     public void inflate(ByteBuf source, ByteBuf destination, int uncompressedSize) throws DataFormatException {
@@ -25,9 +20,5 @@ public class DeflateCompressor implements KryptonCompressor {
     @Override
     public void close() {
         delegate.close();
-    }
-
-    public VelocityCompressor getDelegate() {
-        return delegate;
     }
 }

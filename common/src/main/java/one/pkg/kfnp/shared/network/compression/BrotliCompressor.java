@@ -1,19 +1,18 @@
 package one.pkg.kfnp.shared.network.compression;
 
-import com.aayushatharva.brotli4j.encoder.Encoder;
-import com.aayushatharva.brotli4j.decoder.Decoder;
 import com.aayushatharva.brotli4j.Brotli4jLoader;
+import com.aayushatharva.brotli4j.decoder.Decoder;
+import com.aayushatharva.brotli4j.encoder.Encoder;
 import io.netty.buffer.ByteBuf;
 
 import java.util.zip.DataFormatException;
-import java.nio.ByteBuffer;
 
-public class BrotliCompressor implements KryptonCompressor {
-    private final int level;
-
+public class BrotliCompressor implements KFNPCompressor {
     static {
         Brotli4jLoader.ensureAvailability();
     }
+
+    private final int level;
 
     public BrotliCompressor(int level) {
         this.level = level;

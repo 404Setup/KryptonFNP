@@ -10,7 +10,6 @@ import io.netty.handler.codec.DecoderException;
 import one.pkg.kfnp.shared.network.compression.MinecraftCompressDecoder;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -21,6 +20,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MinecraftCompressDecoderTest {
+
+    private static void writeVarInt(ByteBuf buf, int value) {
+        while ((value & -128) != 0) {
+            buf.writeByte(value & 127 | 128);
+            value >>>= 7;
+        }
+        buf.writeByte(value);
+    }
 
     @Test
     public void testVulnerability() throws Exception {
@@ -45,17 +52,17 @@ public class MinecraftCompressDecoderTest {
             decodeMethod.invoke(decoder, ctx, input, out);
             fail("Should have thrown exception");
         } catch (InvocationTargetException e) {
-             Throwable cause = e.getCause();
-             if (!(cause instanceof DecoderException)) {
-                 cause.printStackTrace();
-                 fail("Expected DecoderException, got " + cause);
-             }
-             if (!cause.getMessage().contains("exceeds hard maximum size")) {
-                 fail("Expected message to contain 'exceeds hard maximum size', got: " + cause.getMessage());
-             }
+            Throwable cause = e.getCause();
+            if (!(cause instanceof DecoderException)) {
+                cause.printStackTrace();
+                fail("Expected DecoderException, got " + cause);
+            }
+            if (!cause.getMessage().contains("exceeds hard maximum size")) {
+                fail("Expected message to contain 'exceeds hard maximum size', got: " + cause.getMessage());
+            }
         } catch (Exception e) {
-             e.printStackTrace();
-             fail("Unexpected exception: " + e);
+            e.printStackTrace();
+            fail("Unexpected exception: " + e);
         }
 
         assertEquals(0, requestedSize.get(), "Should not have attempted to allocate huge buffer");
@@ -98,24 +105,26 @@ public class MinecraftCompressDecoderTest {
                 VelocityCompressor.class.getClassLoader(),
                 new Class[]{VelocityCompressor.class},
                 (proxy, method, args) -> {
-                    if (method.getName().equals("preferredBufferType")) {
-                        return BufferPreference.values()[0];
-                    }
-                    if (method.getName().equals("preferredBuffer")) {
-                        for (Object arg : args) {
-                            if (arg instanceof Integer) {
-                                int size = (Integer) arg;
-                                requestedSize.set(size);
+                    switch (method.getName()) {
+                        case "preferredBufferType" -> {
+                            return BufferPreference.values()[0];
+                        }
+                        case "preferredBuffer" -> {
+                            for (Object arg : args) {
+                                if (arg instanceof Integer) {
+                                    int size = (Integer) arg;
+                                    requestedSize.set(size);
+                                }
+                            }
+                            return Unpooled.buffer(10);
+                        }
+                        case "ensureCompatible" -> {
+                            for (Object arg : args) {
+                                if (arg instanceof ByteBuf) {
+                                    return ((ByteBuf) arg).retain();
+                                }
                             }
                         }
-                        return Unpooled.buffer(10);
-                    }
-                    if (method.getName().equals("ensureCompatible")) {
-                         for (Object arg : args) {
-                             if (arg instanceof ByteBuf) {
-                                 return ((ByteBuf) arg).retain();
-                             }
-                         }
                     }
                     if (method.getName().equals("inflate")) {
                         return null;
@@ -130,16 +139,16 @@ public class MinecraftCompressDecoderTest {
                 ByteBufAllocator.class.getClassLoader(),
                 new Class[]{ByteBufAllocator.class},
                 (proxy, method, args) -> {
-                     if (method.getName().contains("Buffer") && args != null && args.length > 0 && args[0] instanceof Integer) {
-                         int size = (Integer) args[0];
-                         // Only track if not already tracked by compressor (or just update it)
-                         // But for small size test, we want to know if it was called.
-                         // However, if compressor calls it, we might double count?
-                         // But requestedSize is AtomicInteger.set(), so it overwrites.
-                         requestedSize.set(size);
-                         return Unpooled.buffer(10);
-                     }
-                     return Unpooled.buffer(10);
+                    if (method.getName().contains("Buffer") && args != null && args.length > 0 && args[0] instanceof Integer) {
+                        int size = (Integer) args[0];
+                        // Only track if not already tracked by compressor (or just update it)
+                        // But for small size test, we want to know if it was called.
+                        // However, if compressor calls it, we might double count?
+                        // But requestedSize is AtomicInteger.set(), so it overwrites.
+                        requestedSize.set(size);
+                        return Unpooled.buffer(10);
+                    }
+                    return Unpooled.buffer(10);
                 });
     }
 
@@ -153,13 +162,5 @@ public class MinecraftCompressDecoderTest {
                     }
                     return null;
                 });
-    }
-
-    private static void writeVarInt(ByteBuf buf, int value) {
-        while ((value & -128) != 0) {
-            buf.writeByte(value & 127 | 128);
-            value >>>= 7;
-        }
-        buf.writeByte(value);
     }
 }

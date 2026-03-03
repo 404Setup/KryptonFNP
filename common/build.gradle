@@ -29,9 +29,9 @@ dependencies {
     }
 
     compileOnly("org.yaml:snakeyaml:2.4")
-    compileOnly("at.yawk.lz4:lz4-java:1.8.1")
-    compileOnly("com.aayushatharva.brotli4j:brotli4j:1.16.0")
-    compileOnly("com.github.luben:zstd-jni:1.5.6-8")
+    compileOnly("at.yawk.lz4:lz4-java:${lz4_version}")
+    compileOnly("com.aayushatharva.brotli4j:brotli4j:${brotli4j_version}")
+    compileOnly("com.github.luben:zstd-jni:${zstd_version}")
     implementation("one.pkg:sewlia-config:${config_api_version}") {
         exclude group: 'org.slf4j'
     }

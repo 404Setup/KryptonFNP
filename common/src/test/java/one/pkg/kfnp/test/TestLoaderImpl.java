@@ -2,6 +2,7 @@ package one.pkg.kfnp.test;
 
 import one.pkg.loader.FMLMod;
 import one.pkg.loader.LoaderImpl;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,12 +26,12 @@ public class TestLoaderImpl implements LoaderImpl {
     }
 
     @Override
-    public boolean loaded(String modid) {
+    public boolean loaded(@NonNull String modid) {
         return false;
     }
 
     @Override
-    public FMLMod mod(String modid) {
+    public FMLMod mod(@NonNull String modid) {
         return null;
     }
 }

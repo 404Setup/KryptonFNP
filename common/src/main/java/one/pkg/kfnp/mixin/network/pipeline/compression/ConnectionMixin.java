@@ -2,19 +2,13 @@ package one.pkg.kfnp.mixin.network.pipeline.compression;
 
 import com.velocitypowered.natives.compression.JavaVelocityCompressor;
 import com.velocitypowered.natives.compression.VelocityCompressor;
-import com.velocitypowered.natives.util.Natives;
 import io.netty.channel.Channel;
 import net.minecraft.network.CompressionDecoder;
 import net.minecraft.network.CompressionEncoder;
 import net.minecraft.network.Connection;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.misc.KryptonPipelineEvent;
-import one.pkg.kfnp.shared.network.compression.DeflateCompressor;
-import one.pkg.kfnp.shared.network.compression.KryptonCompressor;
-import one.pkg.kfnp.shared.network.compression.KryptonCompressorFactory;
-import one.pkg.kfnp.shared.network.compression.MinecraftCompressDecoder;
-import one.pkg.kfnp.shared.network.compression.MinecraftCompressEncoder;
-import one.pkg.kfnp.shared.network.compression.ConnectionCompressorExtension;
+import one.pkg.kfnp.shared.network.compression.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,6 +25,16 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
     private String kfnp$compressor = ModConfig.Compression.getCompressor();
     @Unique
     private boolean kfnp$peerSupportsSmartReplay = false;
+
+    @Unique
+    private static boolean krypton_fnp$isKryptonOrVanillaDecompressor(Object o) {
+        return o instanceof CompressionEncoder || o instanceof MinecraftCompressDecoder;
+    }
+
+    @Unique
+    private static boolean krypton_fnp$isKryptonOrVanillaCompressor(Object o) {
+        return o instanceof CompressionDecoder || o instanceof MinecraftCompressEncoder;
+    }
 
     @Override
     public void kfnp$setCompressor(String compressor) {
@@ -50,16 +54,6 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
     @Override
     public boolean kfnp$peerSupportsSmartReplay() {
         return this.kfnp$peerSupportsSmartReplay;
-    }
-
-    @Unique
-    private static boolean krypton_fnp$isKryptonOrVanillaDecompressor(Object o) {
-        return o instanceof CompressionEncoder || o instanceof MinecraftCompressDecoder;
-    }
-
-    @Unique
-    private static boolean krypton_fnp$isKryptonOrVanillaCompressor(Object o) {
-        return o instanceof CompressionDecoder || o instanceof MinecraftCompressEncoder;
     }
 
     @Inject(method = "setupCompression", at = @At("HEAD"), cancellable = true)
@@ -85,11 +79,11 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
                 String requestedCompressor = this.kfnp$compressor != null ? this.kfnp$compressor : ModConfig.Compression.getCompressor();
-                KryptonCompressor compressor = KryptonCompressorFactory.create(requestedCompressor, ModConfig.Compression.getLevel());
+                KFNPCompressor compressor = KFNPCompressorFactory.create(requestedCompressor, ModConfig.Compression.getLevel());
 
-                KryptonCompressor jCompressor = null;
-                if (compressor instanceof DeflateCompressor) {
-                    VelocityCompressor vCompressor = ((DeflateCompressor) compressor).getDelegate();
+                KFNPCompressor jCompressor = null;
+                if (compressor instanceof DeflateCompressor deflateCompressor) {
+                    VelocityCompressor vCompressor = deflateCompressor.delegate();
                     if (ModConfig.Compression.BlendingMode.isEnabled() || !(vCompressor instanceof JavaVelocityCompressor)) {
                         jCompressor = new DeflateCompressor(JavaVelocityCompressor.FACTORY.create(ModConfig.Compression.getLevel()));
                     }

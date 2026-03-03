@@ -1,14 +1,14 @@
 package one.pkg.kfnp.shared.network.compression;
 
 import io.netty.buffer.ByteBuf;
+import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
-import net.jpountz.lz4.LZ4Compressor;
 
 import java.nio.ByteBuffer;
 import java.util.zip.DataFormatException;
 
-public class Lz4Compressor implements KryptonCompressor {
+public class Lz4Compressor implements KFNPCompressor {
     private final LZ4Compressor compressor;
     private final LZ4FastDecompressor decompressor;
 

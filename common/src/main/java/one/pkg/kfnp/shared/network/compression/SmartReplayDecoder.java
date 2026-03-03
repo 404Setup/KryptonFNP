@@ -43,6 +43,6 @@ public class SmartReplayDecoder extends MessageToMessageDecoder<ByteBuf> {
     private boolean isMagic(ByteBuf buf) {
         if (buf.readableBytes() < 4) return false;
         int i = buf.readerIndex();
-        return buf.getByte(i) == 0x4B && buf.getByte(i+1) == 0x46 && buf.getByte(i+2) == 0x4E && (buf.getByte(i+3) == 0x50 || buf.getByte(i+3) == 0x51);
+        return buf.getByte(i) == 0x4B && buf.getByte(i + 1) == 0x46 && buf.getByte(i + 2) == 0x4E && (buf.getByte(i + 3) == 0x50 || buf.getByte(i + 3) == 0x51);
     }
 }

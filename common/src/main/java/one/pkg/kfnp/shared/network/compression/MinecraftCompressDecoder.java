@@ -28,14 +28,14 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
             ModConfig.Compression.isPermitOversizedPackets()
                     ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
 
-    private final KryptonCompressor compressor;
-    private final KryptonCompressor jCompressor;
+    private final KFNPCompressor compressor;
+    private final KFNPCompressor jCompressor;
     private final boolean validate;
     private int threshold;
     private int[] byteFreq;
 
 
-    public MinecraftCompressDecoder(int threshold, boolean validate, KryptonCompressor compressor, KryptonCompressor jCompressor) {
+    public MinecraftCompressDecoder(int threshold, boolean validate, KFNPCompressor compressor, KFNPCompressor jCompressor) {
         this.threshold = threshold;
         this.compressor = compressor;
         this.jCompressor = jCompressor;
@@ -143,11 +143,11 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         return false;
     }
 
-    private void decompress(KryptonCompressor compressor, ChannelHandlerContext ctx, ByteBuf in, List<Object> out,
+    private void decompress(KFNPCompressor compressor, ChannelHandlerContext ctx, ByteBuf in, List<Object> out,
                             int claimedUncompressedSize) throws Exception {
         VelocityCompressor velocityCompressor = null;
         if (compressor instanceof DeflateCompressor) {
-            velocityCompressor = ((DeflateCompressor) compressor).getDelegate();
+            velocityCompressor = ((DeflateCompressor) compressor).delegate();
         }
 
         ByteBuf compatibleIn = velocityCompressor != null ? ensureCompatible(ctx.alloc(), velocityCompressor, in) : in.retain();

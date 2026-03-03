@@ -1,15 +1,18 @@
 package one.pkg.kfnp.mixin.network.pipeline.compression;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
+import net.minecraft.network.protocol.login.ServerboundHelloPacket;
 import net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload;
 import net.minecraft.network.protocol.login.custom.CustomQueryPayload;
-import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.compression.ConnectionCompressorExtension;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,19 +20,19 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
 import java.nio.charset.StandardCharsets;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public class ServerLoginPacketListenerImplMixin {
-    @Shadow @Final Connection connection;
-
     @Unique
     private static final int KRYPTON_COMPRESSION_QUERY_ID = 0x4B464E50;
+    @Shadow
+    @Final
+    Connection connection;
 
     @Inject(method = "handleHello", at = @At("RETURN"))
-    public void onHandleHello(net.minecraft.network.protocol.login.ServerboundHelloPacket packet, CallbackInfo ci) {
+    public void onHandleHello(ServerboundHelloPacket packet, CallbackInfo ci) {
         String features = ModConfig.Compression.getCompressor();
         if (ModConfig.Compression.isSmartReplay()) {
             features += ",smartReplay";
@@ -39,7 +42,7 @@ public class ServerLoginPacketListenerImplMixin {
 
         CustomQueryPayload payload = new CustomQueryPayload() {
             @Override
-            public Identifier id() {
+            public @NonNull Identifier id() {
                 return Identifier.fromNamespaceAndPath("krypton_fnp", "compression_negotiation");
             }
 
@@ -87,7 +90,7 @@ public class ServerLoginPacketListenerImplMixin {
 
             ((ConnectionCompressorExtension) this.connection).kfnp$setCompressor(selectedAlgorithm);
             if (peerSupportsSmartReplay) {
-                 // Tell connection it can use smart replay
+                // Tell connection it can use smart replay
                 ((ConnectionCompressorExtension) this.connection).kfnp$setPeerSupportsSmartReplay(true);
             }
 

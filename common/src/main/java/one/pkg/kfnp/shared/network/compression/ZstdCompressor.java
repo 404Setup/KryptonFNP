@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.nio.ByteBuffer;
 import java.util.zip.DataFormatException;
 
-public class ZstdCompressor implements KryptonCompressor {
+public class ZstdCompressor implements KFNPCompressor {
     private final int level;
 
     public ZstdCompressor(int level) {

@@ -8,12 +8,13 @@ dependencies {
         exclude group: 'io.netty'
     }
     implementation(jarJar("org.yaml:snakeyaml:2.4"))
-    implementation(jarJar("at.yawk.lz4:lz4-java:1.8.1"))
-    implementation(jarJar("com.aayushatharva.brotli4j:brotli4j:1.16.0"))
-    implementation(jarJar("com.github.luben:zstd-jni:1.5.6-8"))
+    implementation(jarJar("at.yawk.lz4:lz4-java:${lz4_version}"))
+    implementation(jarJar("com.aayushatharva.brotli4j:brotli4j:${brotli4j_version}"))
+    implementation(jarJar("com.github.luben:zstd-jni:${zstd_version}"))
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         exclude group: 'org.slf4j'
     }
+    //compileOnly("maven.modrinth:lithium:mc1.19.2-0.10.0")
 }
 
 tasks.jarJar {
