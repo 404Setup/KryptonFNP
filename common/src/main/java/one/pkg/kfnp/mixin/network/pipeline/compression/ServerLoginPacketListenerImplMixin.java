@@ -38,8 +38,6 @@ public class ServerLoginPacketListenerImplMixin {
     @Unique
     private int krypton_fnp$delayedThreshold = -1;
     @Unique
-    private int krypton_fnp$waitTicks = 0;
-    @Unique
     private boolean krypton_fnp$waitingForNegotiation = false;
 
     @Inject(method = "handleHello", at = @At("RETURN"))
@@ -72,27 +70,11 @@ public class ServerLoginPacketListenerImplMixin {
         this.connection.send(new ClientboundCustomQueryPacket(KRYPTON_COMPRESSION_QUERY_ID, payload));
     }
 
-    @Inject(method = "setCompressionThreshold", at = @At("HEAD"), cancellable = true)
-    public void onSetCompressionThreshold(int threshold, CallbackInfo ci) {
+    @Inject(method = "lambda$verifyLoginAndFinishConnectionSetup$0", at = @At("HEAD"), cancellable = true)
+    private void onSetCompressionThreshold(CallbackInfo ci) {
         if (krypton_fnp$waitingForNegotiation && ((ConnectionCompressorExtension) this.connection).kfnp$getCompressor() == null) {
-            krypton_fnp$delayedThreshold = threshold;
+            krypton_fnp$delayedThreshold = this.server.getCompressionThreshold();
             ci.cancel();
-        }
-    }
-
-    @Inject(method = "tick", at = @At("HEAD"))
-    public void onTick(CallbackInfo ci) {
-        if (krypton_fnp$waitingForNegotiation) {
-            if (((ConnectionCompressorExtension) this.connection).kfnp$getCompressor() != null || krypton_fnp$waitTicks >= 40) {
-                krypton_fnp$waitingForNegotiation = false;
-                if (krypton_fnp$delayedThreshold != -1) {
-                    int t = krypton_fnp$delayedThreshold;
-                    krypton_fnp$delayedThreshold = -1;
-                    this.connection.setupCompression(t, true);
-                }
-            } else {
-                krypton_fnp$waitTicks++;
-            }
         }
     }
 
@@ -131,6 +113,12 @@ public class ServerLoginPacketListenerImplMixin {
             }
 
             krypton_fnp$waitingForNegotiation = false;
+            if (krypton_fnp$delayedThreshold != -1) {
+                int t = krypton_fnp$delayedThreshold;
+                krypton_fnp$delayedThreshold = -1;
+                this.connection.setupCompression(t, true);
+            }
+
             ci.cancel();
         }
     }
