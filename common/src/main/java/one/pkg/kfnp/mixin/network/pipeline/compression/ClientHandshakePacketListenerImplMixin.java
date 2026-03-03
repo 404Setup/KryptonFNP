@@ -28,30 +28,47 @@ public class ClientHandshakePacketListenerImplMixin {
     @Inject(method = "handleCustomQuery", at = @At("HEAD"), cancellable = true)
     public void onHandleCustomQuery(ClientboundCustomQueryPacket packet, CallbackInfo ci) {
         CustomQueryPayload payload = packet.payload();
-        if (payload instanceof DiscardedQueryPayload dqp) {
-            var id = dqp.id();
+        if (payload != null) {
+            var id = payload.id();
             if (id.getNamespace().equals("krypton_fnp") && id.getPath().equals("compression_negotiation")) {
 
                 String clientPreferred = ModConfig.Compression.getCompressor();
                 boolean clientWantsSmartReplay = ModConfig.Compression.isSmartReplay();
 
-                // In vanilla, DiscardedQueryPayload drops the data payload.
-                // It is difficult to read what the server sent if Forge doesn't wrap it with something holding the buffer.
-                // We default to our preferred algorithm.
-                String selectedAlgorithm = clientPreferred;
+                String serverRequested = null;
+                boolean serverSupportsSmartReplay = false;
 
-                // We don't have the server's capabilities securely,
-                // but if we are sending our preferences we can at least try to enable it.
-                // To be safe, we disable smartReplay unless we have explicit proof.
-                // Note: a robust implementation needs a proper PayloadCodec.
-                boolean useSmartReplay = false;
+                try {
+                    io.netty.buffer.ByteBuf tempBuf = io.netty.buffer.Unpooled.buffer();
+                    net.minecraft.network.FriendlyByteBuf fbb = new net.minecraft.network.FriendlyByteBuf(tempBuf);
+                    payload.write(fbb);
+                    if (fbb.isReadable()) {
+                        byte[] data = fbb.readByteArray();
+                        String response = new String(data, StandardCharsets.UTF_8);
+                        String[] parts = response.split(",");
+                        if (parts.length > 0 && !parts[0].isEmpty()) {
+                            serverRequested = parts[0];
+                        }
+                        if (response.contains("smartReplay")) {
+                            serverSupportsSmartReplay = true;
+                        }
+                    }
+                    fbb.release();
+                } catch (Exception e) {
+                    // Ignored
+                }
+
+                String selectedAlgorithm = serverRequested != null ? serverRequested : clientPreferred;
+                boolean useSmartReplay = serverSupportsSmartReplay && clientWantsSmartReplay;
+
+                one.pkg.kfnp.shared.ModSharedBootstrap.LOGGER.info("[KryptonFNP] Server requested: {}, Client preferred: {}. Selected: {}. SmartReplay: {}", 
+                    serverRequested != null ? serverRequested : "None (Vanilla)", clientPreferred, selectedAlgorithm, useSmartReplay);
 
                 ((ConnectionCompressorExtension) this.connection).kfnp$setCompressor(selectedAlgorithm);
 
                 String responseStr = selectedAlgorithm + (useSmartReplay ? ",smartReplay" : "");
                 byte[] responseBytes = responseStr.getBytes(StandardCharsets.UTF_8);
 
-                // Construct a custom answer payload for the response
                 CustomQueryAnswerPayload responsePayload = buf -> buf.writeByteArray(responseBytes);
 
                 this.connection.send(new ServerboundCustomQueryAnswerPacket(packet.transactionId(), responsePayload));

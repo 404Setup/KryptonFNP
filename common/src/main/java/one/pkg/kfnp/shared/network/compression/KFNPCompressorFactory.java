@@ -9,7 +9,6 @@ public class KFNPCompressorFactory {
         return switch (protocol.toLowerCase()) {
             case "lz4" -> new Lz4Compressor(level);
             case "zstd" -> new ZstdCompressor(level);
-            case "brotli" -> new BrotliCompressor(level);
             default -> createDeflate(level);
         };
     }

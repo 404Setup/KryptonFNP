@@ -5,6 +5,8 @@
   "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "network.pipeline.compression.ClientboundCustomQueryPacketMixin",
+    "network.pipeline.compression.ServerboundCustomQueryAnswerPacketMixin",
     "network.pipeline.compression.ClientHandshakePacketListenerImplMixin",
     "network.pipeline.encryption.ClientLoginMixin"
   ],

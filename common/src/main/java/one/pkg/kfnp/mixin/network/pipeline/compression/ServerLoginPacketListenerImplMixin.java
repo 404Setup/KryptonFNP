@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.login.ServerboundHelloPacket;
 import net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload;
 import net.minecraft.network.protocol.login.custom.CustomQueryPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.compression.ConnectionCompressorExtension;
@@ -31,8 +32,24 @@ public class ServerLoginPacketListenerImplMixin {
     @Final
     Connection connection;
 
+    @Shadow
+    @Final
+    private MinecraftServer server;
+    @Unique
+    private int krypton_fnp$delayedThreshold = -1;
+    @Unique
+    private int krypton_fnp$waitTicks = 0;
+    @Unique
+    private boolean krypton_fnp$waitingForNegotiation = false;
+
     @Inject(method = "handleHello", at = @At("RETURN"))
     public void onHandleHello(ServerboundHelloPacket packet, CallbackInfo ci) {
+        if (this.connection.isMemoryConnection()) {
+            return;
+        }
+
+        krypton_fnp$waitingForNegotiation = true;
+
         String features = ModConfig.Compression.getCompressor();
         if (ModConfig.Compression.isSmartReplay()) {
             features += ",smartReplay";
@@ -55,6 +72,30 @@ public class ServerLoginPacketListenerImplMixin {
         this.connection.send(new ClientboundCustomQueryPacket(KRYPTON_COMPRESSION_QUERY_ID, payload));
     }
 
+    @Inject(method = "setCompressionThreshold", at = @At("HEAD"), cancellable = true)
+    public void onSetCompressionThreshold(int threshold, CallbackInfo ci) {
+        if (krypton_fnp$waitingForNegotiation && ((ConnectionCompressorExtension) this.connection).kfnp$getCompressor() == null) {
+            krypton_fnp$delayedThreshold = threshold;
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void onTick(CallbackInfo ci) {
+        if (krypton_fnp$waitingForNegotiation) {
+            if (((ConnectionCompressorExtension) this.connection).kfnp$getCompressor() != null || krypton_fnp$waitTicks >= 40) {
+                krypton_fnp$waitingForNegotiation = false;
+                if (krypton_fnp$delayedThreshold != -1) {
+                    int t = krypton_fnp$delayedThreshold;
+                    krypton_fnp$delayedThreshold = -1;
+                    this.connection.setupCompression(t, true);
+                }
+            } else {
+                krypton_fnp$waitTicks++;
+            }
+        }
+    }
+
     @Inject(method = "handleCustomQueryPacket", at = @At("HEAD"), cancellable = true)
     public void onHandleCustomQueryPacket(ServerboundCustomQueryAnswerPacket packet, CallbackInfo ci) {
         if (packet.transactionId() == KRYPTON_COMPRESSION_QUERY_ID) {
@@ -62,12 +103,8 @@ public class ServerLoginPacketListenerImplMixin {
             String selectedAlgorithm = "deflate";
             boolean peerSupportsSmartReplay = false;
 
-            // To be compatible with vanilla clients that drop unknown payloads,
-            // we have to check if we can read the raw bytes. Since vanilla just drops the data,
-            // the payload will be empty or null.
             if (payload != null) {
                 try {
-                    // Temporarily serialize it back to read the custom string if it's the generic Discarded type.
                     FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                     payload.write(buf);
                     if (buf.isReadable()) {
@@ -90,10 +127,10 @@ public class ServerLoginPacketListenerImplMixin {
 
             ((ConnectionCompressorExtension) this.connection).kfnp$setCompressor(selectedAlgorithm);
             if (peerSupportsSmartReplay) {
-                // Tell connection it can use smart replay
                 ((ConnectionCompressorExtension) this.connection).kfnp$setPeerSupportsSmartReplay(true);
             }
 
+            krypton_fnp$waitingForNegotiation = false;
             ci.cancel();
         }
     }

@@ -4,7 +4,7 @@ import com.velocitypowered.natives.compression.VelocityCompressor;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.util.VarIntUtil;
 
@@ -19,7 +19,7 @@ import static one.pkg.kfnp.shared.network.util.SystemInfo.IS_LINUX;
 /**
  * Decompresses a Minecraft packet.
  */
-public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
+public class MinecraftCompressDecoder extends ByteToMessageDecoder {
 
     private static final int VANILLA_MAXIMUM_UNCOMPRESSED_SIZE = 8 * 1024 * 1024; // 8MiB
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
@@ -150,11 +150,33 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
             velocityCompressor = ((DeflateCompressor) compressor).delegate();
         }
 
-        ByteBuf compatibleIn = velocityCompressor != null ? ensureCompatible(ctx.alloc(), velocityCompressor, in) : in.retain();
+        ByteBuf compatibleIn;
+        if (velocityCompressor != null) {
+            compatibleIn = ensureCompatible(ctx.alloc(), velocityCompressor, in);
+        } else {
+            if (!in.isDirect() || in.nioBufferCount() != 1) {
+                compatibleIn = ctx.alloc().directBuffer(in.readableBytes());
+                compatibleIn.writeBytes(in, in.readerIndex(), in.readableBytes());
+            } else {
+                compatibleIn = in.retain();
+            }
+        }
+
         ByteBuf uncompressed = velocityCompressor != null ? preferredBuffer(ctx.alloc(), velocityCompressor, claimedUncompressedSize) : ctx.alloc().directBuffer(claimedUncompressedSize);
 
         try {
+            int oldReaderIndex = compatibleIn.readerIndex();
             compressor.inflate(compatibleIn, uncompressed, claimedUncompressedSize);
+            int consumed = compatibleIn.readerIndex() - oldReaderIndex;
+            if (in != compatibleIn) {
+                in.skipBytes(consumed);
+            }
+            if (in.isReadable()) {
+                 // In Minecraft protocol, one compressed payload should represent exactly one packet.
+                 // If there's more data, it might be a malformed packet or a protocol error.
+                 // However, Netty's pipeline might have combined multiple packets in one ByteBuf 'in'.
+                 // But for Minecraft compression, the VarInt (uncompressed size) only applies to the NEXT chunk of data.
+            }
             out.add(uncompressed);
         } catch (Exception e) {
             uncompressed.release();
@@ -175,7 +197,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    protected void handlerRemoved0(ChannelHandlerContext ctx) throws Exception {
         compressor.close();
         if (jCompressor != null) jCompressor.close();
     }

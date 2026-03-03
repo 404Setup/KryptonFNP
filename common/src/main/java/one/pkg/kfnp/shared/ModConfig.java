@@ -15,7 +15,7 @@ public class ModConfig {
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
-    @ConfigTarget(group = "compress", value = "algorithm", comment = "The preferred compression algorithm: deflate, lz4, zstd, brotli.")
+    @ConfigTarget(group = "compress", value = "algorithm", comment = "The preferred compression algorithm: deflate, lz4, zstd.")
     private static String var16 = "deflate";
     @ConfigTarget(group = "compress", value = "smartReplay", comment = "Group multiple identical packets into one and replay them on the client side.")
     private static boolean var17 = false;

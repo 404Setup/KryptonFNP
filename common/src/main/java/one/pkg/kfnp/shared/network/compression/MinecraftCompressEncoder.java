@@ -38,7 +38,17 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
                 velocityCompressor = ((DeflateCompressor) selectedCompressor).delegate();
             }
 
-            ByteBuf compatibleIn = velocityCompressor != null ? MoreByteBufUtils.ensureCompatible(ctx.alloc(), velocityCompressor, msg) : msg.retain();
+            ByteBuf compatibleIn;
+            if (velocityCompressor != null) {
+                compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), velocityCompressor, msg);
+            } else {
+                if (!msg.isDirect() || msg.nioBufferCount() != 1) {
+                    compatibleIn = ctx.alloc().directBuffer(msg.readableBytes());
+                    compatibleIn.writeBytes(msg, msg.readerIndex(), msg.readableBytes());
+                } else {
+                    compatibleIn = msg.retain();
+                }
+            }
             try {
                 selectedCompressor.deflate(compatibleIn, out);
             } finally {
@@ -79,27 +89,17 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
             if (targetCompressor instanceof DeflateCompressor) {
                 return MoreByteBufUtils.preferredBuffer(ctx.alloc(), ((DeflateCompressor) targetCompressor).delegate(), initialBufferSize);
             }
-            return ctx.alloc().directBuffer(initialBufferSize);
+            // For LZ4/Zstd, allocate a bit more to be safe
+            return ctx.alloc().directBuffer(initialBufferSize + 128);
         }
 
-        // We allocate bytes to be compressed plus 64 bytes. This covers two cases:
-        //
-        // - Compression
-        //    According to https://github.com/ebiggers/libdeflate/blob/master/libdeflate.h#L103,
-        //    if the data compresses well (and we do not have some pathological case) then the maximum
-        //    size the compressed size will ever be is the input size minus one.
-        // - Uncompressed
-        //    This is fairly obvious - we will then have one more than the uncompressed size.
-        //
-        // However, we also need to account for the VarInt header that precedes the compressed data.
-        // A single byte margin is insufficient if the VarInt length is > 1 byte (which is true for packets > 127 bytes).
-        // Adding 64 bytes provides a safe margin for the VarInt header and any potential compression overhead,
-        // preventing expensive reallocations.
-        int initialBufferSize = msg.readableBytes() + 64;
+        int readableBytes = msg.readableBytes();
+        int initialBufferSize = readableBytes + 64;
         if (compressor instanceof DeflateCompressor) {
             return MoreByteBufUtils.preferredBuffer(ctx.alloc(), ((DeflateCompressor) compressor).delegate(), initialBufferSize);
         }
-        return ctx.alloc().directBuffer(initialBufferSize);
+        // For LZ4/Zstd, we might need more space if data is incompressible
+        return ctx.alloc().directBuffer(initialBufferSize + 128);
     }
 
     private boolean shouldUseNativeCompression(int dataSize) {

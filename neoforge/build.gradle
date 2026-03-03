@@ -9,7 +9,6 @@ dependencies {
     }
     implementation(jarJar("org.yaml:snakeyaml:2.4"))
     implementation(jarJar("at.yawk.lz4:lz4-java:${lz4_version}"))
-    implementation(jarJar("com.aayushatharva.brotli4j:brotli4j:${brotli4j_version}"))
     implementation(jarJar("com.github.luben:zstd-jni:${zstd_version}"))
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         exclude group: 'org.slf4j'

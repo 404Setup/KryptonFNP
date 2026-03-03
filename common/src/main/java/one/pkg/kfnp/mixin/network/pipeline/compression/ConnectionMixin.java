@@ -27,7 +27,7 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
     @Shadow
     private SocketAddress address;
     @Unique
-    private String kfnp$compressor = ModConfig.Compression.getCompressor();
+    private String kfnp$compressor = null;
     @Unique
     private boolean kfnp$peerSupportsSmartReplay = false;
 
@@ -83,7 +83,20 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
-                String requestedCompressor = this.kfnp$compressor != null ? this.kfnp$compressor : ModConfig.Compression.getCompressor();
+                // If not negotiated yet, wait a tiny bit to allow negotiation to finish.
+                // This is a last resort to handle race conditions in the login flow.
+                if (this.kfnp$compressor == null && !this.channel.eventLoop().inEventLoop()) {
+                     try {
+                         for (int i = 0; i < 50 && this.kfnp$compressor == null; i++) {
+                             Thread.sleep(1);
+                         }
+                     } catch (InterruptedException ignored) {}
+                }
+
+                String requestedCompressor = this.kfnp$compressor;
+                if (requestedCompressor == null) {
+                    requestedCompressor = "deflate";
+                }
                 ModSharedBootstrap.LOGGER.info("Player {} negotiates in {} compression mode, SmartReplay status: {}",
                         this.address, requestedCompressor, kfnp$peerSupportsSmartReplay);
 

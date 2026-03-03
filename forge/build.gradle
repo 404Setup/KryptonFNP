@@ -45,9 +45,9 @@ minecraft {
     copyIdeResources = true
     reobf = false
 
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    def at = project(":common").file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformer = at
+        accessTransformers.from(at.absolutePath)
     }
 }
 
@@ -71,13 +71,10 @@ dependencies {
         jarJar.ranged(it, "[2.4,)")
     }
     implementation(jarJar("at.yawk.lz4:lz4-java:${lz4_version}")) {
-        jarJar.ranged(it, "[1.8.1,)")
-    }
-    implementation(jarJar("com.aayushatharva.brotli4j:brotli4j:${brotli4j_version}")) {
-        jarJar.ranged(it, "[1.16.0,)")
+        jarJar.ranged(it, "[${lz4_version},)")
     }
     implementation(jarJar("com.github.luben:zstd-jni:${zstd_version}")) {
-        jarJar.ranged(it, "[1.5.6-8,)")
+        jarJar.ranged(it, "[${zstd_version},)")
     }
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         jarJar.ranged(it, "[${config_api_version},)")
