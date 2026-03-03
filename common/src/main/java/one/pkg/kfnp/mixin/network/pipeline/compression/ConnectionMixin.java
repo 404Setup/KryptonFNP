@@ -83,16 +83,6 @@ public class ConnectionMixin implements ConnectionCompressorExtension {
 
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
-                // If not negotiated yet, wait a tiny bit to allow negotiation to finish.
-                // This is a last resort to handle race conditions in the login flow.
-                if (this.kfnp$compressor == null && !this.channel.eventLoop().inEventLoop()) {
-                     try {
-                         for (int i = 0; i < 50 && this.kfnp$compressor == null; i++) {
-                             Thread.sleep(1);
-                         }
-                     } catch (InterruptedException ignored) {}
-                }
-
                 String requestedCompressor = this.kfnp$compressor;
                 if (requestedCompressor == null) {
                     requestedCompressor = "deflate";
