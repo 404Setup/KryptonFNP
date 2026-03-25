@@ -41,6 +41,8 @@ public class ModConfig {
     private static boolean var14 = false;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     private static int var15 = 9;
+    @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.")
+    private static boolean var16 = false;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -147,6 +149,10 @@ public class ModConfig {
     public static class Netty {
         public static int getAllocatorMaxOrder() {
             return var15;
+        }
+
+        public static boolean isHappyEyeballs() {
+            return var16;
         }
     }
 }
