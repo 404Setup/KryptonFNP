@@ -24,7 +24,7 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
 
-    implementation("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
+    implementation("one.pkg.velocity_rc:velocity-native:${recast_version}") {
         exclude group: 'io.netty'
     }
 
