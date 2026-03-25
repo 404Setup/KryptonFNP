@@ -18,19 +18,19 @@ import java.security.Key;
 public class ServerLoginPacketListenerImplMixin {
     @Shadow
     @Final
-    Connection connection;
+    private Connection connection;
 
     @Redirect(method = "handleKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))
-    private Cipher onKey$initializeVelocityCipher(int pOpMode, Key pKey) throws GeneralSecurityException {
+    private Cipher onKey$initializeVelocityCipher(int opMode, Key key) throws GeneralSecurityException {
         // Hijack this portion of the cipher initialization and set up our own encryption handler.
-        ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) pKey);
+        ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) key);
 
         // Turn the operation into a no-op.
         return null;
     }
 
     @Redirect(method = "handleKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setEncryptionKey(Ljavax/crypto/Cipher;Ljavax/crypto/Cipher;)V"))
-    public void onKey$ignoreMinecraftEncryptionPipelineInjection(Connection connection, Cipher pDecryptingCipher, Cipher pEncryptingCipher) {
+    public void onKey$ignoreMinecraftEncryptionPipelineInjection(Connection connection, Cipher decryptCipher, Cipher encryptCipher) {
         // Turn the operation into a no-op.
     }
 }

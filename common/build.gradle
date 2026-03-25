@@ -11,18 +11,14 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    /*parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }*/
 }
 
 dependencies {
     compileOnly("org.spongepowered:mixin:0.8.7")
-    compileOnly("org.ow2.asm:asm-tree:9.6")
+    compileOnly("org.ow2.asm:asm-tree:9.9.1")
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
-    compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.3")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3")
 
     implementation("one.pkg.velocity_rc:velocity-native:${recast_version}") {
         exclude group: 'io.netty'
@@ -36,16 +32,16 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("io.netty:netty-buffer:4.1.118.Final")
-    testImplementation("io.netty:netty-codec:4.1.118.Final")
-    testImplementation("io.netty:netty-handler:4.1.118.Final")
+    testImplementation("io.netty:netty-buffer:4.2.7.Final")
+    testImplementation("io.netty:netty-codec:4.2.7.Final")
+    testImplementation("io.netty:netty-handler:4.2.7.Final")
     testImplementation("org.slf4j:slf4j-simple:1.7.36")
 
-    jmh("io.netty:netty-buffer:4.1.118.Final")
-    jmh("io.netty:netty-common:4.1.118.Final")
-    jmh("io.netty:netty-codec:4.1.118.Final")
-    jmh("io.netty:netty-handler:4.1.118.Final")
-    jmh("io.netty:netty-resolver:4.1.118.Final")
+    jmh("io.netty:netty-buffer:4.2.7.Final")
+    jmh("io.netty:netty-common:4.2.7.Final")
+    jmh("io.netty:netty-codec:4.2.7.Final")
+    jmh("io.netty:netty-handler:4.2.7.Final")
+    jmh("io.netty:netty-resolver:4.2.7.Final")
     jmh("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
         exclude group: 'io.netty'
     }

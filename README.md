@@ -12,6 +12,8 @@ Krypton FNP
 [![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
 [![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/404Setup/KryptonFNP/releases)
 
+**As of 26.1, all my mods no longer offer Forge compatibility.**
+
 Krypton FNP provides powerful network optimization capabilities for all major systems.
 
 Ported from [Krypton Fabric](https://modrinth.com/mod/krypton), with some unique optimizations added. Supports

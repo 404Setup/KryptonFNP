@@ -126,7 +126,7 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     }
 
     enum CompatibilityType {
-        DISABLE, ChangeMixinTarget;
+        DISABLE, ChangeMixinTarget
     }
 
     enum CONFIG {

@@ -26,14 +26,14 @@ public class ClientLoginMixin {
     private Key kfnp$secretKey;
 
     @Redirect(method = "handleHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))
-    private Cipher handleHello$initKey(int pOpMode, Key pKey) {
+    private Cipher handleHello$initKey(int opMode, Key key) {
         if (this.kfnp$secretKey == null)
-            this.kfnp$secretKey = pKey;
+            this.kfnp$secretKey = key;
         return null;
     }
 
     @Redirect(method = "setEncryption", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketSendListener;thenRun(Ljava/lang/Runnable;)Lio/netty/channel/ChannelFutureListener;"))
-    public ChannelFutureListener initEncryption(Runnable pAction) {
+    public ChannelFutureListener initEncryption(Runnable runnable) {
         return PacketSendListener.thenRun(() -> {
             try {
                 ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) kfnp$secretKey);
