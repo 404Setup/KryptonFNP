@@ -1,7 +1,7 @@
 [
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.allocationTest_Pooled",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.allocationTest_Pooled",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -12,7 +12,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -59,7 +59,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.allocationTest_Unpooled",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.allocationTest_Unpooled",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -70,7 +70,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -117,7 +117,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.newOptimized_ExtraLarge",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.newOptimized_ExtraLarge",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -128,7 +128,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -175,7 +175,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.newOptimized_Large",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.newOptimized_Large",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -186,7 +186,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -233,7 +233,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.newOptimized_Medium",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.newOptimized_Medium",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -244,7 +244,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -291,7 +291,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.newOptimized_Small",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.newOptimized_Small",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -302,7 +302,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -349,7 +349,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.oldOptimized_ExtraLarge",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.oldOptimized_ExtraLarge",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -360,7 +360,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -407,7 +407,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.oldOptimized_Large",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.oldOptimized_Large",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -418,7 +418,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -465,7 +465,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.oldOptimized_Medium",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.oldOptimized_Medium",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -476,7 +476,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -523,7 +523,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.oldOptimized_Small",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.oldOptimized_Small",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -534,7 +534,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -581,7 +581,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.original_ExtraLarge",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.original_ExtraLarge",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -592,7 +592,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -639,7 +639,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.original_Large",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.original_Large",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -650,7 +650,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -697,7 +697,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.original_Medium",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.original_Medium",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -708,7 +708,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -755,7 +755,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.original_Small",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.original_Small",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -766,7 +766,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -813,7 +813,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.preConverted_Large",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.preConverted_Large",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -824,7 +824,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",
@@ -871,7 +871,7 @@
     },
     {
         "jmhVersion" : "1.37",
-        "benchmark" : "one.pkg.kfnp.jmh.other.RconClientBenchmark.preConverted_Small",
+        "benchmark" : "one.pkg.kReno.jmh.other.RconClientBenchmark.preConverted_Small",
         "mode" : "avgt",
         "threads" : 1,
         "forks" : 1,
@@ -882,7 +882,7 @@
             "-XX:+EnableJVMCIProduct",
             "-XX:-UnlockExperimentalVMOptions",
             "-Dfile.encoding=UTF-8",
-            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonFNP\\common\\build\\tmp\\jmh",
+            "-Djava.io.tmpdir=D:\\dev\\Kotlin\\TranicSoft\\Fork\\Mods\\KryptonReno\\common\\build\\tmp\\jmh",
             "-Duser.variant"
         ],
         "jdkVersion" : "21.0.7",

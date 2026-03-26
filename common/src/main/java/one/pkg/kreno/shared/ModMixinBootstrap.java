@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModMixinBootstrap implements IMixinConfigPlugin {
-    private final Logger logger = LoggerFactory.getLogger("KryptonFNP MixinBootstrap");
+    private final Logger logger = LoggerFactory.getLogger("KryptonReno MixinBootstrap");
 
     public ModMixinBootstrap() {
         ModConfig.config.addConfigurations(); // Initialize it

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class ModSharedBootstrap {
     public static final String MOD_ID = "kreno";
-    public static final Logger LOGGER = LoggerFactory.getLogger("KryptonFNP ModSharedBootstrap");
+    public static final Logger LOGGER = LoggerFactory.getLogger("KryptonReno ModSharedBootstrap");
 
     static {
         // By default, Netty allocates 16MiB arenas for the PooledByteBufAllocator. This is too much
@@ -24,10 +24,10 @@ public class ModSharedBootstrap {
 
     public static void run() {
         if (!Loader.INSTANCE.isClient()) {
-            LOGGER.info("KryptonFNP is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
+            LOGGER.info("KryptonReno is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
         } else {
-            LOGGER.info("KryptonFNP is now accelerating your Minecraft client's networking stack \uD83D\uDE80");
-            LOGGER.info("Note that KryptonFNP is most effective on servers, not the client.");
+            LOGGER.info("KryptonReno is now accelerating your Minecraft client's networking stack \uD83D\uDE80");
+            LOGGER.info("Note that KryptonReno is most effective on servers, not the client.");
         }
         LOGGER.info("Compression will use {}, encryption will use {}", Natives.compress.getLoadedVariant(), Natives.cipher.getLoadedVariant());
     }

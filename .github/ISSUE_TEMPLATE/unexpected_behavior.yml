@@ -6,7 +6,7 @@ body:
     attributes:
       label: What happened to it?
       description: |
-        If you want to report a crash, use [another issue template](https://github.com/404Setup/KryptonFNP/issues/new?template=mod_crash.yml).
+        If you want to report a crash, use [another issue template](https://github.com/404Setup/KryptonReno/issues/new?template=mod_crash.yml).
         If you have a video or something similar, please upload it to youtube and put the link here.
       placeholder: Please describe in detail what exactly happened, rather than giving vague answers that will make it more difficult to troubleshoot.
     validations:
@@ -81,6 +81,6 @@ body:
       value: |
         Before submitting this issue, please ensure the following:
 
-        1. You are running the latest version of KryptonFNP from [our downloads page](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp).
+        1. You are running the latest version of KryptonReno from [our downloads page](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp).
         2. You searched for and ensured there isn't already an open issue regarding this.
-        3. Your version of Minecraft is supported by KryptonFNP.
+        3. Your version of Minecraft is supported by KryptonReno.
