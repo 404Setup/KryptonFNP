@@ -7,6 +7,7 @@ Krypton Reno
 
 [![](https://badges.moddingx.org/modrinth/downloads/krypton-fnp)](https://modrinth.com/mod/krypton-fnp)
 [![](https://badges.moddingx.org/curseforge/downloads/1269169)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
+[![](https://img.shields.io/github/downloads/404Setup/KryptonReno/total?style=flat&logo=github&label=Github%20Downloads&args=14)](https://github.com/404Setup/KryptonReno/releases)
 
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/krypton-fnp)
 [![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
