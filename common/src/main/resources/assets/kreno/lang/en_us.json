@@ -1,0 +1,38 @@
+{
+  "gui.kreno.config.title": "Kreno Config",
+  "gui.kreno.config.category.compress": "Compress",
+  "gui.kreno.config.category.fix.issues128": "Fix Traffic Monitoring Issue",
+  "gui.kreno.config.category.compatibility": "Compatibility",
+  "gui.kreno.config.category.mixin": "Mixin Config",
+  "gui.kreno.config.category.netty": "Netty Config",
+
+  "gui.kreno.config.entry.compress.compressionLevel": "Packet Compression Level",
+  "gui.kreno.config.entry.compress.compressionLevel.desc": "The compression level for packets, between 1-9.",
+  "gui.kreno.config.entry.compress.permitOversizedPackets": "Permit Oversized Packets",
+  "gui.kreno.config.entry.compress.permitOversizedPackets.desc": "Permit Oversized Packets",
+
+  "gui.kreno.config.entry.fix.issues128.enabled": "Enabled",
+  "gui.kreno.config.entry.fix.issues128.enabled.desc": "Fix Traffic Statistics",
+  "gui.kreno.config.entry.fix.issues128.sync": "Sync Traffic Monitoring",
+  "gui.kreno.config.entry.fix.issues128.sync.desc": "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.",
+
+  "gui.kreno.config.entry.compatibility.allow-wide-var-int": "Allow Wide VarInt",
+
+  "gui.kreno.config.entry.mixin.loginVT": "Login Virtual Thread",
+  "gui.kreno.config.entry.mixin.loginVT.desc": "Replace player login validation thread with virtual thread",
+  "gui.kreno.config.entry.mixin.textFilterVT": "Text Filter Virtual Thread",
+  "gui.kreno.config.entry.mixin.textFilterVT.desc": "Replace text filter thread with virtual thread",
+  "gui.kreno.config.entry.mixin.utilVT": "Utility Virtual Thread",
+  "gui.kreno.config.entry.mixin.utilVT.desc": "Replace download thread with virtual thread",
+  "gui.kreno.config.entry.mixin.bestVarLong": "Optimized VarLong",
+  "gui.kreno.config.entry.mixin.bestVarLong.desc": "Optimized VarLong implementation",
+  "gui.kreno.config.entry.mixin.clientEncrypt": "Client Side Encryption Optimization",
+  "gui.kreno.config.entry.mixin.clientEncrypt.desc": "Enable new encryption optimizations on the client side",
+  "gui.kreno.config.entry.mixin.rconClient": "Optimized RconClient",
+  "gui.kreno.config.entry.mixin.rconClient.desc": "Optimized RconClient implementation",
+
+  "gui.kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
+  "gui.kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",
+  "gui.kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "gui.kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4."
+}

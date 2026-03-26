@@ -1,0 +1,38 @@
+{
+  "gui.kreno.config.title": "Kreno 設定",
+  "gui.kreno.config.category.compress": "圧縮",
+  "gui.kreno.config.category.fix.issues128": "トラフィック監視の修正",
+  "gui.kreno.config.category.compatibility": "互換性",
+  "gui.kreno.config.category.mixin": "Mixin 設定",
+  "gui.kreno.config.category.netty": "Netty 設定",
+
+  "gui.kreno.config.entry.compress.compressionLevel": "パケット圧縮レベル",
+  "gui.kreno.config.entry.compress.compressionLevel.desc": "パケットの圧縮レベル（1-9）。",
+  "gui.kreno.config.entry.compress.permitOversizedPackets": "特大パケットを許可",
+  "gui.kreno.config.entry.compress.permitOversizedPackets.desc": "標準制限を超える大きなパケットの送信を許可します。",
+
+  "gui.kreno.config.entry.fix.issues128.enabled": "有効化",
+  "gui.kreno.config.entry.fix.issues128.enabled.desc": "トラフィック統計の問題を修正します。",
+  "gui.kreno.config.entry.fix.issues128.sync": "同期トラフィック監視",
+  "gui.kreno.config.entry.fix.issues128.sync.desc": "バニラの動作に近い同期スレッドで帯域幅統計を実行します。",
+
+  "gui.kreno.config.entry.compatibility.allow-wide-var-int": "ワイド VarInt を許可",
+
+  "gui.kreno.config.entry.mixin.loginVT": "ログイン検証仮想スレッド",
+  "gui.kreno.config.entry.mixin.loginVT.desc": "ログイン検証スレッドを仮想スレッドに置き換えます。",
+  "gui.kreno.config.entry.mixin.textFilterVT": "テキストフィルター仮想スレッド",
+  "gui.kreno.config.entry.mixin.textFilterVT.desc": "テキストフィルタースレッドを仮想スレッドに置き換えます。",
+  "gui.kreno.config.entry.mixin.utilVT": "ユーティリティ仮想スレッド",
+  "gui.kreno.config.entry.mixin.utilVT.desc": "ダウンロードスレッドを仮想スレッドに置き換えます。",
+  "gui.kreno.config.entry.mixin.bestVarLong": "最適化された VarLong",
+  "gui.kreno.config.entry.mixin.bestVarLong.desc": "最適化された VarLong 実装を有効にします。",
+  "gui.kreno.config.entry.mixin.clientEncrypt": "クライアント側暗号化の最適化",
+  "gui.kreno.config.entry.mixin.clientEncrypt.desc": "クライアント側で新しい暗号化の最適化を有効にします。",
+  "gui.kreno.config.entry.mixin.rconClient": "最適化された RconClient",
+  "gui.kreno.config.entry.mixin.rconClient.desc": "最適化された RconClient 実装を有効にします。",
+
+  "gui.kreno.config.entry.netty.allocatorMaxOrder": "Netty アロケータ最大オーダー",
+  "gui.kreno.config.entry.netty.allocatorMaxOrder.desc": "Minecraft のパケットサイズ制限が 2MiB であるため、Netty のデフォルトの 16MiB メモリ割り当てを 4MiB に変更します。",
+  "gui.kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "gui.kreno.config.entry.netty.happyEyeballs.desc": "クライアント接続で IPv6 と IPv4 を競合させる Happy Eyeballs を有効にします。"
+}

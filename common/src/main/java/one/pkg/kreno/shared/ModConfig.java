@@ -7,11 +7,14 @@ import one.pkg.config.annotation.loader.ReadWith;
 import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.config.metadata.DumpMeta;
 import one.pkg.loader.Loader;
+import one.pkg.seeui.ConfigAnnotations;
 
 @ConfigEntry("kreno")
 public class ModConfig {
     public static final SewliaConfig config;
     @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
+    @ConfigAnnotations.Range(min = 1, max = 9)
+    @ConfigAnnotations.DisplayMode(ConfigAnnotations.Mode.SLIDER)
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
@@ -34,6 +37,8 @@ public class ModConfig {
     @ConfigTarget(group = "mixin", value = "rconClient", comment = "Optimized RconClient implementation")
     private static boolean var11 = false;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
+    @ConfigAnnotations.Range(min = 9, max = 51)
+    @ConfigAnnotations.DisplayMode(ConfigAnnotations.Mode.SLIDER)
     private static int var12 = 9;
     @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.")
     private static boolean var13 = false;

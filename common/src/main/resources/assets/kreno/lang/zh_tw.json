@@ -1,0 +1,38 @@
+{
+  "gui.kreno.config.title": "Kreno 配置",
+  "gui.kreno.config.category.compress": "壓縮",
+  "gui.kreno.config.category.fix.issues128": "修復流量監控失效",
+  "gui.kreno.config.category.compatibility": "兼容",
+  "gui.kreno.config.category.mixin": "Mixin配置",
+  "gui.kreno.config.category.netty": "Netty配置",
+
+  "gui.kreno.config.entry.compress.compressionLevel": "數據包壓縮等級",
+  "gui.kreno.config.entry.compress.compressionLevel.desc": "數據包的壓縮等級，範圍為 1-9。",
+  "gui.kreno.config.entry.compress.permitOversizedPackets": "允許發送過大的數據包",
+  "gui.kreno.config.entry.compress.permitOversizedPackets.desc": "允許發送超過標準限制的大型數據包",
+
+  "gui.kreno.config.entry.fix.issues128.enabled": "啟用修復",
+  "gui.kreno.config.entry.fix.issues128.enabled.desc": "修復流量統計失效的問題",
+  "gui.kreno.config.entry.fix.issues128.sync": "同步流量監控",
+  "gui.kreno.config.entry.fix.issues128.sync.desc": "在同步線程運行頻寬統計，這更接近原版行為。",
+
+  "gui.kreno.config.entry.compatibility.allow-wide-var-int": "允許寬字節 VarInt",
+
+  "gui.kreno.config.entry.mixin.loginVT": "登錄驗證虛擬線程",
+  "gui.kreno.config.entry.mixin.loginVT.desc": "使用虛擬線程替換玩家登錄驗證線程",
+  "gui.kreno.config.entry.mixin.textFilterVT": "文本過濾虛擬線程",
+  "gui.kreno.config.entry.mixin.textFilterVT.desc": "使用虛擬線程替換文本過濾線程",
+  "gui.kreno.config.entry.mixin.utilVT": "工具類虛擬線程",
+  "gui.kreno.config.entry.mixin.utilVT.desc": "使用虛擬線程替換下載線程",
+  "gui.kreno.config.entry.mixin.bestVarLong": "優化 VarLong 實現",
+  "gui.kreno.config.entry.mixin.bestVarLong.desc": "啟用優化後的 VarLong 實現",
+  "gui.kreno.config.entry.mixin.clientEncrypt": "客戶端加密優化",
+  "gui.kreno.config.entry.mixin.clientEncrypt.desc": "在客戶端啟用新的加密優化",
+  "gui.kreno.config.entry.mixin.rconClient": "優化 RconClient",
+  "gui.kreno.config.entry.mixin.rconClient.desc": "啟用優化後的 RconClient 實現",
+
+  "gui.kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大階數 (MaxOrder)",
+  "gui.kreno.config.entry.netty.allocatorMaxOrder.desc": "將 Netty 默認的 16MiB 內存分配改為 4MiB，因為 Minecraft 的數據包限制為 2MiB。",
+  "gui.kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "gui.kreno.config.entry.netty.happyEyeballs.desc": "為客戶端連接啟用 Happy Eyeballs，同時嘗試 IPv6 和 IPv4 連接。"
+}

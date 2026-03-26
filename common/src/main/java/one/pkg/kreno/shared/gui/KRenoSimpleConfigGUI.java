@@ -2,8 +2,8 @@ package one.pkg.kreno.shared.gui;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
-import one.pkg.loader.Loader;
+import one.pkg.kreno.shared.ModConfig;
+import one.pkg.seeui.CUIBuilder;
 
 public class KRenoSimpleConfigGUI extends Screen {
     private final Screen parent;
@@ -15,7 +15,16 @@ public class KRenoSimpleConfigGUI extends Screen {
 
     @Override
     protected void init() {
-        Util.getPlatform().openUri(Loader.INSTANCE.getConfigPath().resolve("kreno.yaml").toUri());
-        minecraft.setScreen(parent);
+        minecraft.setScreen(CUIBuilder.builder()
+                .clazz(ModConfig.class)
+                .lastScreen(parent)
+                .onSaved(() -> {
+                    try {
+                        ModConfig.config.saveAllConfigurations();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                .build());
     }
 }

@@ -1,7 +1,5 @@
 package one.pkg.kreno;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -20,7 +18,6 @@ public class NeoModBootstrap {
         if (Loader.INSTANCE.isClient()) Client.init(container);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static class Client {
         private static void init(ModContainer container) {
             container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoSimpleConfigGUI(parent));
