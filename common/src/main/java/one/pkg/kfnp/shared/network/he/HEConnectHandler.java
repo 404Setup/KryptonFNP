@@ -1,11 +1,14 @@
 package one.pkg.kfnp.shared.network.he;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.ScheduledFuture;
-import net.minecraft.network.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,14 +17,12 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
 
     private final AtomicBoolean winnerChosen;
     private final CompletableFuture<Channel> winnerFuture;
-    private final Connection connection;
     private ChannelFuture otherFuture;
     private ScheduledFuture<?> timer;
 
-    public HEConnectHandler(AtomicBoolean winnerChosen, CompletableFuture<Channel> winnerFuture, Connection connection) {
+    public HEConnectHandler(AtomicBoolean winnerChosen, CompletableFuture<Channel> winnerFuture) {
         this.winnerChosen = winnerChosen;
         this.winnerFuture = winnerFuture;
-        this.connection = connection;
     }
 
     public void setOtherFuture(ChannelFuture otherFuture) {
@@ -33,9 +34,13 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         if (winnerChosen.compareAndSet(false, true)) {
-            LOGGER.debug("HappyEyeballs: Connection succeeded on {}", ctx.channel().remoteAddress());
+            if (ctx.channel().remoteAddress() instanceof InetSocketAddress inetAddr) {
+                LOGGER.debug("HE: Connection succeeded on {}:{}", inetAddr.getHostString(), inetAddr.getPort());
+            } else {
+                LOGGER.debug("HE: Connection succeeded on {}", ctx.channel().remoteAddress());
+            }
             if (timer != null) timer.cancel(false);
             if (otherFuture != null && otherFuture.channel() != null) {
                 otherFuture.channel().close();
@@ -61,7 +66,7 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (!winnerChosen.get()) {
             if (otherFuture != null && otherFuture.isDone() && !otherFuture.isSuccess()) {
                 winnerFuture.completeExceptionally(cause);

@@ -5,10 +5,11 @@
   "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "network.pipeline.encryption.ClientLoginMixin",
-    "network.pipeline.ClientConnectionMixin"
+    "network.pipeline.ClientConnectionMixin",
+    "network.pipeline.encryption.ClientLoginMixin"
   ],
   "mixins": [
+    "accessor.ConnectionAccessor",
     "network.experimental.RconClientMixin",
     "network.microopt.ServerEntityMixin",
     "network.microopt.Utf8StringMixin",
