@@ -95,16 +95,13 @@ compress:
   compressionLevel: 4
   # Permit Oversized Packets
   permitOversizedPackets: false
-  blending-mode:
-    # (Experimental) Delegate data packets with poor performance in the Native implementation to the Java implementation
-    enabled: false
-    linux-fallback-min-size: 1024
-    repetitive-threshold: 0.6
 compatibility:
   allow-wide-var-int: false
 netty:
   # Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
   allocatorMaxOrder: 9
+  # Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.
+  happyEyeballs: true
 ```
 
 ### Use env instead of jvm args
