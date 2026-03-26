@@ -16,7 +16,7 @@ public class MinecraftVarintPrepender extends MessageToMessageEncoder<ByteBuf> {
     static final boolean IS_JAVA_CIPHER = Natives.cipher.get() == JavaVelocityCipher.FACTORY;
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) {
         final int length = msg.readableBytes();
         final int varintLength = VarInt.getByteSize(length);
 
