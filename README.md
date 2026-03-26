@@ -179,7 +179,7 @@ to modify the configuration to continue using it.
 **Q:** Can I use Krypton Reno in servers that mix Bukkit API with Forge/NeoForge?
 
 **A:** No, absolutely not. The Bukkit API was simply not designed to support Mods, and I can't guarantee that Krypton
-FNP won't break something there, or that they break Krypton Reno.
+Reno won't break something there, or that they break Krypton Reno.
 
 ----
 
