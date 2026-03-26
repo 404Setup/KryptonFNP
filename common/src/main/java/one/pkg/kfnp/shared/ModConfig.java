@@ -15,34 +15,28 @@ public class ModConfig {
     private static int var1 = 4;
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean var2 = false;
-    @ConfigTarget(group = "compress.blending-mode", value = "enabled", comment = "(Experimental) Delegate data packets with poor performance in the Native implementation to the Java implementation")
-    private static boolean var3 = false;
-    @ConfigTarget(group = "compress.blending-mode", value = "linux-fallback-min-size")
-    private static int var4 = 1024;
-    @ConfigTarget(group = "compress.blending-mode", value = "repetitive-threshold")
-    private static double var5 = 0.6;
     @ConfigTarget(group = "fix.issues128", value = "enabled", comment = "Fix Traffic Statistics")
-    private static boolean var6 = false;
+    private static boolean var3 = false;
     @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
-    private static boolean var7 = true;
+    private static boolean var4 = true;
     @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
-    private static boolean var8 = false;
+    private static boolean var5 = false;
     @ConfigTarget(group = "mixin", value = "loginVT", comment = "Replace player login validation thread with virtual thread")
-    private static boolean var9 = true;
+    private static boolean var6 = true;
     @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
-    private static boolean var10 = true;
+    private static boolean var7 = true;
     @ConfigTarget(group = "mixin", value = "utilVT", comment = "Replace download thread with virtual thread")
-    private static boolean var11 = true;
+    private static boolean var8 = true;
     @ConfigTarget(group = "mixin", value = "bestVarLong", comment = "Optimized VarLong implementation")
-    private static boolean var12 = true;
+    private static boolean var9 = true;
     @ConfigTarget(group = "mixin", value = "clientEncrypt", comment = "Enable new encryption optimizations on the client side")
-    private static boolean var13 = true;
+    private static boolean var10 = true;
     @ConfigTarget(group = "mixin", value = "rconClient", comment = "Optimized RconClient implementation")
-    private static boolean var14 = false;
+    private static boolean var11 = false;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    private static int var15 = 9;
+    private static int var12 = 9;
     @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.")
-    private static boolean var16 = false;
+    private static boolean var13 = false;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -67,7 +61,7 @@ public class ModConfig {
         }
     }
 
-    @ReadWith("var15")
+    @ReadWith("var12")
     private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
         if (!(dumpMeta.getObject() instanceof Integer))
             dumpMeta.setCancelled(true);
@@ -86,73 +80,59 @@ public class ModConfig {
         public static boolean isPermitOversizedPackets() {
             return var2;
         }
-
-        public static class BlendingMode {
-            public static boolean isEnabled() {
-                return var3;
-            }
-
-            public static int getLinuxFallbackMinSize() {
-                return var4;
-            }
-
-            public static double getRepetitiveThreshold() {
-                return var5;
-            }
-        }
     }
 
     public static class Fix {
         public static class Issues128 {
             public static boolean isEnabled() {
-                return var6;
+                return var3;
             }
 
             public static boolean isSync() {
-                return var7;
+                return var4;
             }
         }
     }
 
     public static class Compatibility {
         public static boolean AllowWideVarInt() {
-            return var8;
+            return var5;
         }
     }
 
     public static class Mixin {
         public static boolean isLoginVT() {
-            return var9;
+            return var6;
         }
 
         public static boolean isTextFilterVT() {
-            return var10;
+            return var7;
         }
 
         public static boolean isUtilVT() {
-            return var11;
+            return var8;
         }
 
         public static boolean isBestVarLong() {
-            return var12;
+            return var9;
         }
 
         public static boolean isClientEncrypt() {
-            return var13;
+            return var10;
         }
 
         public static boolean isRconClient() {
-            return var14;
+            return var11;
         }
     }
 
     public static class Netty {
         public static int getAllocatorMaxOrder() {
-            return var15;
+            return var12;
         }
 
         public static boolean isHappyEyeballs() {
-            return var16;
+            return var13;
         }
     }
 }

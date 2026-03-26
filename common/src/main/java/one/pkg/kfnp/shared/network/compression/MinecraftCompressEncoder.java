@@ -5,7 +5,6 @@ import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import one.pkg.kfnp.shared.ModConfig;
 import one.pkg.kfnp.shared.network.util.VarIntUtil;
 
 import static one.pkg.kfnp.shared.network.util.SystemInfo.IS_WINDOWS;
@@ -13,13 +12,11 @@ import static one.pkg.kfnp.shared.network.util.SystemInfo.IS_WINDOWS;
 public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
 
     private final VelocityCompressor compressor;
-    private final VelocityCompressor jCompressor;
     private int threshold;
 
-    public MinecraftCompressEncoder(int threshold, VelocityCompressor compressor, VelocityCompressor jCompressor) {
+    public MinecraftCompressEncoder(int threshold, VelocityCompressor compressor) {
         this.threshold = threshold;
         this.compressor = compressor;
-        this.jCompressor = jCompressor;
     }
 
     @Override
@@ -32,49 +29,18 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         } else {
             VarIntUtil.writeVarInt(out, uncompressed);
 
-            VelocityCompressor selectedCompressor = getSelectedCompressor(uncompressed);
-            ByteBuf compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), selectedCompressor, msg);
+            ByteBuf compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), compressor, msg);
             try {
-                selectedCompressor.deflate(compatibleIn, out);
+                compressor.deflate(compatibleIn, out);
             } finally {
                 compatibleIn.release();
             }
         }
     }
 
-    private VelocityCompressor getSelectedCompressor(int dataSize) {
-        return ModConfig.Compression.BlendingMode.isEnabled() || jCompressor == null || shouldUseNativeCompression(dataSize)
-                ? compressor
-                : jCompressor;
-    }
-
 
     @Override
-    protected ByteBuf allocateBuffer(ChannelHandlerContext ctx, ByteBuf msg, boolean preferDirect)
-            throws Exception {
-        if (ModConfig.Compression.BlendingMode.isEnabled()) {
-            int readableBytes = msg.readableBytes();
-            int initialBufferSize;
-            VelocityCompressor targetCompressor;
-
-            if (readableBytes < threshold) {
-                targetCompressor = compressor;
-                initialBufferSize = readableBytes + 5;
-            } else {
-                targetCompressor = getSelectedCompressor(readableBytes);
-
-                if (readableBytes < 1024)
-                    initialBufferSize = readableBytes + 64;
-                else if (readableBytes < 8192)
-                    initialBufferSize = Math.max((int) (readableBytes * 0.6), 256) + 128;
-                else
-                    initialBufferSize = Math.max((int) (readableBytes * 0.4), 512) + 256;
-            }
-
-            return MoreByteBufUtils.preferredBuffer(ctx.alloc(), targetCompressor, initialBufferSize);
-
-        }
-
+    protected ByteBuf allocateBuffer(ChannelHandlerContext ctx, ByteBuf msg, boolean preferDirect) {
         // We allocate bytes to be compressed plus 64 bytes. This covers two cases:
         //
         // - Compression
@@ -92,19 +58,9 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
         return MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, initialBufferSize);
     }
 
-    private boolean shouldUseNativeCompression(int dataSize) {
-        if (IS_WINDOWS && dataSize < 1024) return false;
-
-        if (dataSize >= 8192) return true;
-
-        return !IS_WINDOWS || dataSize >= 2048;
-    }
-
-
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         compressor.close();
-        if (jCompressor != null) jCompressor.close();
     }
 
     public void setThreshold(int threshold) {

@@ -1,6 +1,5 @@
 package one.pkg.kfnp.mixin.network.pipeline.compression;
 
-import com.velocitypowered.natives.compression.JavaVelocityCompressor;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import com.velocitypowered.natives.util.Natives;
 import io.netty.channel.Channel;
@@ -56,12 +55,9 @@ public class ConnectionMixin {
                 this.channel.pipeline().fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             } else {
                 VelocityCompressor compressor = Natives.compress.get().create(ModConfig.Compression.getLevel());
-                VelocityCompressor jCompressor = !ModConfig.Compression.BlendingMode.isEnabled()
-                        && compressor instanceof JavaVelocityCompressor
-                        ? null : JavaVelocityCompressor.FACTORY.create(ModConfig.Compression.getLevel());
 
-                encoder = new MinecraftCompressEncoder(threshold, compressor, jCompressor);
-                decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor, jCompressor);
+                encoder = new MinecraftCompressEncoder(threshold, compressor);
+                decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor);
 
                 channel.pipeline().addBefore("decoder", "decompress", decoder);
                 channel.pipeline().addBefore("encoder", "compress", encoder);
