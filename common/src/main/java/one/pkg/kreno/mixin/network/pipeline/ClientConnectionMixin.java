@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.net.InetSocketAddress;
 
-// TODO: Prevent log crash pollution, although this function will not affect the connection
 // TODO: I didn't implement Ping compatibility
 @Mixin(Connection.class)
 public abstract class ClientConnectionMixin {

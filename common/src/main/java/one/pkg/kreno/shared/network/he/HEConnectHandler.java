@@ -8,6 +8,7 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -72,6 +73,14 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
                 winnerFuture.completeExceptionally(cause);
             }
         }
-        ctx.channel().close();
+
+        if (cause instanceof IOException &&
+                (cause.getMessage() != null && (cause.getMessage().contains("Connection reset") || cause.getMessage().contains("Broken pipe")))) {
+            LOGGER.trace("HE: Suppressed expected connection reset during race: {}", cause.getMessage());
+        } else {
+            LOGGER.debug("HE: Exception caught during connection race", cause);
+        }
+
+        ctx.close();
     }
 }

@@ -91,7 +91,7 @@ public class HEConnect {
             protected void initChannel(Channel ch) {
                 try {
                     ch.config().setOption(ChannelOption.TCP_NODELAY, true);
-                } catch (ChannelException var3) {
+                } catch (ChannelException _) {
                 }
 
                 ch.pipeline().addLast("timeout", new ReadTimeoutHandler(30));
@@ -105,7 +105,7 @@ public class HEConnect {
             protected void initChannel(Channel ch) {
                 try {
                     ch.config().setOption(ChannelOption.TCP_NODELAY, true);
-                } catch (ChannelException var3) {
+                } catch (ChannelException _) {
                 }
 
                 ch.pipeline().addLast("timeout", new ReadTimeoutHandler(30));
