@@ -18,7 +18,7 @@ public class MinecraftCipherDecoder extends MessageToMessageDecoder<ByteBuf> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         ByteBuf compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), cipher, in).slice();
         try {
             cipher.process(compatible);
@@ -30,7 +30,7 @@ public class MinecraftCipherDecoder extends MessageToMessageDecoder<ByteBuf> {
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void handlerRemoved(ChannelHandlerContext ctx) {
         cipher.close();
     }
 }
