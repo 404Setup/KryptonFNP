@@ -1,6 +1,6 @@
-<img src="./common/src/main/resources/assets/krypton_fnp/icon.png" alt="Logo" align="right" width="150">
+<img src="./common/src/main/resources/assets/kreno/icon.png" alt="Logo" align="right" width="150">
 
-Krypton FNP
+Krypton Reno
 ====
 
 ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
@@ -10,16 +10,16 @@ Krypton FNP
 
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/krypton-fnp)
 [![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/krypton-fnp)
-[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/404Setup/KryptonFNP/releases)
+[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg)](https://github.com/404Setup/KryptonReno/releases)
 
 **As of 26.1, all my mods no longer offer Forge compatibility.**
 
-Krypton FNP provides powerful network optimization capabilities for all major systems.
+Krypton Reno provides powerful network optimization capabilities for all major systems.
 
 Ported from [Krypton Fabric](https://modrinth.com/mod/krypton), with some unique optimizations added. Supports
 NeoForge/Forge;
 
-For Fabric/Paper Server, please see the [KryptonFNP Patcher](https://modrinth.com/mod/kryptonfnp-patcher)
+For Fabric/Paper Server, please see the [Krypton Reno Fabric](https://modrinth.com/mod/kryptonfnp-patcher)
 
 For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast).
 
@@ -31,6 +31,7 @@ For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Se
 
 - Continuously provide compatibility for stable versions (1.20.1, 1.21.1) and the latest versions
 - RecastLib provides acceleration features for **Windows** (x64/arm64)
+- Support RFC 8305 Happy Eyeballs for client connections
 - Further scalability optimizations
 
 ## What is RecastLib
@@ -38,9 +39,9 @@ For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Se
 RecastLib is a native library I wrote in Rust that is compatible with Velocity Native JNI Bind.
 
 It aims to make up for some of the shortcomings of Velocity Native compatibility,
-thereby making the performance advantages of KryptonFNP more comprehensive.
+thereby making the performance advantages of Krypton Reno more comprehensive.
 
-In KryptonFNP for Fabric, I’m also testing the stability of the FFM APIs available in Java 22,
+In Krypton Reno for Fabric, I’m also testing the stability of the FFM APIs available in Java 22,
 which, according to benchmarks, should provide more performance gains
 (ultimately Fabric only. Forge/NeoForge won’t be able to run them).
 
@@ -125,7 +126,7 @@ ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
 
 ## Benchmark
 
-<a href="https://github.com/404Setup/KryptonFNP/blob/1.21.11/Benchmark.md">
+<a href="https://github.com/404Setup/KryptonReno/blob/1.21.11/Benchmark.md">
 <img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
 </a>
 
@@ -146,20 +147,20 @@ list, in which case you should contact them to request permission.
 
 **Q:** Will it help me reduce ping latency?
 
-**A:** Krypton FNP's optimizations can save some hardware performance, which should reduce high latency caused by CPU
+**A:** Krypton Reno's optimizations can save some hardware performance, which should reduce high latency caused by CPU
 core
 preemption. However, if your hardware resources are already very limited, or your network quality is truly poor, then
-Krypton FNP can't save you much. It can't push the physical limits.
+Krypton Reno can't save you much. It can't push the physical limits.
 
 ----
 
 ### 3
 
-**Q:** Which mods is Krypton FNP compatible with?
+**Q:** Which mods is Krypton Reno compatible with?
 
 **A:** There are a lot! You basically only need to worry about whether they will conflict with each other, without
 having to
-worry about Krypton FNP.
+worry about Krypton Reno.
 
 Incompatible Mods: Krypton Reforged, Ceres, Pluto, KryptonFoxified, Chionanthus, Krypton Fabric with Connector
 
@@ -177,10 +178,10 @@ to modify the configuration to continue using it.
 
 ### 5
 
-**Q:** Can I use Krypton FNP in servers that mix Bukkit API with Forge/NeoForge?
+**Q:** Can I use Krypton Reno in servers that mix Bukkit API with Forge/NeoForge?
 
 **A:** No, absolutely not. The Bukkit API was simply not designed to support Mods, and I can't guarantee that Krypton
-FNP won't break something there, or that they break Krypton FNP.
+FNP won't break something there, or that they break Krypton Reno.
 
 ----
 
@@ -220,7 +221,7 @@ files, Config, ShaderPacks, ResourcePacks, Library and launcher into a whole zip
 > This work has a restrictive license in addition to the original license to prevent some unexpected behavior,
 > see [404Setup Public License](https://github.com/404Setup/404Setup/blob/1.21.11/LICENSE.md)
 
-- **Krypton FNP:** 2025-2026. Licensed "as is". Provided by 404Setup under LGPL-3.0 Only.
+- **Krypton Reno:** 2025-2026. Licensed "as is". Provided by 404Setup under LGPL-3.0 Only.
 - **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a MPL-2.0 License.
 - **RecastLib RecastSSL:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a BSD-3-Clause
   License.

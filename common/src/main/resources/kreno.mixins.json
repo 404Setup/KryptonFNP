@@ -1,0 +1,31 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "one.pkg.kreno.mixin",
+  "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "network.pipeline.encryption.ClientLoginMixin"
+  ],
+  "mixins": [
+    "accessor.ConnectionAccessor",
+    "network.experimental.RconClientMixin",
+    "network.microopt.ServerEntityMixin",
+    "network.microopt.Utf8StringMixin",
+    "network.microopt.VarIntMixin",
+    "network.microopt.VarLongMixin",
+    "network.pipeline.ClientConnectionMixin",
+    "network.pipeline.LegacyQueryHandlerMixin",
+    "network.pipeline.Varint21FrameDecoderMixin",
+    "network.pipeline.compression.ConnectionMixin",
+    "network.pipeline.encryption.ConnectionMixin",
+    "network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
+    "network.pipeline.prepender.ConnectionMixin",
+    "network.thread.ServerLoginPacketListenerImplMixin",
+    "network.thread.ServerTextFilterMixin",
+    "network.thread.UtilMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
