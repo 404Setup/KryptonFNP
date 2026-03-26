@@ -27,7 +27,7 @@ public class MinecraftCompressEncoderTest {
         ByteBufAllocator mockAllocator = (ByteBufAllocator) createAllocator(requestedSize);
         ChannelHandlerContext ctx = (ChannelHandlerContext) createContext(mockAllocator);
 
-        MinecraftCompressEncoder encoder = new MinecraftCompressEncoder(256, compressor, null);
+        MinecraftCompressEncoder encoder = new MinecraftCompressEncoder(256, compressor);
 
         ByteBuf input = Unpooled.buffer(inputSize);
         input.writeZero(inputSize); // Fill with zeros

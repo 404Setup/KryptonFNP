@@ -8,13 +8,11 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.velocitypowered.natives.util.MoreByteBufUtils.ensureCompatible;
 import static com.velocitypowered.natives.util.MoreByteBufUtils.preferredBuffer;
-import static one.pkg.kreno.shared.network.util.SystemInfo.IS_LINUX;
 
 /**
  * Decompresses a Minecraft packet.
@@ -29,16 +27,13 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
                     ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
 
     private final VelocityCompressor compressor;
-    private final VelocityCompressor jCompressor;
     private final boolean validate;
     private int threshold;
-    private int[] byteFreq;
 
 
-    public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor, VelocityCompressor jCompressor) {
+    public MinecraftCompressDecoder(int threshold, boolean validate, VelocityCompressor compressor) {
         this.threshold = threshold;
         this.compressor = compressor;
-        this.jCompressor = jCompressor;
         this.validate = validate;
     }
 
@@ -66,81 +61,7 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
                     UNCOMPRESSED_CAP);
         }
 
-        boolean v = shouldUseJavaFallback(claimedUncompressedSize, in);
-        decompress(v ? jCompressor : compressor, ctx, in, out, claimedUncompressedSize);
-    }
-
-    private boolean detectRepetitiveData(ByteBuf compressed) {
-        int readableBytes = compressed.readableBytes();
-        if (readableBytes < 32) return false;
-
-        int readerIndex = compressed.readerIndex();
-        int sampleSize = Math.min(64, readableBytes);
-
-        double threshold = ModConfig.Compression.BlendingMode.getRepetitiveThreshold();
-        int minRequiredFreq = (int) Math.ceil(sampleSize * threshold);
-
-        if (sampleSize >= 8) {
-            int firstByte = compressed.getUnsignedByte(readerIndex);
-            int consecutiveCount = 1;
-
-            for (int i = 1; i < Math.min(8, sampleSize); i++) {
-                if (compressed.getUnsignedByte(readerIndex + i) == firstByte) {
-                    consecutiveCount++;
-                } else {
-                    break;
-                }
-            }
-
-            if (consecutiveCount >= minRequiredFreq || consecutiveCount >= sampleSize / 2) {
-                return true;
-            }
-        }
-
-        // Optimized Path: Boyer-Moore Voting Algorithm (valid for > 50%)
-        if (minRequiredFreq > sampleSize / 2) {
-            int candidate = -1;
-            int count = 0;
-            for (int i = 0; i < sampleSize; i++) {
-                int b = compressed.getUnsignedByte(readerIndex + i);
-                if (count == 0) {
-                    candidate = b;
-                    count = 1;
-                } else if (b == candidate) {
-                    count++;
-                } else {
-                    count--;
-                }
-            }
-
-            if (count < 2 * minRequiredFreq - sampleSize) {
-                return false;
-            }
-
-            int freq = 0;
-            for (int i = 0; i < sampleSize; i++) {
-                int b = compressed.getUnsignedByte(readerIndex + i);
-                if (b == candidate) {
-                    if (++freq >= minRequiredFreq) return true;
-                }
-            }
-
-            return false;
-        }
-
-        if (this.byteFreq == null) {
-            this.byteFreq = new int[256];
-        } else {
-            Arrays.fill(this.byteFreq, 0);
-        }
-        for (int i = 0; i < sampleSize; i++) {
-            int b = compressed.getUnsignedByte(readerIndex + i);
-            if (++this.byteFreq[b] >= minRequiredFreq) {
-                return true;
-            }
-        }
-
-        return false;
+        decompress(compressor, ctx, in, out, claimedUncompressedSize);
     }
 
     private void decompress(VelocityCompressor compressor, ChannelHandlerContext ctx, ByteBuf in, List<Object> out,
@@ -158,20 +79,9 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
     }
 
-
-    private boolean shouldUseJavaFallback(int claimedUncompressedSize, ByteBuf compressed) {
-        if (jCompressor == null
-                || !IS_LINUX
-                || claimedUncompressedSize < ModConfig.Compression.BlendingMode.getLinuxFallbackMinSize())
-            return false;
-
-        return detectRepetitiveData(compressed);
-    }
-
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
         compressor.close();
-        if (jCompressor != null) jCompressor.close();
     }
 
     public void setThreshold(int threshold) {
