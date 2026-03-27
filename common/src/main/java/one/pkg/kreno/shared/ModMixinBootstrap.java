@@ -136,7 +136,6 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
         BestVarLong("one.pkg.microopt.network.mixin.kreno.VarLongMixin", ModConfig.Mixin::isBestVarLong),
         ClientEncrypt("one.pkg.encryption.pipeline.network.mixin.kreno.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
         RconClient("one.pkg.experimental.network.mixin.kreno.RconClientMixin", ModConfig.Mixin::isRconClient),
-        HappyEyeballs("one.pkg.pipeline.network.mixin.kreno.ClientConnectionMixin", () -> ModConfig.Netty.isHappyEyeballs() && Loader.INSTANCE.isClient()),
         ;
 
         public final String CLASS;
