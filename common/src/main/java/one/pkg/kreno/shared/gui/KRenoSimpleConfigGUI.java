@@ -3,7 +3,7 @@ package one.pkg.kreno.shared.gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import one.pkg.kreno.shared.ModConfig;
-import one.pkg.seeui.CUIBuilder;
+import one.pkg.seeui.SeeUIBuilder;
 
 public class KRenoSimpleConfigGUI extends Screen {
     private final Screen parent;
@@ -15,7 +15,7 @@ public class KRenoSimpleConfigGUI extends Screen {
 
     @Override
     protected void init() {
-        minecraft.setScreen(CUIBuilder.builder()
+        minecraft.setScreen(SeeUIBuilder.builder()
                 .clazz(ModConfig.class)
                 .lastScreen(parent)
                 .onSaved(() -> {

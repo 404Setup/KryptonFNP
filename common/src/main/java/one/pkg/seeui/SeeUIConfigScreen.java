@@ -9,6 +9,9 @@ import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import one.pkg.config.annotation.config.ConfigTarget;
+import one.pkg.seeui.annotations.DisplayMode;
+import one.pkg.seeui.annotations.Entry;
+import one.pkg.seeui.annotations.Range;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,11 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigScreen extends OptionsSubScreen {
+public class SeeUIConfigScreen extends OptionsSubScreen {
     private final Class<?> configClass;
     private final Runnable onSaved;
 
-    public ConfigScreen(Class<?> configClass, Screen lastScreen, Runnable onSaved) {
+    public SeeUIConfigScreen(Class<?> configClass, Screen lastScreen, Runnable onSaved) {
         super(lastScreen, Minecraft.getInstance().options, Component.translatable("gui.kreno.config.title"));
         this.configClass = configClass;
         this.onSaved = onSaved;
@@ -50,15 +53,15 @@ public class ConfigScreen extends OptionsSubScreen {
                 String key = target.value().isEmpty() ? field.getName() : target.value();
                 String comment = target.comment();
 
-                ConfigAnnotations.Entry entryAnn = field.getAnnotation(ConfigAnnotations.Entry.class);
+                Entry entryAnn = field.getAnnotation(Entry.class);
                 if (entryAnn != null) group = entryAnn.category();
 
-                ConfigAnnotations.Range range = field.getAnnotation(ConfigAnnotations.Range.class);
+                Range range = field.getAnnotation(Range.class);
                 double min = range != null ? range.min() : Double.NEGATIVE_INFINITY;
                 double max = range != null ? range.max() : Double.POSITIVE_INFINITY;
 
-                ConfigAnnotations.DisplayMode displayMode = field.getAnnotation(ConfigAnnotations.DisplayMode.class);
-                ConfigAnnotations.Mode mode = displayMode != null ? displayMode.value() : ConfigAnnotations.Mode.TEXT;
+                DisplayMode displayMode = field.getAnnotation(DisplayMode.class);
+                EntryMode mode = displayMode != null ? displayMode.value() : EntryMode.TEXT;
 
                 ConfigEntry entry = createEntry(field, group, key, comment, min, max, mode, displayMode);
                 if (entry != null) categories.computeIfAbsent(group, _ -> new ArrayList<>()).add(entry);
@@ -91,11 +94,11 @@ public class ConfigScreen extends OptionsSubScreen {
         return widget;
     }
 
-    private ConfigEntry createEntry(Field field, String category, String key, String comment, double min, double max, ConfigAnnotations.Mode mode, ConfigAnnotations.DisplayMode displayMode) {
+    private ConfigEntry createEntry(Field field, String category, String key, String comment, double min, double max, EntryMode mode, DisplayMode displayMode) {
         Class<?> type = field.getType();
-        if (mode == ConfigAnnotations.Mode.CYCLE && displayMode != null)
+        if (mode == EntryMode.CYCLE && displayMode != null)
             return new ConfigEntry.CycleEntry(field, category, key, comment, displayMode.cycleValues());
-        if (mode == ConfigAnnotations.Mode.SLIDER)
+        if (mode == EntryMode.SLIDER)
             return new ConfigEntry.SliderEntry(field, category, key, comment, min, max);
 
         if (type == boolean.class || type == Boolean.class)

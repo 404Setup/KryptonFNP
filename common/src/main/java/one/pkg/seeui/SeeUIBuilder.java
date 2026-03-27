@@ -2,31 +2,31 @@ package one.pkg.seeui;
 
 import net.minecraft.client.gui.screens.Screen;
 
-public class CUIBuilder {
+public class SeeUIBuilder {
     private Class<?> clazz;
     private Screen lastScreen;
     private Runnable onSaved;
 
-    public static CUIBuilder builder() {
-        return new CUIBuilder();
+    public static SeeUIBuilder builder() {
+        return new SeeUIBuilder();
     }
 
-    public CUIBuilder clazz(Class<?> clazz) {
+    public SeeUIBuilder clazz(Class<?> clazz) {
         this.clazz = clazz;
         return this;
     }
 
-    public CUIBuilder lastScreen(Screen lastScreen) {
+    public SeeUIBuilder lastScreen(Screen lastScreen) {
         this.lastScreen = lastScreen;
         return this;
     }
 
-    public CUIBuilder onSaved(Runnable onSaved) {
+    public SeeUIBuilder onSaved(Runnable onSaved) {
         this.onSaved = onSaved;
         return this;
     }
 
     public Screen build() {
-        return new ConfigScreen(clazz, lastScreen, onSaved);
+        return new SeeUIConfigScreen(clazz, lastScreen, onSaved);
     }
 }
