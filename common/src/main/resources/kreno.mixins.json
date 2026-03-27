@@ -5,7 +5,8 @@
   "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "network.pipeline.encryption.ClientLoginMixin"
+    "network.pipeline.encryption.ClientLoginMixin",
+    "network.pipeline.he.ClientConnectionMixin"
   ],
   "mixins": [
     "accessor.ConnectionAccessor",
@@ -14,7 +15,6 @@
     "network.microopt.Utf8StringMixin",
     "network.microopt.VarIntMixin",
     "network.microopt.VarLongMixin",
-    "network.pipeline.ClientConnectionMixin",
     "network.pipeline.LegacyQueryHandlerMixin",
     "network.pipeline.Varint21FrameDecoderMixin",
     "network.pipeline.compression.ConnectionMixin",

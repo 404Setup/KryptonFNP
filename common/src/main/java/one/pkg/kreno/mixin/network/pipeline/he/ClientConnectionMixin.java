@@ -1,4 +1,4 @@
-package one.pkg.kreno.mixin.network.pipeline;
+package one.pkg.kreno.mixin.network.pipeline.he;
 
 import net.minecraft.network.Connection;
 import net.minecraft.server.network.EventLoopGroupHolder;
