@@ -31,11 +31,7 @@ public class RconClientBenchmark {
     @Setup
     public void setup() {
         allocator = ByteBufAllocator.DEFAULT;
-        StringBuilder sb = new StringBuilder(messageSize);
-        for (int i = 0; i < messageSize; i++) {
-            sb.append('a');
-        }
-        messageBytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+        messageBytes = "a".repeat(messageSize).getBytes(StandardCharsets.UTF_8);
     }
 
     @Benchmark
