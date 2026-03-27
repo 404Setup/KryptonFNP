@@ -1,0 +1,38 @@
+{
+  "kreno.config.title": "Kreno Konfiguration",
+  "kreno.config.category.compress": "Kompression",
+  "kreno.config.category.fix.issues128": "Verkehrsüberwachung korrigieren",
+  "kreno.config.category.compatibility": "Kompatibilität",
+  "kreno.config.category.mixin": "Mixin Konfiguration",
+  "kreno.config.category.netty": "Netty Konfiguration",
+
+  "kreno.config.entry.compress.compressionLevel": "Paket-Kompressionsstufe",
+  "kreno.config.entry.compress.compressionLevel.desc": "Die Kompressionsstufe für Pakete, zwischen 1-9.",
+  "kreno.config.entry.compress.permitOversizedPackets": "Übergroße Pakete erlauben",
+  "kreno.config.entry.compress.permitOversizedPackets.desc": "Erlaubt das Senden von Paketen, die das Standardlimit überschreiten.",
+
+  "kreno.config.entry.fix.issues128.enabled": "Aktiviert",
+  "kreno.config.entry.fix.issues128.enabled.desc": "Verkehrsstatistiken korrigieren",
+  "kreno.config.entry.fix.issues128.sync": "Synchrone Verkehrsüberwachung",
+  "kreno.config.entry.fix.issues128.sync.desc": "Bandbreitenstatistiken im synchronen Thread ausführen, was dem Vanilla-Verhalten näher kommt.",
+
+  "kreno.config.entry.compatibility.allow-wide-var-int": "Breite VarInt erlauben",
+
+  "kreno.config.entry.mixin.loginVT": "Virtueller Login-Thread",
+  "kreno.config.entry.mixin.loginVT.desc": "Ersetzt den Thread zur Validierung der Spieleranmeldung durch einen virtuellen Thread",
+  "kreno.config.entry.mixin.textFilterVT": "Virtueller Textfilter-Thread",
+  "kreno.config.entry.mixin.textFilterVT.desc": "Ersetzt den Textfilter-Thread durch einen virtuellen Thread",
+  "kreno.config.entry.mixin.utilVT": "Virtueller Utility-Thread",
+  "kreno.config.entry.mixin.utilVT.desc": "Ersetzt den Download-Thread durch einen virtuellen Thread",
+  "kreno.config.entry.mixin.bestVarLong": "Optimiertes VarLong",
+  "kreno.config.entry.mixin.bestVarLong.desc": "Optimierte VarLong-Implementierung",
+  "kreno.config.entry.mixin.clientEncrypt": "Clientseitige Verschlüsselungsoptimierung",
+  "kreno.config.entry.mixin.clientEncrypt.desc": "Aktiviert neue Verschlüsselungsoptimierungen auf der Clientseite",
+  "kreno.config.entry.mixin.rconClient": "Optimierter RconClient",
+  "kreno.config.entry.mixin.rconClient.desc": "Optimierte RconClient-Implementierung",
+
+  "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
+  "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",
+  "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen."
+}

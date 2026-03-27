@@ -22,11 +22,18 @@ import java.util.Map;
 public class SeeUIConfigScreen extends OptionsSubScreen {
     private final Class<?> configClass;
     private final Runnable onSaved;
+    private final String keyword;
 
     public SeeUIConfigScreen(Class<?> configClass, Screen lastScreen, Runnable onSaved) {
-        super(lastScreen, Minecraft.getInstance().options, Component.translatable("gui.kreno.config.title"));
+        super(lastScreen, Minecraft.getInstance().options, Component.translatable(getKeyword(configClass) + ".config.title"));
         this.configClass = configClass;
         this.onSaved = onSaved;
+        this.keyword = getKeyword(configClass);
+    }
+
+    private static String getKeyword(Class<?> clazz) {
+        one.pkg.config.annotation.config.ConfigEntry ann = clazz.getAnnotation(one.pkg.config.annotation.config.ConfigEntry.class);
+        return ann != null ? ann.value() : "gui.kreno";
     }
 
     @Override
@@ -69,7 +76,7 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
         }
 
         for (Map.Entry<String, List<ConfigEntry>> category : categories.entrySet()) {
-            this.list.addHeader(Component.translatable("gui.kreno.config.category." + category.getKey()));
+            this.list.addHeader(Component.translatable(keyword + ".config.category." + category.getKey()));
             List<ConfigEntry> entries = category.getValue();
             for (int i = 0; i < entries.size(); i += 2) {
                 ConfigEntry entry1 = entries.get(i);
@@ -97,18 +104,18 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
     private ConfigEntry createEntry(Field field, String category, String key, String comment, double min, double max, EntryMode mode, DisplayMode displayMode) {
         Class<?> type = field.getType();
         if (mode == EntryMode.CYCLE && displayMode != null)
-            return new ConfigEntry.CycleEntry(field, category, key, comment, displayMode.cycleValues());
+            return new ConfigEntry.CycleEntry(field, category, key, comment, keyword, displayMode.cycleValues());
         if (mode == EntryMode.SLIDER)
-            return new ConfigEntry.SliderEntry(field, category, key, comment, min, max);
+            return new ConfigEntry.SliderEntry(field, category, key, comment, keyword, min, max);
 
         if (type == boolean.class || type == Boolean.class)
-            return new ConfigEntry.BooleanEntry(field, category, key, comment);
+            return new ConfigEntry.BooleanEntry(field, category, key, comment, keyword);
         if (type == int.class || type == Integer.class)
-            return new ConfigEntry.IntegerEntry(field, category, key, comment, min, max);
+            return new ConfigEntry.IntegerEntry(field, category, key, comment, keyword, min, max);
         if (type == long.class || type == Long.class)
-            return new ConfigEntry.LongEntry(field, category, key, comment, min, max);
+            return new ConfigEntry.LongEntry(field, category, key, comment, keyword, min, max);
         if (type == double.class || type == Double.class || type == float.class || type == Float.class)
-            return new ConfigEntry.DoubleEntry(field, category, key, comment, min, max);
+            return new ConfigEntry.DoubleEntry(field, category, key, comment, keyword, min, max);
         return null;
     }
 }

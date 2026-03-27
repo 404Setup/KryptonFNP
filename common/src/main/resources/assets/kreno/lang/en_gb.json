@@ -14,7 +14,7 @@
   "kreno.config.entry.fix.issues128.enabled": "Enabled",
   "kreno.config.entry.fix.issues128.enabled.desc": "Fix Traffic Statistics",
   "kreno.config.entry.fix.issues128.sync": "Sync Traffic Monitoring",
-  "kreno.config.entry.fix.issues128.sync.desc": "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.",
+  "kreno.config.entry.fix.issues128.sync.desc": "Run bandwidth statistics on sync thread, which is closer to Vanilla behaviour.",
 
   "kreno.config.entry.compatibility.allow-wide-var-int": "Allow Wide VarInt",
 
@@ -24,12 +24,12 @@
   "kreno.config.entry.mixin.textFilterVT.desc": "Replace text filter thread with virtual thread",
   "kreno.config.entry.mixin.utilVT": "Utility Virtual Thread",
   "kreno.config.entry.mixin.utilVT.desc": "Replace download thread with virtual thread",
-  "kreno.config.entry.mixin.bestVarLong": "Optimized VarLong",
-  "kreno.config.entry.mixin.bestVarLong.desc": "Optimized VarLong implementation",
-  "kreno.config.entry.mixin.clientEncrypt": "Client Side Encryption Optimization",
-  "kreno.config.entry.mixin.clientEncrypt.desc": "Enable new encryption optimizations on the client side",
-  "kreno.config.entry.mixin.rconClient": "Optimized RconClient",
-  "kreno.config.entry.mixin.rconClient.desc": "Optimized RconClient implementation",
+  "kreno.config.entry.mixin.bestVarLong": "Optimised VarLong",
+  "kreno.config.entry.mixin.bestVarLong.desc": "Optimised VarLong implementation",
+  "kreno.config.entry.mixin.clientEncrypt": "Client Side Encryption Optimisation",
+  "kreno.config.entry.mixin.clientEncrypt.desc": "Enable new encryption optimisations on the client side",
+  "kreno.config.entry.mixin.rconClient": "Optimised RconClient",
+  "kreno.config.entry.mixin.rconClient.desc": "Optimised RconClient implementation",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",

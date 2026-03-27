@@ -18,12 +18,14 @@ public abstract class ConfigEntry {
     protected final String category;
     protected final String key;
     protected final String comment;
+    protected final String keyword;
 
-    public ConfigEntry(Field field, String category, String key, String comment) {
+    public ConfigEntry(Field field, String category, String key, String comment, String keyword) {
         this.field = field;
         this.category = category;
         this.key = key;
         this.comment = comment;
+        this.keyword = keyword;
         this.field.setAccessible(true);
     }
 
@@ -32,7 +34,7 @@ public abstract class ConfigEntry {
     public abstract void save();
 
     public Component getLabel() {
-        return Component.translatable("gui.kreno.config.entry." + category + "." + key);
+        return Component.translatable(keyword + ".config.entry." + category + "." + key);
     }
 
     public String getCategory() {
@@ -40,7 +42,7 @@ public abstract class ConfigEntry {
     }
 
     public Component getTooltip() {
-        String tooltipKey = "gui.kreno.config.entry." + category + "." + key + ".desc";
+        String tooltipKey = keyword + ".config.entry." + category + "." + key + ".desc";
         if (Language.getInstance().has(tooltipKey)) {
             return Component.translatable(tooltipKey);
         }
@@ -51,8 +53,8 @@ public abstract class ConfigEntry {
     public static class BooleanEntry extends ConfigEntry {
         private boolean value;
 
-        public BooleanEntry(Field field, String category, String key, String comment) {
-            super(field, category, key, comment);
+        public BooleanEntry(Field field, String category, String key, String comment, String keyword) {
+            super(field, category, key, comment, keyword);
             try {
                 Object val = field.get(null);
                 this.value = val instanceof Boolean ? (Boolean) val : false;
@@ -85,8 +87,8 @@ public abstract class ConfigEntry {
         private final double max;
         private int value;
 
-        public IntegerEntry(Field field, String category, String key, String comment, double min, double max) {
-            super(field, category, key, comment);
+        public IntegerEntry(Field field, String category, String key, String comment, String keyword, double min, double max) {
+            super(field, category, key, comment, keyword);
             this.min = min;
             this.max = max;
             try {
@@ -131,8 +133,8 @@ public abstract class ConfigEntry {
         private final double max;
         private long value;
 
-        public LongEntry(Field field, String category, String key, String comment, double min, double max) {
-            super(field, category, key, comment);
+        public LongEntry(Field field, String category, String key, String comment, String keyword, double min, double max) {
+            super(field, category, key, comment, keyword);
             this.min = min;
             this.max = max;
             try {
@@ -177,8 +179,8 @@ public abstract class ConfigEntry {
         private final double max;
         private double value;
 
-        public DoubleEntry(Field field, String category, String key, String comment, double min, double max) {
-            super(field, category, key, comment);
+        public DoubleEntry(Field field, String category, String key, String comment, String keyword, double min, double max) {
+            super(field, category, key, comment, keyword);
             this.min = min;
             this.max = max;
             try {
@@ -223,8 +225,8 @@ public abstract class ConfigEntry {
         private final String[] options;
         private String value;
 
-        public CycleEntry(Field field, String category, String key, String comment, String[] options) {
-            super(field, category, key, comment);
+        public CycleEntry(Field field, String category, String key, String comment, String keyword, String[] options) {
+            super(field, category, key, comment, keyword);
             this.options = options;
             try {
                 Object obj = field.get(null);
@@ -274,8 +276,8 @@ public abstract class ConfigEntry {
         private final boolean isInteger;
         private double actualValue;
 
-        public SliderEntry(Field field, String category, String key, String comment, double min, double max) {
-            super(field, category, key, comment);
+        public SliderEntry(Field field, String category, String key, String comment, String keyword, double min, double max) {
+            super(field, category, key, comment, keyword);
             this.min = min;
             this.max = max;
             Class<?> type = field.getType();
