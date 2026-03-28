@@ -34,5 +34,5 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大階數 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "將 Netty 默認的 16MiB 內存分配改為 4MiB，因為 Minecraft 的數據包限制為 2MiB。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "為客戶端連接啟用 Happy Eyeballs，同時嘗試 IPv6 和 IPv4 連接。"
+  "kreno.config.entry.netty.happyEyeballs.desc": "為用戶端連線啟用 Happy Eyeballs，同時嘗試 IPv6 和 IPv4 連線。可能導致部分伺服器 (如 Velocity) 暫時拒絕連線。"
 }
