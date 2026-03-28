@@ -1,0 +1,38 @@
+{
+  "kreno.config.title": "Kreno 配置",
+  "kreno.config.category.compress": "压缩",
+  "kreno.config.category.fix.issues128": "修复流量监控失效",
+  "kreno.config.category.compatibility": "兼容",
+  "kreno.config.category.mixin": "Mixin配置",
+  "kreno.config.category.netty": "Netty配置",
+
+  "kreno.config.entry.compress.compressionLevel": "数据包压缩等级",
+  "kreno.config.entry.compress.compressionLevel.desc": "数据包的压缩等级，范围为 1-9。",
+  "kreno.config.entry.compress.permitOversizedPackets": "允许发送过大的数据包",
+  "kreno.config.entry.compress.permitOversizedPackets.desc": "允许发送超过标准限制的大型数据包",
+
+  "kreno.config.entry.fix.issues128.enabled": "启用修复",
+  "kreno.config.entry.fix.issues128.enabled.desc": "修复流量统计失效的问题",
+  "kreno.config.entry.fix.issues128.sync": "同步流量监控",
+  "kreno.config.entry.fix.issues128.sync.desc": "在同步线程运行带宽统计，这更接近原版行为。",
+
+  "kreno.config.entry.compatibility.allow-wide-var-int": "允许宽字节 VarInt",
+
+  "kreno.config.entry.mixin.loginVT": "登录验证虚拟线程",
+  "kreno.config.entry.mixin.loginVT.desc": "使用虚拟线程替换玩家登录验证线程",
+  "kreno.config.entry.mixin.textFilterVT": "文本过滤虚拟线程",
+  "kreno.config.entry.mixin.textFilterVT.desc": "使用虚拟线程替换文本过滤线程",
+  "kreno.config.entry.mixin.utilVT": "工具类虚拟线程",
+  "kreno.config.entry.mixin.utilVT.desc": "使用虚拟线程替换下载线程",
+  "kreno.config.entry.mixin.bestVarLong": "优化 VarLong 实现",
+  "kreno.config.entry.mixin.bestVarLong.desc": "启用优化后的 VarLong 实现",
+  "kreno.config.entry.mixin.clientEncrypt": "客户端加密优化",
+  "kreno.config.entry.mixin.clientEncrypt.desc": "在客户端启用新的加密优化",
+  "kreno.config.entry.mixin.rconClient": "优化 RconClient",
+  "kreno.config.entry.mixin.rconClient.desc": "启用优化后的 RconClient 实现",
+
+  "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大阶数 (MaxOrder)",
+  "kreno.config.entry.netty.allocatorMaxOrder.desc": "将 Netty 默认的 16MiB 内存分配改为 4MiB，因为 Minecraft 的数据包限制为 2MiB。",
+  "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "kreno.config.entry.netty.happyEyeballs.desc": "为客户端连接启用 Happy Eyeballs，同时尝试 IPv6 和 IPv4 连接。"
+}

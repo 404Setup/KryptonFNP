@@ -1,0 +1,38 @@
+{
+  "kreno.config.title": "Настройки Kreno",
+  "kreno.config.category.compress": "Сжатие",
+  "kreno.config.category.fix.issues128": "Исправление мониторинга трафика",
+  "kreno.config.category.compatibility": "Совместимость",
+  "kreno.config.category.mixin": "Настройки Mixin",
+  "kreno.config.category.netty": "Настройки Netty",
+
+  "kreno.config.entry.compress.compressionLevel": "Уровень сжатия пакетов",
+  "kreno.config.entry.compress.compressionLevel.desc": "Уровень сжатия пакетов, от 1 до 9.",
+  "kreno.config.entry.compress.permitOversizedPackets": "Разрешить слишком большие пакеты",
+  "kreno.config.entry.compress.permitOversizedPackets.desc": "Разрешить отправку пакетов, размер которых превышает стандартный предел.",
+
+  "kreno.config.entry.fix.issues128.enabled": "Включено",
+  "kreno.config.entry.fix.issues128.enabled.desc": "Исправить статистику трафика",
+  "kreno.config.entry.fix.issues128.sync": "Синхронный мониторинг трафика",
+  "kreno.config.entry.fix.issues128.sync.desc": "Запуск статистики пропускной способности в синхронном потоке, что ближе к поведению ванильной версии.",
+
+  "kreno.config.entry.compatibility.allow-wide-var-int": "Разрешить широкие VarInt",
+
+  "kreno.config.entry.mixin.loginVT": "Виртуальный поток проверки входа",
+  "kreno.config.entry.mixin.loginVT.desc": "Заменить поток проверки входа игрока на виртуальный поток",
+  "kreno.config.entry.mixin.textFilterVT": "Виртуальный поток фильтрации текста",
+  "kreno.config.entry.mixin.textFilterVT.desc": "Заменить поток фильтрации текста на виртуальный поток",
+  "kreno.config.entry.mixin.utilVT": "Утилитарный виртуальный поток",
+  "kreno.config.entry.mixin.utilVT.desc": "Заменить поток загрузки на виртуальный поток",
+  "kreno.config.entry.mixin.bestVarLong": "Оптимизированный VarLong",
+  "kreno.config.entry.mixin.bestVarLong.desc": "Оптимизированная реализация VarLong",
+  "kreno.config.entry.mixin.clientEncrypt": "Оптимизация шифрования на стороне клиента",
+  "kreno.config.entry.mixin.clientEncrypt.desc": "Включить новые оптимизации шифрования на стороне клиента",
+  "kreno.config.entry.mixin.rconClient": "Оптимизированный RconClient",
+  "kreno.config.entry.mixin.rconClient.desc": "Оптимизированная реализация RconClient",
+
+  "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
+  "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
+  "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
+  "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4."
+}
