@@ -9,7 +9,7 @@ public interface FMLTest {
     static void test() {
         try {
             Class.forName("org.bukkit.advancement.Advancement");
-            throw new UnsupportedOperationException("KryptonFNP does not support running in an environment that mixes Bukkit with FML.");
+            throw new UnsupportedOperationException("KryptonReno does not support running in an environment that mixes Bukkit with FML.");
         } catch (ClassNotFoundException ignored) {
         }
     }
