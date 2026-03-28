@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class HEConnect {
     private static final Logger LOGGER = LoggerFactory.getLogger(HEConnect.class);
@@ -82,10 +83,20 @@ public class HEConnect {
         AtomicBoolean winnerChosen = new AtomicBoolean(false);
         CompletableFuture<Channel> winnerFuture = new CompletableFuture<>();
 
+        Consumer<Channel> pipelineConfigurator = (winningChannel) -> {
+            Connection.configureSerialization(
+                    winningChannel.pipeline(),
+                    PacketFlow.CLIENTBOUND,
+                    false,
+                    ((ConnectionAccessor) connection).getBandwidthDebugMonitor()
+            );
+            connection.configurePacketHandler(winningChannel.pipeline());
+        };
+
         Bootstrap ipv6Bootstrap = baseBootstrap.clone();
         Bootstrap ipv4Bootstrap = baseBootstrap.clone();
 
-        HEConnectHandler ipv6Handler = new HEConnectHandler(winnerChosen, winnerFuture);
+        HEConnectHandler ipv6Handler = new HEConnectHandler(winnerChosen, winnerFuture, pipelineConfigurator);
         ipv6Bootstrap.handler(new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel ch) {
@@ -99,7 +110,7 @@ public class HEConnect {
             }
         });
 
-        HEConnectHandler ipv4Handler = new HEConnectHandler(winnerChosen, winnerFuture);
+        HEConnectHandler ipv4Handler = new HEConnectHandler(winnerChosen, winnerFuture, pipelineConfigurator);
         ipv4Bootstrap.handler(new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel ch) {
@@ -153,16 +164,8 @@ public class HEConnect {
         });
 
         try {
-            Channel winningChannel = winnerFuture.get();
+            winnerFuture.get();
 
-            Connection.configureSerialization(
-                    winningChannel.pipeline(),
-                    PacketFlow.CLIENTBOUND,
-                    false,
-                    ((ConnectionAccessor) connection).getBandwidthDebugMonitor()
-            );
-
-            connection.configurePacketHandler(winningChannel.pipeline());
             return connection;
         } catch (ExecutionException e) {
             Throwable cause = e.getCause();

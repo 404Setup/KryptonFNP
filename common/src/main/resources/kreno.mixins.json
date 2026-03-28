@@ -15,6 +15,7 @@
     "network.microopt.Utf8StringMixin",
     "network.microopt.VarIntMixin",
     "network.microopt.VarLongMixin",
+    "network.pipeline.AbstractEventExecutorMixin",
     "network.pipeline.LegacyQueryHandlerMixin",
     "network.pipeline.Varint21FrameDecoderMixin",
     "network.pipeline.compression.ConnectionMixin",
