@@ -42,7 +42,7 @@ public class ModConfig {
     @Range(min = 9, max = 51)
     @DisplayMode(EntryMode.SLIDER)
     private static int var12 = 9;
-    @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.")
+    @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.")
     private static boolean var13 = false;
 
     static {

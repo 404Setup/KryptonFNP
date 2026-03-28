@@ -34,5 +34,5 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections."
 }

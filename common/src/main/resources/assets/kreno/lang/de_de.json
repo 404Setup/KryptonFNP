@@ -34,5 +34,5 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen. Kann dazu führen, dass einige Server (wie Velocity) Verbindungen vorübergehend ablehnen."
 }

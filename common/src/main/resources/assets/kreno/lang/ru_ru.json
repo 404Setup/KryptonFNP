@@ -34,5 +34,5 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4. Может привести к временному отказу в подключении некоторыми серверами (например, Velocity)."
 }
