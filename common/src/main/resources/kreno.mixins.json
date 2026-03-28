@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "one.pkg.kreno.mixin",
   "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "network.pipeline.encryption.ClientLoginMixin",
     "network.pipeline.he.ClientConnectionMixin"

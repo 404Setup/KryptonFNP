@@ -6,7 +6,7 @@ import one.pkg.kreno.shared.network.util.VarIntUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(VarInt.class)
+@Mixin(value = VarInt.class, priority = 900)
 public class VarIntMixin {
 
     /**

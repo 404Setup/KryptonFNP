@@ -14,7 +14,7 @@ neoForge {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:mixin:0.8.7")
+    compileOnly("net.fabricmc:sponge-mixin:0.16.5+mixin.0.8.7")
     compileOnly("org.ow2.asm:asm-tree:9.9.1")
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.3")

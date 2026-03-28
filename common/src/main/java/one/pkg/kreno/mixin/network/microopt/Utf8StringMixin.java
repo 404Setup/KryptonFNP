@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 import java.nio.charset.StandardCharsets;
 
-@Mixin(Utf8String.class)
+@Mixin(value = Utf8String.class, priority = 900)
 public class Utf8StringMixin {
     /**
      * @author Andrew Steinborn
