@@ -46,15 +46,20 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
                 LOGGER.debug("HE: Connection succeeded on {}", ctx.channel().remoteAddress());
             }
             if (timer != null) timer.cancel(false);
-            if (otherFuture != null && otherFuture.channel() != null) {
-                otherFuture.channel().close();
+            if (otherFuture != null) {
+                if (otherFuture.isDone()) {
+                    if (otherFuture.channel() != null) {
+                        otherFuture.channel().close();
+                    }
+                } else {
+                    otherFuture.cancel(false);
+                }
             }
 
             ctx.pipeline().remove(this);
             pipelineConfigurator.accept(ctx.channel());
+            ctx.pipeline().fireChannelActive();
             winnerFuture.complete(ctx.channel());
-
-            ctx.fireChannelActive();
         } else {
             ctx.channel().close();
         }
