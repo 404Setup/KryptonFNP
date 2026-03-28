@@ -75,15 +75,15 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
 
     enum Compatibility {
         ServerLoginEncryptionWithE4MC(
-                "one.pkg.encryption.pipeline.network.mixin.kreno.ServerLoginPacketListenerImplMixin",
+                "one.pkg.kreno.mixin.network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
                 "e4mc",
                 CompatibilityType.DISABLE),
         ConnectionEncryptionWithE4MC(
-                "one.pkg.encryption.pipeline.network.mixin.kreno.ConnectionMixin",
+                "one.pkg.kreno.mixin.network.pipeline.encryption.ConnectionMixin",
                 "e4mc",
                 CompatibilityType.DISABLE),
         ClientLoginWithE4MC(
-                "one.pkg.encryption.pipeline.network.mixin.kreno.ClientLoginMixin",
+                "one.pkg.kreno.mixin.network.pipeline.encryption.ClientLoginMixin",
                 "e4mc",
                 CompatibilityType.DISABLE),
         ;
@@ -130,12 +130,12 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     }
 
     enum CONFIG {
-        Login_VT("one.pkg.thread.network.mixin.kreno.ServerLoginPacketListenerImplMixin", ModConfig.Mixin::isLoginVT),
-        TextFilter_VT("one.pkg.thread.network.mixin.kreno.ServerTextFilterMixin", ModConfig.Mixin::isTextFilterVT),
-        Util_VT("one.pkg.thread.network.mixin.kreno.UtilMixin", ModConfig.Mixin::isUtilVT),
-        BestVarLong("one.pkg.microopt.network.mixin.kreno.VarLongMixin", ModConfig.Mixin::isBestVarLong),
-        ClientEncrypt("one.pkg.encryption.pipeline.network.mixin.kreno.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
-        RconClient("one.pkg.experimental.network.mixin.kreno.RconClientMixin", ModConfig.Mixin::isRconClient),
+        Login_VT("one.pkg.kreno.mixin.network.thread.ServerLoginPacketListenerImplMixin", ModConfig.Mixin::isLoginVT),
+        TextFilter_VT("one.pkg.kreno.mixin.network.thread.ServerTextFilterMixin", ModConfig.Mixin::isTextFilterVT),
+        Util_VT("one.pkg.kreno.mixin.network.thread.UtilMixin", ModConfig.Mixin::isUtilVT),
+        BestVarLong("one.pkg.kreno.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),
+        ClientEncrypt("one.pkg.kreno.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
+        RconClient("one.pkg.kreno.mixin.network.experimental.RconClientMixin", ModConfig.Mixin::isRconClient),
         ;
 
         public final String CLASS;
