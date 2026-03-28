@@ -12,18 +12,21 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class HEConnectHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(HEConnectHandler.class);
 
     private final AtomicBoolean winnerChosen;
     private final CompletableFuture<Channel> winnerFuture;
+    private final Consumer<Channel> pipelineConfigurator;
     private ChannelFuture otherFuture;
     private ScheduledFuture<?> timer;
 
-    public HEConnectHandler(AtomicBoolean winnerChosen, CompletableFuture<Channel> winnerFuture) {
+    public HEConnectHandler(AtomicBoolean winnerChosen, CompletableFuture<Channel> winnerFuture, Consumer<Channel> pipelineConfigurator) {
         this.winnerChosen = winnerChosen;
         this.winnerFuture = winnerFuture;
+        this.pipelineConfigurator = pipelineConfigurator;
     }
 
     public void setOtherFuture(ChannelFuture otherFuture) {
@@ -48,6 +51,7 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
             }
 
             ctx.pipeline().remove(this);
+            pipelineConfigurator.accept(ctx.channel());
             winnerFuture.complete(ctx.channel());
 
             ctx.fireChannelActive();
