@@ -17,7 +17,6 @@
     "network.microopt.VarLongMixin",
     "network.pipeline.LegacyQueryHandlerMixin",
     "network.pipeline.Varint21FrameDecoderMixin",
-    "network.pipeline.AbstractNioUnsafeMixin",
     "network.pipeline.compression.ConnectionMixin",
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
