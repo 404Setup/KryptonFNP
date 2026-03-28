@@ -47,18 +47,16 @@ public class HEConnectHandler extends ChannelInboundHandlerAdapter {
             }
             if (timer != null) timer.cancel(false);
             if (otherFuture != null) {
-                if (otherFuture.isDone()) {
-                    if (otherFuture.channel() != null) {
-                        otherFuture.channel().close();
-                    }
-                } else {
-                    otherFuture.cancel(false);
+                otherFuture.cancel(false);
+                if (otherFuture.isDone() && otherFuture.isSuccess()) {
+                    otherFuture.channel().close();
                 }
             }
 
-            ctx.pipeline().remove(this);
             pipelineConfigurator.accept(ctx.channel());
-            ctx.pipeline().fireChannelActive();
+            ctx.fireChannelActive();
+            ctx.pipeline().remove(this);
+
             winnerFuture.complete(ctx.channel());
         } else {
             ctx.channel().close();
