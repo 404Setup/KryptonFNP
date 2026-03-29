@@ -5,6 +5,7 @@ import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
 
 public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
@@ -34,6 +35,8 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
                 compatibleIn.release();
             }
         }
+        TrafficMonitor.compressionEnabled = true;
+        TrafficMonitor.onOutboundCompressed(out.readableBytes());
     }
 
     @Override

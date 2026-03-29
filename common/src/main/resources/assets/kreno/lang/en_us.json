@@ -34,5 +34,30 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.",
+
+  "kreno.traffic.gui.title": "Krypton Reno Traffic Monitor",
+  "kreno.traffic.gui.reset": "Reset Stats",
+  "kreno.traffic.gui.global": "=== Global Traffic Stats ===",
+  "kreno.traffic.gui.bytes": "Bytes - In: %s | Out: %s",
+  "kreno.traffic.gui.compressed": "Compressed - In: %s | Out: %s",
+  "kreno.traffic.gui.rate": "Rate: In %s/s | Out %s/s",
+  "kreno.traffic.gui.top_players": "=== Top 10 Players ===",
+  "kreno.traffic.gui.player_stat": "%s: Total %s (Up %s | Down %s)",
+  "kreno.traffic.gui.top_inbound": "=== Top 10 Inbound Packets ===",
+  "kreno.traffic.gui.packet_stat": "%d. %s: %s",
+
+  "kreno.command.reset.success": "Traffic statistics have been reset.",
+  "kreno.command.all.header": "=== Krypton Reno Global Traffic ===",
+  "kreno.command.all.total": "Total: In %s | Out %s",
+  "kreno.command.all.rate": "Rate: In %s/s (%.2f pps) | Out %s/s (%.2f pps)",
+  "kreno.command.all.top_players": "--- Top 10 Players ---",
+  "kreno.command.all.player_summary": " | Total: %s | Up: %s | Down: %s",
+  "kreno.command.all.hover_header": "Top 5 Packets:\n",
+  "kreno.command.all.hover_entry": "- %s: %s\n",
+  "kreno.command.player.header": "=== Traffic for %s ===",
+  "kreno.command.player.inbound": "Inbound (Download):",
+  "kreno.command.player.outbound": "Outbound (Upload):",
+  "kreno.command.player.entry": "- %s: %s (%d pkts)",
+  "kreno.command.player.not_found": "Player not found in statistics."
 }

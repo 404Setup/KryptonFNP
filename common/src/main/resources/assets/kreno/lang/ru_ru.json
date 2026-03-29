@@ -34,5 +34,30 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4. Может привести к временному отказу в подключении некоторыми серверами (например, Velocity)."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4. Может привести к временному отказу в подключении некоторыми серверами (например, Velocity).",
+
+  "kreno.traffic.gui.title": "Мониторинг трафика Krypton Reno",
+  "kreno.traffic.gui.reset": "Сбросить статистику",
+  "kreno.traffic.gui.global": "=== Общая статистика трафика ===",
+  "kreno.traffic.gui.bytes": "Байты - Вход: %s | Выход: %s",
+  "kreno.traffic.gui.compressed": "Сжато - Вход: %s | Выход: %s",
+  "kreno.traffic.gui.rate": "Скорость: Вход %s/с | Выход %s/с",
+  "kreno.traffic.gui.top_players": "=== Топ 10 игроков ===",
+  "kreno.traffic.gui.player_stat": "%s: Всего %s (Исх. %s | Вх. %s)",
+  "kreno.traffic.gui.top_inbound": "=== Топ 10 входящих пакетов ===",
+  "kreno.traffic.gui.packet_stat": "%d. %s: %s",
+
+  "kreno.command.reset.success": "Статистика трафика была сброшена.",
+  "kreno.command.all.header": "=== Общий трафик Krypton Reno ===",
+  "kreno.command.all.total": "Всего: Вход %s | Выход %s",
+  "kreno.command.all.rate": "Скорость: Вход %s/с (%.2f pps) | Выход %s/с (%.2f pps)",
+  "kreno.command.all.top_players": "--- Топ 10 игроков ---",
+  "kreno.command.all.player_summary": " | Всего: %s | Исх: %s | Вх: %s",
+  "kreno.command.all.hover_header": "Топ 5 пакетов:\n",
+  "kreno.command.all.hover_entry": "- %s: %s\n",
+  "kreno.command.player.header": "=== Трафик для %s ===",
+  "kreno.command.player.inbound": "Входящий (Download):",
+  "kreno.command.player.outbound": "Исходящий (Upload):",
+  "kreno.command.player.entry": "- %s: %s (%d пак.)",
+  "kreno.command.player.not_found": "Игрок не найден в статистике."
 }

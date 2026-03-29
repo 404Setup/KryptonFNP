@@ -34,5 +34,30 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen. Kann dazu führen, dass einige Server (wie Velocity) Verbindungen vorübergehend ablehnen."
+  "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen. Kann dazu führen, dass einige Server (wie Velocity) Verbindungen vorübergehend ablehnen.",
+
+  "kreno.traffic.gui.title": "Krypton Reno Verkehrsüberwachung",
+  "kreno.traffic.gui.reset": "Statistiken zurücksetzen",
+  "kreno.traffic.gui.global": "=== Globale Verkehrsstatistiken ===",
+  "kreno.traffic.gui.bytes": "Bytes - In: %s | Out: %s",
+  "kreno.traffic.gui.compressed": "Komprimiert - In: %s | Out: %s",
+  "kreno.traffic.gui.rate": "Rate: In %s/s | Out %s/s",
+  "kreno.traffic.gui.top_players": "=== Top 10 Spieler ===",
+  "kreno.traffic.gui.player_stat": "%s: Gesamt %s (Up %s | Down %s)",
+  "kreno.traffic.gui.top_inbound": "=== Top 10 eingehende Pakete ===",
+  "kreno.traffic.gui.packet_stat": "%d. %s: %s",
+
+  "kreno.command.reset.success": "Verkehrsstatistiken wurden zurückgesetzt.",
+  "kreno.command.all.header": "=== Krypton Reno Globaler Verkehr ===",
+  "kreno.command.all.total": "Gesamt: In %s | Out %s",
+  "kreno.command.all.rate": "Rate: In %s/s (%.2f pps) | Out %s/s (%.2f pps)",
+  "kreno.command.all.top_players": "--- Top 10 Spieler ---",
+  "kreno.command.all.player_summary": " | Gesamt: %s | Up: %s | Down: %s",
+  "kreno.command.all.hover_header": "Top 5 Pakete:\n",
+  "kreno.command.all.hover_entry": "- %s: %s\n",
+  "kreno.command.player.header": "=== Verkehr für %s ===",
+  "kreno.command.player.inbound": "Eingehend (Download):",
+  "kreno.command.player.outbound": "Ausgehend (Upload):",
+  "kreno.command.player.entry": "- %s: %s (%d Pakete)",
+  "kreno.command.player.not_found": "Spieler nicht in den Statistiken gefunden."
 }

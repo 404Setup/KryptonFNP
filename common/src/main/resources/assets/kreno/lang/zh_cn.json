@@ -34,5 +34,30 @@
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大阶数 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "将 Netty 默认的 16MiB 内存分配改为 4MiB，因为 Minecraft 的数据包限制为 2MiB。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
-  "kreno.config.entry.netty.happyEyeballs.desc": "为客户端连接启用 Happy Eyeballs，同时尝试 IPv6 和 IPv4 连接。可能导致部分服务器 (如 Velocity) 暂时拒绝连接。"
+  "kreno.config.entry.netty.happyEyeballs.desc": "为客户端连接启用 Happy Eyeballs，同时尝试 IPv6 和 IPv4 连接。可能导致部分服务器 (如 Velocity) 暂时拒绝连接。",
+
+  "kreno.traffic.gui.title": "Krypton Reno 流量监控",
+  "kreno.traffic.gui.reset": "重置统计",
+  "kreno.traffic.gui.global": "=== 全局流量统计 ===",
+  "kreno.traffic.gui.bytes": "字节 - 输入: %s | 输出: %s",
+  "kreno.traffic.gui.compressed": "压缩后 - 输入: %s | 输出: %s",
+  "kreno.traffic.gui.rate": "速率: 输入 %s/s | 输出 %s/s",
+  "kreno.traffic.gui.top_players": "=== 前10名玩家 ===",
+  "kreno.traffic.gui.player_stat": "%s: 总计 %s (上传 %s | 下载 %s)",
+  "kreno.traffic.gui.top_inbound": "=== 前10名输入数据包 ===",
+  "kreno.traffic.gui.packet_stat": "%d. %s: %s",
+
+  "kreno.command.reset.success": "流量统计已重置。",
+  "kreno.command.all.header": "=== Krypton Reno 全局流量 ===",
+  "kreno.command.all.total": "总计: 输入 %s | 输出 %s",
+  "kreno.command.all.rate": "速率: 输入 %s/s (%.2f pps) | 输出 %s/s (%.2f pps)",
+  "kreno.command.all.top_players": "--- 前10名玩家 ---",
+  "kreno.command.all.player_summary": " | 总计: %s | 上传: %s | 下载: %s",
+  "kreno.command.all.hover_header": "前5名数据包:\n",
+  "kreno.command.all.hover_entry": "- %s: %s\n",
+  "kreno.command.player.header": "=== %s 的流量统计 ===",
+  "kreno.command.player.inbound": "下载 (Inbound):",
+  "kreno.command.player.outbound": "上传 (Outbound):",
+  "kreno.command.player.entry": "- %s: %s (%d 个包)",
+  "kreno.command.player.not_found": "未在统计中找到该玩家。"
 }

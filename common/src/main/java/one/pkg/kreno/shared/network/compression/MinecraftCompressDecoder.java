@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        TrafficMonitor.compressionEnabled = true;
+        TrafficMonitor.onInboundCompressed(in.readableBytes() + one.pkg.kreno.shared.network.util.VarIntUtil.getVarIntLength(in.readableBytes()));
         int claimedUncompressedSize = VarIntUtil.readVarInt(in);
 
         if (claimedUncompressedSize == 0) {
