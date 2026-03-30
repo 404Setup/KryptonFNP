@@ -74,3 +74,9 @@ artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
+
+jmh {
+    if (project.hasProperty('jmh.includes')) {
+        includes = [project.property('jmh.includes')]
+    }
+}
