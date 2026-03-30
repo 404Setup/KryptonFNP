@@ -10,8 +10,10 @@ import one.pkg.kreno.shared.network.util.VarIntUtil;
 import org.spongepowered.asm.mixin.*;
 
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static io.netty.util.ByteProcessor.FIND_NON_NUL;
 import static one.pkg.kreno.shared.network.util.WellKnownExceptions.BAD_LENGTH_CACHED;
@@ -24,7 +26,13 @@ import static one.pkg.kreno.shared.network.util.WellKnownExceptions.VARINT_BIG_C
 @Mixin(Varint21FrameDecoder.class)
 public class Varint21FrameDecoderMixin {
     @Unique
-    private final ExecutorService kreno$executor = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
+    private final ExecutorService kreno$executor = new ThreadPoolExecutor(
+            1, 1,
+            0L, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<>(1024),
+            Thread.ofVirtual().factory(),
+            new ThreadPoolExecutor.DiscardPolicy()
+    );
     @Final
     @Shadow
     private BandwidthDebugMonitor monitor;
