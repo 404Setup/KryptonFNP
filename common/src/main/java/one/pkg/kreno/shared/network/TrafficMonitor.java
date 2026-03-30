@@ -15,6 +15,8 @@ public class TrafficMonitor {
     public static final AtomicLong totalOutUncompressed = new AtomicLong();
     public static final AtomicLong totalInCompressed = new AtomicLong();
     public static final AtomicLong totalOutCompressed = new AtomicLong();
+    public static final AtomicLong totalInPackets = new AtomicLong();
+    public static final AtomicLong totalOutPackets = new AtomicLong();
     public static double inRateBps = 0;
     public static double outRateBps = 0;
     public static double inRatePps = 0;
@@ -34,6 +36,8 @@ public class TrafficMonitor {
         totalOutUncompressed.set(0);
         totalInCompressed.set(0);
         totalOutCompressed.set(0);
+        totalInPackets.set(0);
+        totalOutPackets.set(0);
         inRateBps = 0;
         outRateBps = 0;
         inRatePps = 0;
@@ -42,6 +46,7 @@ public class TrafficMonitor {
         lastTotalOut = 0;
         lastPacketsIn = 0;
         lastPacketsOut = 0;
+        lastTime = System.currentTimeMillis();
     }
 
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
@@ -49,6 +54,7 @@ public class TrafficMonitor {
         globalStat.count.incrementAndGet();
         globalStat.bytes.addAndGet(bytes);
         totalInUncompressed.addAndGet(bytes);
+        totalInPackets.incrementAndGet();
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
@@ -65,6 +71,7 @@ public class TrafficMonitor {
         globalStat.count.incrementAndGet();
         globalStat.bytes.addAndGet(bytes);
         totalOutUncompressed.addAndGet(bytes);
+        totalOutPackets.incrementAndGet();
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
@@ -107,11 +114,11 @@ public class TrafficMonitor {
     }
 
     public static long getTotalInPackets() {
-        return inboundStats.values().stream().mapToLong(s -> s.count.get()).sum();
+        return totalInPackets.get();
     }
 
     public static long getTotalOutPackets() {
-        return outboundStats.values().stream().mapToLong(s -> s.count.get()).sum();
+        return totalOutPackets.get();
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
