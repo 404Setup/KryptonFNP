@@ -45,28 +45,32 @@ public class TrafficMonitor {
     }
 
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
-        inboundStats.computeIfAbsent(packetName, k -> new PacketStat()).count.incrementAndGet();
-        inboundStats.get(packetName).bytes.addAndGet(bytes);
+        PacketStat globalStat = inboundStats.computeIfAbsent(packetName, k -> new PacketStat());
+        globalStat.count.incrementAndGet();
+        globalStat.bytes.addAndGet(bytes);
         totalInUncompressed.addAndGet(bytes);
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
-            pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat()).count.incrementAndGet();
-            pStat.inboundPackets.get(packetName).bytes.addAndGet(bytes);
+            PacketStat pPacketStat = pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            pPacketStat.count.incrementAndGet();
+            pPacketStat.bytes.addAndGet(bytes);
             pStat.totalIn.addAndGet(bytes);
         }
         updateRates();
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
-        outboundStats.computeIfAbsent(packetName, _ -> new PacketStat()).count.incrementAndGet();
-        outboundStats.get(packetName).bytes.addAndGet(bytes);
+        PacketStat globalStat = outboundStats.computeIfAbsent(packetName, _ -> new PacketStat());
+        globalStat.count.incrementAndGet();
+        globalStat.bytes.addAndGet(bytes);
         totalOutUncompressed.addAndGet(bytes);
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
-            pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat()).count.incrementAndGet();
-            pStat.outboundPackets.get(packetName).bytes.addAndGet(bytes);
+            PacketStat pPacketStat = pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            pPacketStat.count.incrementAndGet();
+            pPacketStat.bytes.addAndGet(bytes);
             pStat.totalOut.addAndGet(bytes);
         }
         updateRates();
