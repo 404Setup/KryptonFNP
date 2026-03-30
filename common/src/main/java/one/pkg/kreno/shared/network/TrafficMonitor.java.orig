@@ -63,7 +63,6 @@ public class TrafficMonitor {
             pPacketStat.bytes.addAndGet(bytes);
             pStat.totalIn.addAndGet(bytes);
         }
-        updateRates();
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
@@ -80,7 +79,6 @@ public class TrafficMonitor {
             pPacketStat.bytes.addAndGet(bytes);
             pStat.totalOut.addAndGet(bytes);
         }
-        updateRates();
     }
 
     public static void onInboundCompressed(int bytes) {

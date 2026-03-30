@@ -1,0 +1,26 @@
+--- common/src/main/java/one/pkg/kreno/shared/network/TrafficMonitor.java
++++ common/src/main/java/one/pkg/kreno/shared/network/TrafficMonitor.java
+@@ -40,6 +40,7 @@
+         lastTotalOut = 0;
+         lastPacketsIn = 0;
+         lastPacketsOut = 0;
++        lastTime = System.currentTimeMillis();
+     }
+
+     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
+@@ -55,7 +56,6 @@
+             pPacketStat.bytes.addAndGet(bytes);
+             pStat.totalIn.addAndGet(bytes);
+         }
+-        updateRates();
+     }
+
+     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
+@@ -71,7 +71,6 @@
+             pPacketStat.bytes.addAndGet(bytes);
+             pStat.totalOut.addAndGet(bytes);
+         }
+-        updateRates();
+     }
+
+     public static void onInboundCompressed(int bytes) {
