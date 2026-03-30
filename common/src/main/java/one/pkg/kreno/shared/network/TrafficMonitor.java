@@ -151,8 +151,13 @@ public class TrafficMonitor {
 
     public static String formatBytes(double bytes) {
         if (bytes < 1024) return String.format("%.0f B", bytes);
-        int exp = (int) (Math.log(bytes) / Math.log(1024));
+        int exp = 0;
+        double b = bytes;
+        while (b >= 1024 && exp < 6) {
+            b /= 1024;
+            exp++;
+        }
         String pre = "KMGTPE".charAt(exp - 1) + "";
-        return String.format("%.2f %sB", bytes / Math.pow(1024, exp), pre);
+        return String.format("%.2f %sB", b, pre);
     }
 }
