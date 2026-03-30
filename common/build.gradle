@@ -64,6 +64,7 @@ configurations {
 jmh {
     resultFormat = "JSON"
     zip64 = true
+    includes = ['TrafficMonitorBenchmark']
 }
 
 test {
