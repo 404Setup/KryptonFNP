@@ -58,6 +58,10 @@ repositories {
         name = 'OneSnapshots'
         url = 'https://mvnc.pkg.one/snapshots'
     }
+    maven {
+            name = 'OneReleases'
+        url = 'https://mvnc.pkg.one/releases'
+    }
 }
 
 // Declare capabilities on the outgoing configurations.

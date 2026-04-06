@@ -24,11 +24,10 @@ dependencies {
         exclude group: 'io.netty'
     }
 
-    compileOnly("org.yaml:snakeyaml:2.5")
     compileOnly("one.pkg:sewlia-config:${config_api_version}") {
         exclude group: 'org.slf4j'
     }
-    compileOnly("one.pkg.libsl:neoforge:2026.2.0-SNAPSHOT")
+    compileOnly("one.pkg.libsl:neoforge:1.0.0")
 
     jmh("io.netty:netty-buffer:4.2.7.Final")
     jmh("io.netty:netty-common:4.2.7.Final")

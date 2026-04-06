@@ -5,7 +5,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import one.pkg.kreno.shared.ModSharedBootstrap;
-import one.pkg.kreno.shared.gui.KRenoSimpleConfigGUI;
+import one.pkg.kreno.shared.gui.KRenoConfigGUI;
 import one.pkg.libsl.loader.JavaLoader;
 import one.pkg.loader.FMLTest;
 
@@ -20,7 +20,7 @@ public class NeoModBootstrap {
 
     private static class Client {
         private static void init(ModContainer container) {
-            container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoSimpleConfigGUI(parent));
+            container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoConfigGUI(parent));
         }
     }
 }

@@ -7,9 +7,9 @@ import one.pkg.config.annotation.loader.ReadWith;
 import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.config.metadata.DumpMeta;
 import one.pkg.libsl.loader.JavaLoader;
-import one.pkg.libsl.seeui.EntryMode;
-import one.pkg.libsl.seeui.annotations.DisplayMode;
-import one.pkg.libsl.seeui.annotations.Range;
+import one.pkg.libsl.ui.seeui.EntryMode;
+import one.pkg.libsl.ui.seeui.annotations.DisplayMode;
+import one.pkg.libsl.ui.seeui.annotations.Range;
 
 @ConfigEntry("kreno")
 public class ModConfig {
