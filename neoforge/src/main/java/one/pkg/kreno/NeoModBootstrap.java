@@ -6,8 +6,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import one.pkg.kreno.shared.ModSharedBootstrap;
 import one.pkg.kreno.shared.gui.KRenoSimpleConfigGUI;
+import one.pkg.libsl.loader.JavaLoader;
 import one.pkg.loader.FMLTest;
-import one.pkg.loader.Loader;
 
 @Mod("kreno")
 public class NeoModBootstrap {
@@ -15,7 +15,7 @@ public class NeoModBootstrap {
         FMLTest.test();
         ModSharedBootstrap.run();
 
-        if (Loader.INSTANCE.isClient()) Client.init(container);
+        if (JavaLoader.INSTANCE.isClient()) Client.init(container);
     }
 
     private static class Client {

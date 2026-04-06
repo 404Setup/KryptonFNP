@@ -14,13 +14,13 @@ import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import one.pkg.kreno.shared.gui.TrafficMonitorScreen;
 import one.pkg.kreno.shared.network.TrafficMonitor;
-import one.pkg.loader.Loader;
+import one.pkg.libsl.loader.JavaLoader;
 
 import java.util.List;
 
 public class KrenoCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        String baseCmd = Loader.INSTANCE.isClient() ? "krenoc" : "kreno";
+        String baseCmd = JavaLoader.INSTANCE.isClient() ? "krenoc" : "kreno";
 
         var cmd = Commands.literal(baseCmd)
                 .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
@@ -28,7 +28,7 @@ public class KrenoCommand {
                         .then(Commands.literal("all").executes(KrenoCommand::displayAllTraffic))
                         .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
                         .then(Commands.literal("gui").executes(_ -> {
-                            if (Loader.INSTANCE.isClient()) {
+                            if (JavaLoader.INSTANCE.isClient()) {
                                 Minecraft.getInstance().execute(() ->
                                         Minecraft.getInstance().setScreen(new TrafficMonitorScreen(Minecraft.getInstance().screen)));
                                 return 1;
@@ -102,7 +102,7 @@ public class KrenoCommand {
 
         CommandSourceStack source = context.getSource();
         source.sendSuccess(() -> Component.translatable("kreno.command.player.header", stat.name).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD), false);
-        
+
         source.sendSuccess(() -> Component.translatable("kreno.command.player.inbound").withStyle(ChatFormatting.GRAY), false);
         stat.inboundPackets.entrySet().stream()
                 .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))

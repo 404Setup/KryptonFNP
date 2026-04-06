@@ -35,6 +35,17 @@ For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Se
 - Support RFC 8305 Happy Eyeballs for client connections
 - Further scalability optimizations
 
+## Mandatory dependencies
+
+Starting with KReno 26.3.0, a mandatory dependency will be added **Spring Lotus** (LibSL).
+
+This is not to deliberately increase downloads, but to reduce template code. I can update LibSL only once to quickly fix
+some bugs or optimize some dependent libraries without having to write the same code for each of my mods, or push all
+updates at once.
+
+LibSL will be released under the less restrictive Apache-2.0 license and FPL-1.2 license, which you can also use for
+your own mods.
+
 ## What is RecastLib
 
 RecastLib is a native library I wrote in Rust that is compatible with Velocity Native JNI Bind.

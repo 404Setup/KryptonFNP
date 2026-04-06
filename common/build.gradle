@@ -24,18 +24,11 @@ dependencies {
         exclude group: 'io.netty'
     }
 
-    compileOnly("org.yaml:snakeyaml:2.4")
-    implementation("one.pkg:sewlia-config:${config_api_version}") {
+    compileOnly("org.yaml:snakeyaml:2.5")
+    compileOnly("one.pkg:sewlia-config:${config_api_version}") {
         exclude group: 'org.slf4j'
     }
-
-    testImplementation(platform("org.junit:junit-bom:6.0.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("io.netty:netty-buffer:4.2.7.Final")
-    testImplementation("io.netty:netty-codec:4.2.7.Final")
-    testImplementation("io.netty:netty-handler:4.2.7.Final")
-    testImplementation("org.slf4j:slf4j-simple:1.7.36")
+    compileOnly("one.pkg.libsl:neoforge:2026.2.0-SNAPSHOT")
 
     jmh("io.netty:netty-buffer:4.2.7.Final")
     jmh("io.netty:netty-common:4.2.7.Final")
@@ -64,10 +57,6 @@ configurations {
 jmh {
     resultFormat = "JSON"
     zip64 = true
-}
-
-test {
-    useJUnitPlatform()
 }
 
 artifacts {

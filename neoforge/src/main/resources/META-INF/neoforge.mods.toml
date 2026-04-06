@@ -34,3 +34,10 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "libsl"
+type = "required"
+versionRange = "[2026,)"
+ordering = "AFTER"
+side = "BOTH"

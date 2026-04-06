@@ -1,6 +1,6 @@
 package one.pkg.kreno.shared;
 
-import one.pkg.loader.Loader;
+import one.pkg.libsl.loader.JavaLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
@@ -37,14 +37,14 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
 
         if (enabled) {
             Compatibility compatibility = Compatibility.find(mixinClassName);
-            if (compatibility != null && Loader.INSTANCE.loaded(compatibility.modId)) {
+            if (compatibility != null && JavaLoader.INSTANCE.loaded(compatibility.modId)) {
                 if (compatibility.type == CompatibilityType.DISABLE || compatibility.type == CompatibilityType.ChangeMixinTarget) {
                     enabled = false;
                 }
             } else {
                 Compatibility alternative = Compatibility.findAlternative(mixinClassName);
                 if (alternative != null) {
-                    enabled = Loader.INSTANCE.loaded(alternative.modId);
+                    enabled = JavaLoader.INSTANCE.loaded(alternative.modId);
                 }
             }
         }

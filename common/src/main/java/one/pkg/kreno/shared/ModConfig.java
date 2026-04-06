@@ -6,10 +6,10 @@ import one.pkg.config.annotation.config.ConfigTarget;
 import one.pkg.config.annotation.loader.ReadWith;
 import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.config.metadata.DumpMeta;
-import one.pkg.loader.Loader;
-import one.pkg.seeui.EntryMode;
-import one.pkg.seeui.annotations.DisplayMode;
-import one.pkg.seeui.annotations.Range;
+import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.seeui.EntryMode;
+import one.pkg.libsl.seeui.annotations.DisplayMode;
+import one.pkg.libsl.seeui.annotations.Range;
 
 @ConfigEntry("kreno")
 public class ModConfig {
@@ -48,7 +48,7 @@ public class ModConfig {
     static {
         config = new SewliaConfig(ConfigMeta.of(
                 ModConfig.class,
-                Loader.INSTANCE.getConfigPath().resolve("kreno.yaml"))
+                JavaLoader.INSTANCE.getConfigPath().resolve("kreno.yaml"))
         );
     }
 

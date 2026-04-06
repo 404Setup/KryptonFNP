@@ -2,7 +2,7 @@ package one.pkg.kreno.shared;
 
 import com.velocitypowered.natives.util.Natives;
 import one.pkg.kreno.shared.misc.NativeDependencyChecker;
-import one.pkg.loader.Loader;
+import one.pkg.libsl.loader.JavaLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class ModSharedBootstrap {
             LOGGER.error("///////////////////////////////////////////////////////////////////");
         }
 
-        if (!Loader.INSTANCE.isClient()) {
+        if (!JavaLoader.INSTANCE.isClient()) {
             LOGGER.info("KryptonReno is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
         } else {
             LOGGER.info("KryptonReno is now accelerating your Minecraft client's networking stack \uD83D\uDE80");
