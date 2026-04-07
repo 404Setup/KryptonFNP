@@ -3,8 +3,11 @@
   "kreno.config.category.compress": "圧縮",
   "kreno.config.category.fix.issues128": "トラフィック監視の修正",
   "kreno.config.category.compatibility": "互換性",
-  "kreno.config.category.mixin": "Mixin 設定",
-  "kreno.config.category.netty": "Netty 設定",
+  "kreno.config.category.mixin": "Mixin",
+  "kreno.config.category.netty": "Netty",
+  "kreno.config.category.gui": "GUI",
+
+  "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
 
   "kreno.config.entry.compress.compressionLevel": "パケット圧縮レベル",
   "kreno.config.entry.compress.compressionLevel.desc": "パケットの圧縮レベル（1-9）。",
@@ -35,6 +38,9 @@
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Minecraft のパケットサイズ制限が 2MiB であるため、Netty のデフォルトの 16MiB メモリ割り当てを 4MiB に変更します。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "クライアント接続で IPv6 と IPv4 を競合させる Happy Eyeballs を有効にします。Velocity などの一部のサーバーで一時的に接続が拒否される場合があります。",
+
+  "kreno.config.entry.gui.oreui": "OreUI",
+  "kreno.config.entry.gui.oreui.desc": "Minecraft スタイルの KReno UI を新しく設計された OreUI に置き換えます",
 
   "kreno.traffic.gui.title": "Krypton Reno トラフィックモニター",
   "kreno.traffic.gui.reset": "統計をリセット",

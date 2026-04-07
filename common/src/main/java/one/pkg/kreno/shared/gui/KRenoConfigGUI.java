@@ -18,7 +18,7 @@ public class KRenoConfigGUI extends Screen {
         minecraft.setScreen(SeeUIBuilder.builder()
                 .clazz(ModConfig.class)
                 .lastScreen(parent)
-                .useOreUI(true)
+                .useOreUI(ModConfig.GUI.isOreUI())
                 .onSaved(() -> {
                     try {
                         ModConfig.config.saveAllConfigurations();

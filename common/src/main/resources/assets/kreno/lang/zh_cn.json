@@ -3,8 +3,11 @@
   "kreno.config.category.compress": "压缩",
   "kreno.config.category.fix.issues128": "修复流量监控失效",
   "kreno.config.category.compatibility": "兼容",
-  "kreno.config.category.mixin": "Mixin配置",
-  "kreno.config.category.netty": "Netty配置",
+  "kreno.config.category.mixin": "Mixin",
+  "kreno.config.category.netty": "Netty",
+  "kreno.config.category.gui": "GUI",
+
+  "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
 
   "kreno.config.entry.compress.compressionLevel": "数据包压缩等级",
   "kreno.config.entry.compress.compressionLevel.desc": "数据包的压缩等级，范围为 1-9。",
@@ -35,6 +38,9 @@
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "将 Netty 默认的 16MiB 内存分配改为 4MiB，因为 Minecraft 的数据包限制为 2MiB。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "为客户端连接启用 Happy Eyeballs，同时尝试 IPv6 和 IPv4 连接。可能导致部分服务器 (如 Velocity) 暂时拒绝连接。",
+
+  "kreno.config.entry.gui.oreui": "OreUI",
+  "kreno.config.entry.gui.oreui.desc": "使用全新设计的 OreUI 替换 Minecraft 风格的 KReno UI",
 
   "kreno.traffic.gui.title": "Krypton Reno 流量监控",
   "kreno.traffic.gui.reset": "重置统计",

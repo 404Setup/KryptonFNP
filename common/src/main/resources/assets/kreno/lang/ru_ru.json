@@ -3,8 +3,11 @@
   "kreno.config.category.compress": "Сжатие",
   "kreno.config.category.fix.issues128": "Исправление мониторинга трафика",
   "kreno.config.category.compatibility": "Совместимость",
-  "kreno.config.category.mixin": "Настройки Mixin",
-  "kreno.config.category.netty": "Настройки Netty",
+  "kreno.config.category.mixin": "Mixin",
+  "kreno.config.category.netty": "Netty",
+  "kreno.config.category.gui": "GUI",
+
+  "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
 
   "kreno.config.entry.compress.compressionLevel": "Уровень сжатия пакетов",
   "kreno.config.entry.compress.compressionLevel.desc": "Уровень сжатия пакетов, от 1 до 9.",
@@ -35,6 +38,9 @@
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "Включить Happy Eyeballs (RFC 8305) для клиентских соединений для одновременной попытки подключения по IPv6 и IPv4. Может привести к временному отказу в подключении некоторыми серверами (например, Velocity).",
+  
+  "kreno.config.entry.gui.oreui": "OreUI",
+  "kreno.config.entry.gui.oreui.desc": "Заменить пользовательский интерфейс KReno в стиле Minecraft на новый дизайн OreUI",
 
   "kreno.traffic.gui.title": "Мониторинг трафика Krypton Reno",
   "kreno.traffic.gui.reset": "Сбросить статистику",

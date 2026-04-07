@@ -27,7 +27,7 @@ dependencies {
     compileOnly("one.pkg:sewlia-config:${config_api_version}") {
         exclude group: 'org.slf4j'
     }
-    compileOnly("one.pkg.libsl:neoforge:1.0.0")
+    compileOnly("one.pkg.libsl:neoforge:${libsl_version}")
 
     jmh("io.netty:netty-buffer:4.2.7.Final")
     jmh("io.netty:netty-common:4.2.7.Final")

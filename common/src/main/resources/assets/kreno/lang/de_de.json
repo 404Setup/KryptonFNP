@@ -3,8 +3,11 @@
   "kreno.config.category.compress": "Kompression",
   "kreno.config.category.fix.issues128": "Verkehrsüberwachung korrigieren",
   "kreno.config.category.compatibility": "Kompatibilität",
-  "kreno.config.category.mixin": "Mixin Konfiguration",
-  "kreno.config.category.netty": "Netty Konfiguration",
+  "kreno.config.category.mixin": "Mixin",
+  "kreno.config.category.netty": "Netty",
+  "kreno.config.category.gui": "GUI",
+
+  "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
 
   "kreno.config.entry.compress.compressionLevel": "Paket-Kompressionsstufe",
   "kreno.config.entry.compress.compressionLevel.desc": "Die Kompressionsstufe für Pakete, zwischen 1-9.",
@@ -35,6 +38,9 @@
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen. Kann dazu führen, dass einige Server (wie Velocity) Verbindungen vorübergehend ablehnen.",
+
+  "kreno.config.entry.gui.oreui": "OreUI",
+  "kreno.config.entry.gui.oreui.desc": "Ersetze Minecraft-Stil KReno UI durch ein neu gestaltetes OreUI",
 
   "kreno.traffic.gui.title": "Krypton Reno Verkehrsüberwachung",
   "kreno.traffic.gui.reset": "Statistiken zurücksetzen",

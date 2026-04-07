@@ -44,6 +44,8 @@ public class ModConfig {
     private static int var12 = 9;
     @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.")
     private static boolean var13 = false;
+    @ConfigTarget(group = "gui", value = "oreui", comment = "Replace Minecraft style KReno UI with a newly designed OreUI")
+    private static boolean var14 = false;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -140,6 +142,12 @@ public class ModConfig {
 
         public static boolean isHappyEyeballs() {
             return var13;
+        }
+    }
+
+    public static class GUI {
+        public static boolean isOreUI() {
+            return var14;
         }
     }
 }
