@@ -10,10 +10,13 @@ import one.pkg.kreno.shared.gui.KRenoConfigGUI;
 import one.pkg.libsl.api.client.lifecycle.ClientLifecycleEvents;
 import one.pkg.libsl.loader.JavaLoader;
 import one.pkg.libsl.ui.oreui.OreUIDialog;
+import one.pkg.libsl.ui.oreui.OreUIExampleScreen;
 import one.pkg.loader.FMLTest;
 
 @Mod("kreno")
 public class NeoModBootstrap {
+    private static final org.slf4j.Logger logg = org.slf4j.LoggerFactory.getLogger("Kreno");
+
     public NeoModBootstrap(IEventBus bus, ModContainer container) {
         FMLTest.test();
         ModSharedBootstrap.run();
@@ -23,9 +26,22 @@ public class NeoModBootstrap {
 
             // Only Test
             ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
-                client.execute(() -> {
-                    client.setScreen(new OreUIDialog(Component.literal("test"), client.screen));
-                });
+                var screen = client.screen;
+                client.execute(() ->
+                        client.setScreen(new OreUIDialog(Component.literal("test"), screen)
+                                .content(
+                                        Component.literal("test").append(
+                                                Component.literal("\ntest")
+                                        )
+                                )
+                                .onConfirm(() -> {
+                                    logg.info("Test dialog confirmed");
+                                    client.setScreen(screen);
+                                    client.setScreen(new OreUIExampleScreen(screen));
+                                })
+                                .confirmText(Component.literal("Open Test Screen"))
+                        )
+                );
             });
         }
 
