@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'multiloader-common'
-    id 'net.neoforged.moddev'
+    alias libs.plugins.moddev
     id "me.champeau.jmh" version "0.7.3"
 }
 
@@ -20,14 +20,14 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.3")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3")
 
-    implementation("one.pkg.velocity_rc:velocity-native:${recast_version}") {
+    implementation(libs.recastlib) {
         exclude group: 'io.netty'
     }
-
-    compileOnly("one.pkg:sewlia-config:${config_api_version}") {
+    implementation(libs.pkg.sewlia.config) {
         exclude group: 'org.slf4j'
     }
-    compileOnly("one.pkg.libsl:neoforge:${libsl_version}")
+    implementation(libs.libsl.neoforge)
+    implementation(libs.netty.quic.classic)
 
     jmh("io.netty:netty-buffer:4.2.7.Final")
     jmh("io.netty:netty-common:4.2.7.Final")

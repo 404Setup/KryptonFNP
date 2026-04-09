@@ -1,16 +1,21 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.moddev'
+    alias libs.plugins.moddev
 }
 
 dependencies {
-    implementation(jarJar("one.pkg.velocity_rc:velocity-native:${recast_version}")) {
+    jarJar(libs.recastlib) {
         exclude group: 'io.netty'
     }
-    compileOnly("one.pkg:sewlia-config:${config_api_version}") {
+    implementation(libs.recastlib) {
+        exclude group: 'io.netty'
+    }
+    compileOnly(libs.pkg.sewlia.config) {
         exclude group: 'org.slf4j'
     }
-    compileOnly("one.pkg.libsl:neoforge:${libsl_version}")
+    compileOnly(libs.libsl.neoforge)
+
+    implementation libs.netty.quic.classic
 }
 
 tasks.jarJar {

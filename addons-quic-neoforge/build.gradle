@@ -1,0 +1,34 @@
+plugins {
+    id 'multiloader-loader'
+    alias libs.plugins.moddev
+}
+
+dependencies {
+    jarJar libs.netty.quic.classic
+    implementation libs.netty.quic.classic
+    ['linux-aarch_64', 'linux-x86_64', 'windows-x86_64'].each { classifierName ->
+        jarJar variantOf(libs.netty.quic.native) { classifier(classifierName) }
+        implementation variantOf(libs.netty.quic.native) { classifier(classifierName) }
+    }
+
+    runtimeOnly variantOf(libs.netty.quic.native) { classifier("windows-x86_64") }
+}
+
+tasks.jarJar {
+    enabled = true
+}
+
+neoForge {
+    version = neoforge_version
+    /*def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }*/
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }

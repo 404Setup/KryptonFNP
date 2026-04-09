@@ -12,23 +12,29 @@ configurations {
 }
 
 dependencies {
-    compileOnly(project(':common')) {
-        capabilities {
-            requireCapability "$group:$mod_id"
+    if (!project.name.startsWith('addons')) {
+        compileOnly(project(':common')) {
+            capabilities {
+                requireCapability "$group:$mod_id"
+            }
         }
+        commonJava project(path: ':common', configuration: 'commonJava')
+        commonResources project(path: ':common', configuration: 'commonResources')
     }
-    commonJava project(path: ':common', configuration: 'commonJava')
-    commonResources project(path: ':common', configuration: 'commonResources')
 }
 
 tasks.named('compileJava', JavaCompile) {
-    dependsOn(configurations.commonJava)
-    source(configurations.commonJava)
+    if (!project.name.startsWith('addons')) {
+        dependsOn(configurations.commonJava)
+        source(configurations.commonJava)
+    }
 }
 
 processResources {
-    dependsOn(configurations.commonResources)
-    from(configurations.commonResources)
+    if (!project.name.startsWith('addons')) {
+        dependsOn(configurations.commonResources)
+        from(configurations.commonResources)
+    }
 }
 
 /*tasks.named('javadoc', Javadoc).configure {
@@ -37,8 +43,10 @@ processResources {
 }*/
 
 tasks.named('sourcesJar', Jar) {
-    dependsOn(configurations.commonJava)
-    from(configurations.commonJava)
-    dependsOn(configurations.commonResources)
-    from(configurations.commonResources)
+    if (!project.name.startsWith('addons')) {
+        dependsOn(configurations.commonJava)
+        from(configurations.commonJava)
+        dependsOn(configurations.commonResources)
+        from(configurations.commonResources)
+    }
 }
