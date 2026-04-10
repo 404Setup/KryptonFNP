@@ -23,7 +23,7 @@ public class ServerAddressMixin implements ServerAddressProperties {
     @Unique
     private boolean quic;
 
-    @Inject(method = "parseString", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "parseString(Ljava/lang/String;)Lnet/minecraft/client/multiplayer/resolver/ServerAddress;", at = @At("HEAD"), cancellable = true, remap = false)
     private static void parseString(String input, CallbackInfoReturnable<ServerAddress> callbackInfoReturnable) {
         if (ModConfig.Quic.isDisableQuic() || !JavaLoader.INSTANCE.loaded("kreno_addons_quic")) return;
         var index = input.indexOf("://");
@@ -45,7 +45,7 @@ public class ServerAddressMixin implements ServerAddressProperties {
         callbackInfoReturnable.setReturnValue(newAddress);
     }
 
-    @ModifyVariable(method = "isValidAddress", at = @At("HEAD"), argsOnly = true, name = "input")
+    @ModifyVariable(method = "isValidAddress(Ljava/lang/String;)Z", at = @At("HEAD"), argsOnly = true, ordinal = 0, remap = false)
     private static String modifyIsValidAddress(String input) {
         if (ModConfig.Quic.isDisableQuic() || !JavaLoader.INSTANCE.loaded("kreno_addons_quic")) return input;
         var index = input.indexOf("://");

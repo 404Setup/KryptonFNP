@@ -1,5 +1,6 @@
 package one.pkg.kreno.mixin.network.quic.client;
 
+import net.minecraft.client.multiplayer.ServerStatusPinger;
 import net.minecraft.network.Connection;
 import net.minecraft.server.network.EventLoopGroupHolder;
 import net.minecraft.util.debugchart.LocalSampleLogger;
@@ -18,10 +19,17 @@ import java.net.InetSocketAddress;
 @Mixin(Connection.class)
 public class ConnectionQuicMixin {
 
-    @Inject(method = "connectToServer", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "connectToServer", at = @At("HEAD"), cancellable = true, remap = false)
     private static void connectToServerQuic(InetSocketAddress address, EventLoopGroupHolder eventLoopGroupHolder,
                                             LocalSampleLogger bandwidthLogger, CallbackInfoReturnable<Connection> cir) {
         if (!ModConfig.Quic.isDisableQuic() && JavaLoader.INSTANCE.loaded("kreno_addons_quic")) {
+            // Check if we are being called by ServerStatusPinger
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                if (element.getClassName().equals(ServerStatusPinger.class.getName())) {
+                    return;
+                }
+            }
+
             if (address instanceof QuicSocketAddress qsa) {
                 if (((ServerAddressProperties) (Object) qsa.getOrigin()).getUseQuic()) {
                     Connection connection = QuicConnect.connectToServer(address, eventLoopGroupHolder, bandwidthLogger);

@@ -23,16 +23,17 @@ import java.util.Optional;
 @Mixin(ServerNameResolver.class)
 public class ServerNameResolverMixin {
 
-    @Shadow
+    @Shadow(remap = false)
     @Final
     private ServerRedirectHandler redirectHandler;
 
     @Redirect(
-            method = "resolveAddress",
+            method = "resolveAddress(Lnet/minecraft/client/multiplayer/resolver/ServerAddress;)Ljava/util/Optional;",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/client/multiplayer/resolver/ServerNameResolver;redirectHandler:Lnet/minecraft/client/multiplayer/resolver/ServerRedirectHandler;",
-                    opcode = Opcodes.GETFIELD)
+                    opcode = Opcodes.GETFIELD),
+            remap = false
     )
     private ServerRedirectHandler getRedirectHandler(ServerNameResolver self, ServerAddress address) {
         if (!ModConfig.Quic.isDisableQuic() && JavaLoader.INSTANCE.loaded("kreno_addons_quic")) {
