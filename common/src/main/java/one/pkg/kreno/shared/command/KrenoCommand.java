@@ -29,8 +29,7 @@ public class KrenoCommand {
                         .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
                         .then(Commands.literal("gui").executes(_ -> {
                             if (JavaLoader.INSTANCE.isClient()) {
-                                Minecraft.getInstance().execute(() ->
-                                        Minecraft.getInstance().setScreen(new TrafficMonitorScreen(Minecraft.getInstance().screen)));
+                                KrenoCommandClient.openGui();
                                 return 1;
                             }
                             return 0;
@@ -116,5 +115,12 @@ public class KrenoCommand {
                 .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.get()), e.getValue().count.get()), false));
 
         return 1;
+    }
+
+    private static class KrenoCommandClient {
+        private static void openGui() {
+            Minecraft.getInstance().execute(() ->
+                    Minecraft.getInstance().setScreen(new TrafficMonitorScreen(Minecraft.getInstance().screen)));
+        }
     }
 }

@@ -2,11 +2,7 @@ package one.pkg.kreno.shared.network.quic;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.epoll.EpollIoHandler;
-import io.netty.channel.nio.NioIoHandler;
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.incubator.codec.quic.QuicPathEvent;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
 import io.netty.incubator.codec.quic.QuicSslContextBuilder;
@@ -14,10 +10,12 @@ import io.netty.incubator.codec.quic.QuicStreamChannel;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.EventLoopGroupHolder;
 import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
 import net.minecraft.util.Util;
 import one.pkg.kreno.mixin.accessor.ConnectionAccessor;
 import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.network.netty.NettyUtil;
 import one.pkg.kreno.shared.network.quic.token.KeyedConnectionIdGenerator;
 import one.pkg.kreno.shared.network.quic.token.KeyedTokenHandler;
 import one.pkg.libsl.loader.JavaLoader;
@@ -54,7 +52,7 @@ public class QuicServerConnectionListener {
             useFallback = true;
         }
 
-        var useNativeTransport = Epoll.isAvailable() && server.usesAuthentication(); // approximate check
+        var useNativeTransport = server.usesAuthentication(); // approximate check
 
         Path config = JavaLoader.INSTANCE.getConfigPath().resolve("quic");
         Path keyFile = config.resolve("key.pem");
@@ -67,6 +65,7 @@ public class QuicServerConnectionListener {
 
         try {
             var context = QuicSslContextBuilder.forServer(keyFile.toFile(), null, certificateFile.toFile())
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE)
                     .applicationProtocols(QuicConnect.APPLICATION_NAME);
 
             var inheritAddresses = new WeakHashMap<Channel, SocketAddress>();
@@ -138,13 +137,8 @@ public class QuicServerConnectionListener {
                     .build();
 
             Bootstrap bootstrap = new Bootstrap()
-                    .group(new MultiThreadIoEventLoopGroup(
-                                    useNativeTransport ?
-                                            EpollIoHandler.newFactory() :
-                                            NioIoHandler.newFactory()
-                            )
-                    )
-                    .channel(useNativeTransport ? EpollDatagramChannel.class : NioDatagramChannel.class)
+                    .group(EventLoopGroupHolder.remote(useNativeTransport).eventLoopGroup())
+                    .channel(NettyUtil.getChannelClass(useNativeTransport))
                     .handler(codec);
 
             int attempts = 0;

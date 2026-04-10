@@ -5,8 +5,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.incubator.codec.quic.QuicChannel;
 import io.netty.incubator.codec.quic.QuicClientCodecBuilder;
@@ -45,12 +43,10 @@ public class QuicConnect {
                     .build();
 
             EventLoopGroup group = eventLoopGroupHolder.eventLoopGroup();
-            Class<? extends Channel> channelClass = eventLoopGroupHolder.channelCls();
-            boolean isEpoll = EpollDatagramChannel.class.isAssignableFrom(channelClass);
 
             var channel = new Bootstrap()
                     .group(group)
-                    .channel(isEpoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
+                    .channel(eventLoopGroupHolder.channelCls())
                     .handler(codec)
                     .bind(0)
                     .sync()

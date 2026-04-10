@@ -12,10 +12,12 @@ import one.pkg.libsl.loader.JavaLoader;
 import one.pkg.libsl.ui.oreui.OreUIDialog;
 import one.pkg.libsl.ui.oreui.OreUIExampleScreen;
 import one.pkg.loader.FMLTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod("kreno")
 public class NeoModBootstrap {
-    private static final org.slf4j.Logger logg = org.slf4j.LoggerFactory.getLogger("Kreno");
+    private static final Logger logg = LoggerFactory.getLogger("Kreno");
 
     public NeoModBootstrap(IEventBus bus, ModContainer container) {
         FMLTest.test();
@@ -23,6 +25,14 @@ public class NeoModBootstrap {
 
         if (JavaLoader.INSTANCE.isClient()) {
             Client.init(container);
+        }
+
+        //ModList.get().getModContainerById("kreno").get().registerExtensionPoint();
+    }
+
+    private static class Client {
+        private static void init(ModContainer container) {
+            container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoConfigGUI(parent));
 
             // Only Test
             ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
@@ -43,14 +53,6 @@ public class NeoModBootstrap {
                         )
                 );
             });
-        }
-
-        //ModList.get().getModContainerById("kreno").get().registerExtensionPoint();
-    }
-
-    private static class Client {
-        private static void init(ModContainer container) {
-            container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoConfigGUI(parent));
         }
     }
 }

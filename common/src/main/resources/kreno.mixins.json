@@ -16,6 +16,7 @@
   ],
   "mixins": [
     "accessor.ConnectionAccessor",
+    "network.EventLoopGroupHolderMixin",
     "network.CommandsMixin",
     "network.ServerPlayerLogoutMixin",
     "network.experimental.RconClientMixin",
