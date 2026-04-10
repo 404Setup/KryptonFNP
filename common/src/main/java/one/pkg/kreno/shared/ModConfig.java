@@ -46,6 +46,11 @@ public class ModConfig {
     private static boolean var13 = false;
     @ConfigTarget(group = "gui", value = "oreui", comment = "Replace Minecraft style KReno UI with a newly designed OreUI")
     private static boolean var14 = false;
+    @ConfigTarget(group = "quic", value = "disableQuic", comment = "Disable all quic capabilities")
+    private static boolean var15 = false;
+    @ConfigTarget(group = "quic", value = "quicPort", comment = "QUIC port, -1 means try to use the same as tcp, otherwise valid range 114-65535")
+    @Range(min = -1, max = 65535)
+    private static int var16 = -1;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -148,6 +153,16 @@ public class ModConfig {
     public static class GUI {
         public static boolean isOreUI() {
             return var14;
+        }
+    }
+
+    public static class Quic {
+        public static boolean isDisableQuic() {
+            return var15;
+        }
+
+        public static int getQuicPort() {
+            return var16;
         }
     }
 }

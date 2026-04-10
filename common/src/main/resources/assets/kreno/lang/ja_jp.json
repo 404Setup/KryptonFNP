@@ -6,8 +6,10 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
+  "kreno.config.category.quic": "QUIC",
 
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
+  "kreno.config.category.quic.desc": "QUIC (UDP) トランスポートプロトコルの設定",
 
   "kreno.config.entry.compress.compressionLevel": "パケット圧縮レベル",
   "kreno.config.entry.compress.compressionLevel.desc": "パケットの圧縮レベル（1-9）。",
@@ -41,6 +43,11 @@
 
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Minecraft スタイルの KReno UI を新しく設計された OreUI に置き換えます",
+
+  "kreno.config.entry.quic.disableQuic": "QUIC を無効化",
+  "kreno.config.entry.quic.disableQuic.desc": "すべての QUIC 機能を無効にします",
+  "kreno.config.entry.quic.quicPort": "QUIC ポート",
+  "kreno.config.entry.quic.quicPort.desc": "QUIC ポート。-1 は TCP と同じポートの使用を試行することを意味し、それ以外は 114-65535 の範囲です",
 
   "kreno.traffic.gui.title": "Krypton Reno トラフィックモニター",
   "kreno.traffic.gui.reset": "統計をリセット",

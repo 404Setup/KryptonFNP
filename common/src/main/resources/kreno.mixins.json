@@ -8,7 +8,11 @@
     "client.KrenoClientCommandsMixin",
     "client.MinecraftClientMixin",
     "network.pipeline.encryption.ClientLoginMixin",
-    "network.pipeline.he.ClientConnectionMixin"
+    "network.pipeline.he.ClientConnectionMixin",
+    "network.quic.client.ConnectionQuicMixin",
+    "network.quic.client.ConnectionQuicLifecycleMixin",
+    "network.quic.client.ServerAddressMixin",
+    "network.quic.client.ServerNameResolverMixin"
   ],
   "mixins": [
     "accessor.ConnectionAccessor",
@@ -27,6 +31,7 @@
     "network.pipeline.monitor.PacketDecoderMixin",
     "network.pipeline.monitor.PacketEncoderMixin",
     "network.pipeline.prepender.ConnectionMixin",
+    "network.quic.server.ServerConnectionListenerQuicMixin",
     "network.thread.ServerLoginPacketListenerImplMixin",
     "network.thread.ServerTextFilterMixin",
     "network.thread.UtilMixin"

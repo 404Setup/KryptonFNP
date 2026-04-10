@@ -6,8 +6,10 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
+  "kreno.config.category.quic": "QUIC",
 
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
+  "kreno.config.category.quic.desc": "Настройки транспортного протокола QUIC (UDP)",
 
   "kreno.config.entry.compress.compressionLevel": "Уровень сжатия пакетов",
   "kreno.config.entry.compress.compressionLevel.desc": "Уровень сжатия пакетов, от 1 до 9.",
@@ -41,6 +43,11 @@
   
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Заменить пользовательский интерфейс KReno в стиле Minecraft на новый дизайн OreUI",
+
+  "kreno.config.entry.quic.disableQuic": "Отключить QUIC",
+  "kreno.config.entry.quic.disableQuic.desc": "Отключить все возможности QUIC",
+  "kreno.config.entry.quic.quicPort": "Порт QUIC",
+  "kreno.config.entry.quic.quicPort.desc": "Порт QUIC, -1 означает попытку использования того же порта, что и для TCP, иначе допустимый диапазон 114-65535",
 
   "kreno.traffic.gui.title": "Мониторинг трафика Krypton Reno",
   "kreno.traffic.gui.reset": "Сбросить статистику",

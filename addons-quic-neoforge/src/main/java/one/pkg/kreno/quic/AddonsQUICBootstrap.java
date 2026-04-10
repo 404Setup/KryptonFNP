@@ -1,4 +1,4 @@
-package one.pkg.kreno;
+package one.pkg.kreno.quic;
 
 import net.neoforged.fml.common.Mod;
 
