@@ -25,5 +25,4 @@ plugins {
 rootProject.name = 'kreno'
 include('common')
 include('neoforge')
-include('addons-quic-neoforge')
 //include('forge')

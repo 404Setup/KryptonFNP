@@ -6,10 +6,8 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
-  "kreno.config.category.quic": "QUIC",
 
   "kreno.config.category.gui.desc": "与 KReno GUI 相关的配置",
-  "kreno.config.category.quic.desc": "基于 UDP 的 QUIC 传输协议设置",
 
   "kreno.config.entry.compress.compressionLevel": "数据包压缩等级",
   "kreno.config.entry.compress.compressionLevel.desc": "数据包的压缩等级，范围为 1-9。",
@@ -43,11 +41,6 @@
 
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "使用全新设计的 OreUI 替换 Minecraft 风格的 KReno UI",
-
-  "kreno.config.entry.quic.disableQuic": "禁用 QUIC",
-  "kreno.config.entry.quic.disableQuic.desc": "禁用所有 QUIC 功能",
-  "kreno.config.entry.quic.quicPort": "QUIC 端口",
-  "kreno.config.entry.quic.quicPort.desc": "QUIC 端口，-1 表示尝试使用与 TCP 相同的端口，否则有效范围为 114-65535",
 
   "kreno.traffic.gui.title": "Krypton Reno 流量监控",
   "kreno.traffic.gui.reset": "重置统计",

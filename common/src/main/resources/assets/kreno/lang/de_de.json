@@ -6,10 +6,8 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
-  "kreno.config.category.quic": "QUIC",
 
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
-  "kreno.config.category.quic.desc": "Einstellungen für das QUIC (UDP) Transportprotokoll",
 
   "kreno.config.entry.compress.compressionLevel": "Paket-Kompressionsstufe",
   "kreno.config.entry.compress.compressionLevel.desc": "Die Kompressionsstufe für Pakete, zwischen 1-9.",
@@ -43,11 +41,6 @@
 
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Ersetze Minecraft-Stil KReno UI durch ein neu gestaltetes OreUI",
-
-  "kreno.config.entry.quic.disableQuic": "QUIC deaktivieren",
-  "kreno.config.entry.quic.disableQuic.desc": "Alle QUIC-Funktionen deaktivieren",
-  "kreno.config.entry.quic.quicPort": "QUIC-Port",
-  "kreno.config.entry.quic.quicPort.desc": "QUIC-Port, -1 bedeutet denselben wie TCP zu verwenden, ansonsten gültiger Bereich 114-65535",
 
   "kreno.traffic.gui.title": "Krypton Reno Verkehrsüberwachung",
   "kreno.traffic.gui.reset": "Statistiken zurücksetzen",

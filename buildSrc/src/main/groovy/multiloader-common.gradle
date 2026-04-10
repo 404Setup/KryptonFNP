@@ -10,12 +10,10 @@ base {
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
     withSourcesJar()
-    //withJavadocJar()
 }
 
 repositories {
     mavenCentral()
-    // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
             maven {
@@ -64,9 +62,7 @@ repositories {
     }
 }
 
-// Declare capabilities on the outgoing configurations.
-// Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
-['apiElements', 'runtimeElements', 'sourcesElements'/*, 'javadocElements'*/].each { variant ->
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
     configurations."$variant".outgoing {
         capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
@@ -105,7 +101,7 @@ jar {
 processResources {
     var expandProps = [
             'version'                      : version,
-            'group'                        : project.group, //Else we target the task's group.
+            'group'                        : project.group,
             'minecraft_version'            : minecraft_version,
             'minecraft_version_range'      : minecraft_version_range,
             'mod_name'                     : mod_name,
