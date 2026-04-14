@@ -3,7 +3,7 @@ package one.pkg.kreno.shared.gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import one.pkg.kreno.shared.ModConfig;
-import one.pkg.libsl.ui.seeui.SeeUIBuilder;
+import one.pkg.libsl.api.ui.seeui.SeeUIBuilder;
 
 public class KRenoConfigGUI extends Screen {
     private final Screen parent;

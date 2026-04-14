@@ -14,7 +14,7 @@ import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import one.pkg.kreno.shared.gui.TrafficMonitorScreen;
 import one.pkg.kreno.shared.network.TrafficMonitor;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 
 import java.util.List;
 

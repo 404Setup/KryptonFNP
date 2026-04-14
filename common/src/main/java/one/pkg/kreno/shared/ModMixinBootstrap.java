@@ -1,6 +1,6 @@
 package one.pkg.kreno.shared;
 
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
