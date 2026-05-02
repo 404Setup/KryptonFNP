@@ -21,7 +21,7 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.2")
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.2")
 
-    compileOnly("org.yaml:snakeyaml:2.4")
+    compileOnly("org.yaml:snakeyaml:2.5")
     implementation("one.pkg:sewlia-config:${config_api_version}") {
         exclude group: 'org.slf4j'
     }

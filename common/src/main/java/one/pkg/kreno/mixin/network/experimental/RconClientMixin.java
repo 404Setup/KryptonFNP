@@ -25,7 +25,7 @@ public class RconClientMixin {
     }
 
     /**
-     * @author KryptonFNP
+     * @author KryptonReno
      * @reason Optimize send method to accept byte[] directly, reducing string conversions and allocations.
      */
     @Overwrite
@@ -56,7 +56,7 @@ public class RconClientMixin {
     }
 
     /**
-     * @author KryptonFNP
+     * @author KryptonReno
      * @reason Optimize sendCmdResponse to split on byte boundaries instead of characters, reducing allocations and fixing potential encoding issues.
      */
     @Overwrite

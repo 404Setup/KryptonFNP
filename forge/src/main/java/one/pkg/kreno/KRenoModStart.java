@@ -5,7 +5,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import one.pkg.kreno.shared.ModSharedBootstrap;
-import one.pkg.kreno.shared.gui.KFNPConfigGUI;
+import one.pkg.kreno.shared.gui.KRenoConfigGUI;
 import one.pkg.loader.FMLTest;
 import one.pkg.loader.Loader;
 
@@ -20,6 +20,6 @@ public class KRenoModStart {
 
     @OnlyIn(Dist.CLIENT)
     private static void init() {
-        MinecraftForge.registerConfigScreen(KFNPConfigGUI::new);
+        MinecraftForge.registerConfigScreen(KRenoConfigGUI::new);
     }
 }

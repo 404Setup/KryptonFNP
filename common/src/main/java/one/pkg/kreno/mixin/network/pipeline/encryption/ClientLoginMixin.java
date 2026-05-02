@@ -43,7 +43,7 @@ public class ClientLoginMixin {
     @Nullable
     private ServerData serverData;
     @Unique
-    private Key kfnp$secretKey;
+    private Key kreno$secretKey;
 
     @Shadow
     private Component authenticateServer(String serverHash) {
@@ -52,8 +52,8 @@ public class ClientLoginMixin {
 
     @Redirect(method = "handleHello", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Crypt;getCipher(ILjava/security/Key;)Ljavax/crypto/Cipher;"))
     private Cipher handleHello$initKey(int pOpMode, Key pKey) {
-        if (this.kfnp$secretKey == null)
-            this.kfnp$secretKey = pKey;
+        if (this.kreno$secretKey == null)
+            this.kreno$secretKey = pKey;
         return null;
     }
 
@@ -74,7 +74,7 @@ public class ClientLoginMixin {
             this.updateStatus.accept(Component.translatable("connect.encrypting"));
             this.connection.send(serverboundkeypacket, PacketSendListener.thenRun(() -> {
                 try {
-                    ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) kfnp$secretKey);
+                    ((ClientConnectionEncryptionExtension) this.connection).setupEncryption((SecretKey) kreno$secretKey);
                 } catch (GeneralSecurityException e) {
                     throw new RuntimeException(e);
                 }

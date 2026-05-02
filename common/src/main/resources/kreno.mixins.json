@@ -19,7 +19,7 @@
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
   "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
-  "refmap": "krypton_fnp.refmap.json",
+  "refmap": "kreno.refmap.json",
   "injectors": {
     "defaultRequire": 1
   }

@@ -6,7 +6,7 @@ import one.pkg.config.annotation.config.ConfigTarget;
 import one.pkg.config.metadata.ConfigMeta;
 import one.pkg.loader.Loader;
 
-@ConfigEntry("krypton_fnp")
+@ConfigEntry("kreno")
 public class ModConfig {
     public static final SewliaConfig config;
     @ConfigTarget(group = "compress", value = "compressionLevel", comment = "The compression level for packets, between 1-9.")
@@ -27,7 +27,7 @@ public class ModConfig {
     static {
         config = new SewliaConfig(ConfigMeta.of(
                 ModConfig.class,
-                Loader.INSTANCE.getConfigPath().resolve("krypton_fnp.yaml"))
+                Loader.INSTANCE.getConfigPath().resolve("kreno.yaml"))
         );
     }
 

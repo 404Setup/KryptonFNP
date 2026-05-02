@@ -66,8 +66,8 @@ dependencies {
         jarJar.ranged(it, "[0.5.2,)")
     }
 
-    implementation(jarJar("org.yaml:snakeyaml:2.4")) {
-        jarJar.ranged(it, "[2.4,)")
+    implementation(jarJar("org.yaml:snakeyaml:2.5")) {
+        jarJar.ranged(it, "[2.5,)")
     }
     implementation(jarJar("one.pkg:sewlia-config:${config_api_version}")) {
         jarJar.ranged(it, "[${config_api_version},)")
