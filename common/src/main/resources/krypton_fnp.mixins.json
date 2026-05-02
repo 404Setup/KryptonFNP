@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "one.pkg.kfnp.mixin",
+  "package": "one.pkg.kreno.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "network.pipeline.encryption.ClientLoginMixin"
@@ -18,7 +18,7 @@
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin"
   ],
-  "plugin": "one.pkg.kfnp.shared.ModMixinBootstrap",
+  "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
   "refmap": "krypton_fnp.refmap.json",
   "injectors": {
     "defaultRequire": 1
