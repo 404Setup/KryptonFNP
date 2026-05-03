@@ -15,6 +15,7 @@
     "network.ServerPlayerLogoutMixin",
     "network.experimental.RconClientMixin",
     "network.fix.ServerStatusPacketListenerImplMixin",
+    "network.microopt.ConnectionMixin",
     "network.microopt.ServerEntityMixin",
     "network.microopt.ServerEntitySendChanges",
     "network.microopt.Utf8StringMixin",

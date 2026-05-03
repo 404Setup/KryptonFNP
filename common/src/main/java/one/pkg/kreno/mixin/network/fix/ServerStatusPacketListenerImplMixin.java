@@ -1,5 +1,6 @@
 package one.pkg.kreno.mixin.network.fix;
 
+import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.network.protocol.status.ServerboundStatusRequestPacket;
 import net.minecraft.server.network.ServerStatusPacketListenerImpl;
 import one.pkg.libsl.api.loader.JavaLoader;
@@ -23,8 +24,10 @@ public class ServerStatusPacketListenerImplMixin {
             cancellable = true
     )
     private void kreno$outdatedServerFix(ServerboundStatusRequestPacket packet, CallbackInfo ci) {
-        if (JavaLoader.INSTANCE.server() == null ||
-                JavaLoader.INSTANCE.server().getStatus().version().isEmpty())
-            ci.cancel();
+        if (JavaLoader.INSTANCE.server() != null) {
+            ServerStatus serverStatus = JavaLoader.INSTANCE.server().getStatus();
+            if (serverStatus == null || serverStatus.version().isEmpty())
+                ci.cancel();
+        }
     }
 }

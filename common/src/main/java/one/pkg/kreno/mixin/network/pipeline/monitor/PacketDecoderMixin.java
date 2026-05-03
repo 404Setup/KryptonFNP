@@ -2,15 +2,15 @@ package one.pkg.kreno.mixin.network.pipeline.monitor;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketDecoder;
 import net.minecraft.network.PacketListener;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.player.Player;
 import one.pkg.kreno.shared.network.TrafficMonitor;
+import one.pkg.kreno.shared.network.util.ClientMonitorUtils;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,8 +48,8 @@ public class PacketDecoderMixin {
                             uuid = player.getUUID();
                             name = player.getScoreboardName();
                         }
-                    } else if (listener instanceof ClientPacketListener c) {
-                        LocalPlayer player = Minecraft.getInstance().player;
+                    } else if (JavaLoader.INSTANCE.isClient()) {
+                        Player player = ClientMonitorUtils.onMonitor(listener);
                         if (player != null) {
                             uuid = player.getUUID();
                             name = player.getScoreboardName();

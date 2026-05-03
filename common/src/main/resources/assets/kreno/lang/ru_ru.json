@@ -35,6 +35,8 @@
   "kreno.config.entry.mixin.rconClient.desc": "Оптимизированная реализация RconClient",
   "kreno.config.entry.mixin.serverEntityMoveOpt": "Оптимизация избыточных обновлений движения",
   "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "Пропускает отправку пакетов движения, если сущность не перемещалась, и заменяет пакеты «позиция+вращение» на более легкие пакеты вращения, если сущность только повернулась.",
+  "kreno.config.entry.mixin.connectionMicroOpt": "Микро-оптимизация сетевого подключения",
+  "kreno.config.entry.mixin.connectionMicroOpt.desc": "Уменьшает распределение объектов и конкуренцию за блокировки в классе Connection.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",

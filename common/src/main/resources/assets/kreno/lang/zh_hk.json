@@ -35,6 +35,8 @@
   "kreno.config.entry.mixin.rconClient.desc": "啟用優化後的 RconClient 實作",
   "kreno.config.entry.mixin.serverEntityMoveOpt": "冗餘實體移動同步優化",
   "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "當實體未移動時取消發送位置包，僅起身時將“位置+旋轉”包降級為純“旋轉”包。",
+  "kreno.config.entry.mixin.connectionMicroOpt": "網絡連接微優化",
+  "kreno.config.entry.mixin.connectionMicroOpt.desc": "減少 Connection 類中的對象分配和鎖競爭。",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大階數 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "將 Netty 默認的 16MiB 內存分配改為 4MiB，因為 Minecraft 的封包限制為 2MiB。",

@@ -59,8 +59,17 @@ public class ConnectionMixin {
                 encoder = new MinecraftCompressEncoder(threshold, compressor);
                 decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor);
 
-                channel.pipeline().addBefore("decoder", "decompress", decoder);
-                channel.pipeline().addBefore("encoder", "compress", encoder);
+                if (channel.pipeline().get("decoder") != null) {
+                    channel.pipeline().addBefore("decoder", "decompress", decoder);
+                } else {
+                    channel.pipeline().addFirst("decompress", decoder);
+                }
+
+                if (channel.pipeline().get("encoder") != null) {
+                    channel.pipeline().addBefore("encoder", "compress", encoder);
+                } else {
+                    channel.pipeline().addLast("compress", encoder);
+                }
 
                 this.channel.pipeline().fireUserEventTriggered(KRenoPipelineEvent.COMPRESSION_ENABLED);
             }

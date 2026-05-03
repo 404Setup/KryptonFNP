@@ -40,6 +40,8 @@ public class ModConfig {
     private static boolean rconClient = false;
     @ConfigTarget(group = "mixin", value = "serverEntityMoveOpt", comment = "Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned")
     private static boolean serverEntityMoveOpt = false;
+    @ConfigTarget(group = "mixin", value = "connectionMicroOpt", comment = "Reduces object allocation and lock contention in the Connection class")
+    private static boolean connectionMicroOpt = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     @Range(min = 9, max = 51)
     @DisplayMode(EntryMode.SLIDER)
@@ -138,6 +140,10 @@ public class ModConfig {
 
         public static boolean isServerEntityMoveOpt() {
             return serverEntityMoveOpt;
+        }
+
+        public static boolean isConnectionMicroOpt() {
+            return connectionMicroOpt;
         }
     }
 
