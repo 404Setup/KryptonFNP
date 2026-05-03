@@ -5,7 +5,6 @@
   "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "client.KrenoClientCommandsMixin",
     "client.MinecraftClientMixin",
     "network.pipeline.encryption.ClientLoginMixin",
     "network.pipeline.he.ClientConnectionMixin"
@@ -13,7 +12,6 @@
   "mixins": [
     "accessor.ClientboundMoveEntityPacketAccessor",
     "accessor.ConnectionAccessor",
-    "network.CommandsMixin",
     "network.ServerPlayerLogoutMixin",
     "network.experimental.RconClientMixin",
     "network.fix.ServerStatusPacketListenerImplMixin",

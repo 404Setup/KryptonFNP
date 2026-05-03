@@ -3,8 +3,8 @@ package one.pkg.kreno.shared.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -12,6 +12,8 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
+import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.gui.TrafficMonitorDialog;
 import one.pkg.kreno.shared.gui.TrafficMonitorScreen;
 import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.libsl.api.loader.JavaLoader;
@@ -19,29 +21,49 @@ import one.pkg.libsl.api.loader.JavaLoader;
 import java.util.List;
 
 public class KrenoCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        String baseCmd = JavaLoader.INSTANCE.isClient() ? "krenoc" : "kreno";
+    private static SuggestionProvider<CommandSourceStack> suggestPlayers() {
+        return (ctx, builder) -> {
+            for (Player player : ctx.getSource().getServer().getPlayerList().getPlayers())
+                builder.suggest(player.getName().getString());
+            return builder.buildFuture();
+        };
+    }
+    public static class Client {
+        public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+            var cmd = Commands.literal("krenoc")
+                    .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
+                    .then(Commands.literal("traffic")
+                            .then(Commands.literal("all").executes(KrenoCommand::displayAllTraffic))
+                            .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
+                            .then(Commands.literal("gui").executes(_ -> {
+                                if (JavaLoader.INSTANCE.isClient()) {
+                                    if (ModConfig.GUI.isOreUI())
+                                        JavaLoader.INSTANCE.client().setScreen(TrafficMonitorDialog::create);
+                                    else
+                                        JavaLoader.INSTANCE.client().setScreen(TrafficMonitorScreen::new);
+                                    return 1;
+                                }
+                                return 0;
+                            }))
+                            .then(Commands.literal("list")
+                                    .then(Commands.argument("player", StringArgumentType.string())
+                                            .suggests(suggestPlayers())
+                                            .executes(KrenoCommand::displayPlayerTraffic)))
+                    );
 
-        var cmd = Commands.literal(baseCmd)
+            dispatcher.register(cmd);
+        }
+    }
+
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        var cmd = Commands.literal("kreno")
                 .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
                 .then(Commands.literal("traffic")
                         .then(Commands.literal("all").executes(KrenoCommand::displayAllTraffic))
                         .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
-                        .then(Commands.literal("gui").executes(_ -> {
-                            if (JavaLoader.INSTANCE.isClient()) {
-                                Minecraft.getInstance().execute(() ->
-                                        Minecraft.getInstance().setScreen(new TrafficMonitorScreen(Minecraft.getInstance().screen)));
-                                return 1;
-                            }
-                            return 0;
-                        }))
                         .then(Commands.literal("list")
                                 .then(Commands.argument("player", StringArgumentType.string())
-                                        .suggests((ctx, builder) -> {
-                                            for (Player player : ctx.getSource().getServer().getPlayerList().getPlayers())
-                                                builder.suggest(player.getName().getString());
-                                            return builder.buildFuture();
-                                        })
+                                        .suggests(suggestPlayers())
                                         .executes(KrenoCommand::displayPlayerTraffic)))
                 );
 
