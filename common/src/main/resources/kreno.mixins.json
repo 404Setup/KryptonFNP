@@ -11,11 +11,14 @@
     "network.pipeline.he.ClientConnectionMixin"
   ],
   "mixins": [
+    "accessor.ClientboundMoveEntityPacketAccessor",
     "accessor.ConnectionAccessor",
     "network.CommandsMixin",
     "network.ServerPlayerLogoutMixin",
     "network.experimental.RconClientMixin",
+    "network.fix.ServerStatusPacketListenerImplMixin",
     "network.microopt.ServerEntityMixin",
+    "network.microopt.ServerEntitySendChanges",
     "network.microopt.Utf8StringMixin",
     "network.microopt.VarIntMixin",
     "network.microopt.VarLongMixin",

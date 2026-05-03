@@ -136,7 +136,7 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
         BestVarLong("one.pkg.kreno.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),
         ClientEncrypt("one.pkg.kreno.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
         RconClient("one.pkg.kreno.mixin.network.experimental.RconClientMixin", ModConfig.Mixin::isRconClient),
-        ;
+        ServerEntitySendChanges("one.pkg.kreno.mixin.network.microopt.ServerEntitySendChanges", ModConfig.Mixin::isServerEntityMoveOpt);
 
         public final String CLASS;
         public final Supplier<Boolean> configTarget;

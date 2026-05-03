@@ -33,6 +33,8 @@
   "kreno.config.entry.mixin.clientEncrypt.desc": "在客户端启用新的加密优化",
   "kreno.config.entry.mixin.rconClient": "优化 RconClient",
   "kreno.config.entry.mixin.rconClient.desc": "启用优化后的 RconClient 实现",
+  "kreno.config.entry.mixin.serverEntityMoveOpt": "冗余实体移动同步优化",
+  "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "当实体未移动时取消发送位置包，仅转身时将“位置+旋转”包降级为纯“旋转”包。",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大阶数 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "将 Netty 默认的 16MiB 内存分配改为 4MiB，因为 Minecraft 的数据包限制为 2MiB。",

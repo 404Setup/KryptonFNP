@@ -33,6 +33,8 @@
   "kreno.config.entry.mixin.clientEncrypt.desc": "Aktiviert neue Verschlüsselungsoptimierungen auf der Clientseite",
   "kreno.config.entry.mixin.rconClient": "Optimierter RconClient",
   "kreno.config.entry.mixin.rconClient.desc": "Optimierte RconClient-Implementierung",
+  "kreno.config.entry.mixin.serverEntityMoveOpt": "Redundante Entitäts-Bewegungsoptimierung",
+  "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "Überspringt das Senden von Bewegungspaketen, wenn sich die Entität nicht bewegt hat, und stuft Kombi-Pakete auf reine Rotations-Pakete herunter, wenn nur eine Drehung stattgefunden hat.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",

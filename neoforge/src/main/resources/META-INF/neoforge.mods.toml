@@ -36,8 +36,8 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "libsl"
+modId = "springlotus"
 type = "required"
-versionRange = "[1.0,)"
+versionRange = "[1.0.0-alpha.3,)"
 ordering = "AFTER"
 side = "BOTH"

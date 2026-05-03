@@ -33,6 +33,8 @@
   "kreno.config.entry.mixin.clientEncrypt.desc": "Включить новые оптимизации шифрования на стороне клиента",
   "kreno.config.entry.mixin.rconClient": "Оптимизированный RconClient",
   "kreno.config.entry.mixin.rconClient.desc": "Оптимизированная реализация RconClient",
+  "kreno.config.entry.mixin.serverEntityMoveOpt": "Оптимизация избыточных обновлений движения",
+  "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "Пропускает отправку пакетов движения, если сущность не перемещалась, и заменяет пакеты «позиция+вращение» на более легкие пакеты вращения, если сущность только повернулась.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
