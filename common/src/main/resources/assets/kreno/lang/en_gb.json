@@ -37,6 +37,8 @@
   "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned.",
   "kreno.config.entry.mixin.connectionMicroOpt": "Connection Micro-Optimization",
   "kreno.config.entry.mixin.connectionMicroOpt.desc": "Reduces object allocation and lock contention in the Connection class.",
+  "kreno.config.entry.mixin.particlePacketOpt": "Particle Packet Optimization",
+  "kreno.config.entry.mixin.particlePacketOpt.desc": "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",

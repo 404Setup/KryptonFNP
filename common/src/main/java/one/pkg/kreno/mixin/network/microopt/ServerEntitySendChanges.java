@@ -77,12 +77,12 @@ public class ServerEntitySendChanges {
      * Combines two optimizations into one safe call site wrapper:
      * <p>
      * 1. Guards against null packets: if a previous WrapOperation (kreno$cancelUselessRotPacket or
-     *    kreno$cancelUselessPosPacket) returned null to suppress a redundant update, we skip the send
-     *    entirely. Forwarding a null packet to sendToTrackingPlayers would eventually reach
-     *    ServerCommonPacketListenerImpl.send() and throw a NullPointerException.
+     * kreno$cancelUselessPosPacket) returned null to suppress a redundant update, we skip the send
+     * entirely. Forwarding a null packet to sendToTrackingPlayers would eventually reach
+     * ServerCommonPacketListenerImpl.send() and throw a NullPointerException.
      * <p>
      * 2. Downgrades PosRot to Rot when displacement is zero: if the entity only rotated without moving,
-     *    we swap the heavier PosRot packet for a smaller Rot packet, reducing bandwidth.
+     * we swap the heavier PosRot packet for a smaller Rot packet, reducing bandwidth.
      */
     @WrapOperation(
             method = "sendChanges",
@@ -92,7 +92,7 @@ public class ServerEntitySendChanges {
             )
     )
     private void kreno$sendChangesPacketGuard(ServerEntity.Synchronizer synchronizer, Packet<?> packet,
-                                               Operation<Void> original) {
+                                              Operation<Void> original) {
         if (packet == null) return;
         if (packet instanceof ClientboundMoveEntityPacket.PosRot posRot) {
             ClientboundMoveEntityPacketAccessor accessor = (ClientboundMoveEntityPacketAccessor) posRot;
@@ -103,4 +103,5 @@ public class ServerEntitySendChanges {
         }
         original.call(synchronizer, packet);
     }
+
 }

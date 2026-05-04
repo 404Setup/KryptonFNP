@@ -42,6 +42,8 @@ public class ModConfig {
     private static boolean serverEntityMoveOpt = false;
     @ConfigTarget(group = "mixin", value = "connectionMicroOpt", comment = "Reduces object allocation and lock contention in the Connection class")
     private static boolean connectionMicroOpt = true;
+    @ConfigTarget(group = "mixin", value = "particlePacketOpt", comment = "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.")
+    private static boolean particlePacketOpt = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     @Range(min = 9, max = 51)
     @DisplayMode(EntryMode.SLIDER)
@@ -144,6 +146,10 @@ public class ModConfig {
 
         public static boolean isConnectionMicroOpt() {
             return connectionMicroOpt;
+        }
+
+        public static boolean isParticlePacketOpt() {
+            return particlePacketOpt;
         }
     }
 
