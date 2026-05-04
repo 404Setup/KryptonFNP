@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(ServerEntity.class)
 public class ServerEntitySendChanges {
@@ -75,27 +74,33 @@ public class ServerEntitySendChanges {
     }
 
     /**
-     * If an entity only rotates but doesn't move, sending a full 'PosRot' packet is wasteful.
+     * Combines two optimizations into one safe call site wrapper:
      * <p>
-     * We catch the packet right before it's sent to tracking players and, if we detect zero displacement,
-     * we swap it for a much smaller 'Rot' packet. This ensures the client still gets the rotation update
-     * without the overhead of the redundant movement data.
+     * 1. Guards against null packets: if a previous WrapOperation (kreno$cancelUselessRotPacket or
+     *    kreno$cancelUselessPosPacket) returned null to suppress a redundant update, we skip the send
+     *    entirely. Forwarding a null packet to sendToTrackingPlayers would eventually reach
+     *    ServerCommonPacketListenerImpl.send() and throw a NullPointerException.
+     * <p>
+     * 2. Downgrades PosRot to Rot when displacement is zero: if the entity only rotated without moving,
+     *    we swap the heavier PosRot packet for a smaller Rot packet, reducing bandwidth.
      */
-    @ModifyArg(
+    @WrapOperation(
             method = "sendChanges",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerEntity$Synchronizer;sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V"
             )
     )
-    private Packet<?> kreno$downgradePosRotPacket(Packet<?> packet) {
+    private void kreno$sendChangesPacketGuard(ServerEntity.Synchronizer synchronizer, Packet<?> packet,
+                                               Operation<Void> original) {
+        if (packet == null) return;
         if (packet instanceof ClientboundMoveEntityPacket.PosRot posRot) {
             ClientboundMoveEntityPacketAccessor accessor = (ClientboundMoveEntityPacketAccessor) posRot;
             if (posRot.getXa() == 0 && posRot.getYa() == 0 && posRot.getZa() == 0) {
-                return new ClientboundMoveEntityPacket.Rot(accessor.getEntityId(), accessor.kreno$getYRot(),
+                packet = new ClientboundMoveEntityPacket.Rot(accessor.getEntityId(), accessor.kreno$getYRot(),
                         accessor.kreno$getXRot(), posRot.isOnGround());
             }
         }
-        return packet;
+        original.call(synchronizer, packet);
     }
 }

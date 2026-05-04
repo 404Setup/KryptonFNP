@@ -32,6 +32,8 @@ public class KrenoCommand {
         public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
             var cmd = Commands.literal("krenoc")
                     .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
+                    .then(Commands.literal("config")
+                            .then(Commands.literal("reload").executes(KrenoCommand::reloadConfig)))
                     .then(Commands.literal("traffic")
                             .then(Commands.literal("all").executes(KrenoCommand::displayAllTraffic))
                             .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
@@ -58,6 +60,8 @@ public class KrenoCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         var cmd = Commands.literal("kreno")
                 .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
+                .then(Commands.literal("config")
+                        .then(Commands.literal("reload").executes(KrenoCommand::reloadConfig)))
                 .then(Commands.literal("traffic")
                         .then(Commands.literal("all").executes(KrenoCommand::displayAllTraffic))
                         .then(Commands.literal("reset").executes(KrenoCommand::resetTraffic))
@@ -68,6 +72,12 @@ public class KrenoCommand {
                 );
 
         dispatcher.register(cmd);
+    }
+
+    private synchronized static int reloadConfig(CommandContext<CommandSourceStack> context) {
+        ModConfig.config.reloadConfigurations(true);
+        context.getSource().sendSuccess(() -> Component.literal("Config reloaded successfully").withStyle(ChatFormatting.GREEN), true);
+        return 1;
     }
 
     private static int resetTraffic(CommandContext<CommandSourceStack> context) {

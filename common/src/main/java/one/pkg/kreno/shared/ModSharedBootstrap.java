@@ -47,6 +47,12 @@ public class ModSharedBootstrap {
             LOGGER.error("///////////////////////////////////////////////////////////////////");
         }
 
+        // I don't know if this will work.
+        if (IS_WINDOWS && !HAS_NATIVE_MSVC && !HAS_NATIVE_OSSL) {
+            LOGGER.error("Native dependencies are not available for your system. Disabling Velocity native acceleration.");
+            System.setProperty("velocity.natives-disabled", "true");
+        }
+
         if (!JavaLoader.INSTANCE.isClient()) {
             LOGGER.info("KryptonReno is now accelerating your Minecraft server's networking stack \uD83D\uDE80");
         } else {

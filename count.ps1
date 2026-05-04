@@ -1,0 +1,1 @@
+dir .\ -Recurse *.java | Get-Content | Measure-Object
