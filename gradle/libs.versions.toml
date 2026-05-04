@@ -5,7 +5,7 @@ quic = "0.0.75.Final"
 
 sewlia-config = "1.1.0-SNAPSHOT"
 recastlib = "3.4.0-SNAPSHOT"
-libsl = "1.0.2"
+libsl = "1.0.0-alpha.3"
 
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }

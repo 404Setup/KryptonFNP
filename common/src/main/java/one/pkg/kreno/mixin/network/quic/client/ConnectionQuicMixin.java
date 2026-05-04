@@ -8,7 +8,7 @@ import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.quic.QuicConnect;
 import one.pkg.kreno.shared.network.quic.QuicSocketAddress;
 import one.pkg.kreno.shared.network.quic.ServerAddressProperties;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -33,7 +33,6 @@
     "network.pipeline.monitor.PacketEncoderMixin",
     "network.pipeline.prepender.ConnectionMixin",
     "network.quic.server.ServerConnectionListenerQuicMixin",
-    "network.thread.ServerLoginPacketListenerImplMixin",
     "network.thread.ServerTextFilterMixin",
     "network.thread.UtilMixin"
   ],

@@ -9,7 +9,7 @@ import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.quic.DNSLookup;
 import one.pkg.kreno.shared.network.quic.QuicSocketAddress;
 import one.pkg.kreno.shared.network.quic.ServerAddressProperties;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

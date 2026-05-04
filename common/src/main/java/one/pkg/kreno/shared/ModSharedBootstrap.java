@@ -2,7 +2,7 @@ package one.pkg.kreno.shared;
 
 import com.velocitypowered.natives.util.Natives;
 import one.pkg.kreno.shared.misc.NativeDependencyChecker;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

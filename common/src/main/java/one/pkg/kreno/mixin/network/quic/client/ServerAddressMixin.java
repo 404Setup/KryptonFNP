@@ -3,7 +3,7 @@ package one.pkg.kreno.mixin.network.quic.client;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.quic.ServerAddressProperties;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,7 +45,7 @@ public class ServerAddressMixin implements ServerAddressProperties {
         callbackInfoReturnable.setReturnValue(newAddress);
     }
 
-    @ModifyVariable(method = "isValidAddress(Ljava/lang/String;)Z", at = @At("HEAD"), argsOnly = true, ordinal = 0, remap = false)
+    @ModifyVariable(method = "isValidAddress(Ljava/lang/String;)Z", at = @At("HEAD"), argsOnly = true, name = "input")
     private static String modifyIsValidAddress(String input) {
         if (ModConfig.Quic.isDisableQuic() || !JavaLoader.INSTANCE.loaded("kreno_addons_quic")) return input;
         var index = input.indexOf("://");

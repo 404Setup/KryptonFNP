@@ -18,7 +18,7 @@ import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.netty.NettyUtil;
 import one.pkg.kreno.shared.network.quic.token.KeyedConnectionIdGenerator;
 import one.pkg.kreno.shared.network.quic.token.KeyedTokenHandler;
-import one.pkg.libsl.loader.JavaLoader;
+import one.pkg.libsl.api.loader.JavaLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
