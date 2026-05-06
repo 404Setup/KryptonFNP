@@ -42,7 +42,7 @@
   "kreno.config.entry.mixin.particlePacketOpt": "粒子發包優化",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "減少一部分可能無用的粒子發包。此配置僅在服務端生效。",
   "kreno.config.entry.mixin.trackedEntityOpt": "實體追蹤優化",
-  "kreno.config.entry.mixin.trackedEntityOpt.desc": "優化實體追蹤邏輯，減少對象分配並使用數組進行廣播，降低內存和 CPU 開銷。",
+  "kreno.config.entry.mixin.trackedEntityOpt.desc": "優化實體數據包廣播，並與服務端實體剔除集成以降低網絡開銷。",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大階數 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "將 Netty 默認的 16MiB 內存分配改為 4MiB，因為 Minecraft 的封包限制為 2MiB。",

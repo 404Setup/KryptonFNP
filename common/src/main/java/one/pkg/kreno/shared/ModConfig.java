@@ -44,7 +44,7 @@ public class ModConfig {
     private static boolean connectionMicroOpt = true;
     @ConfigTarget(group = "mixin", value = "particlePacketOpt", comment = "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.")
     private static boolean particlePacketOpt = true;
-    @ConfigTarget(group = "mixin", value = "trackedEntityOpt", comment = "Optimizes entity tracking by reducing object allocation and using array-based broadcasting")
+    @ConfigTarget(group = "mixin", value = "trackedEntityOpt", comment = "Optimizes entity packet broadcasting and integrates with server-side entity culling")
     private static boolean trackedEntityOpt = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     @Range(min = 9, max = 51)

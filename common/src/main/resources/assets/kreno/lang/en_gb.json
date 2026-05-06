@@ -42,7 +42,7 @@
   "kreno.config.entry.mixin.particlePacketOpt": "Particle Packet Optimization",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.",
   "kreno.config.entry.mixin.trackedEntityOpt": "Tracked Entity Optimisation",
-  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Optimises entity tracking logic by reducing object allocation and using array-based broadcasting, reducing memory and CPU overhead.",
+  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Optimises entity packet broadcasting and integrates with server-side entity culling to reduce network overhead.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",

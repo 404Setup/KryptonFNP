@@ -102,7 +102,7 @@ mixin:
   connectionMicroOpt: true
   # Reduces some potentially useless particle packets. This configuration only takes effect on the server side.
   particlePacketOpt: true
-  # Optimizes entity tracking by reducing object allocation and using array-based broadcasting
+  # Optimizes entity packet broadcasting and integrates with server-side entity culling
   trackedEntityOpt: true
 fix:
   issues128:

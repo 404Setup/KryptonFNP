@@ -43,7 +43,7 @@
   "kreno.config.entry.mixin.particlePacketOpt": "Оптимизация пакетов частиц",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "Уменьшает количество потенциально бесполезных пакетов частиц. Эта настройка действует только на стороне сервера.",
   "kreno.config.entry.mixin.trackedEntityOpt": "Оптимизация отслеживания сущностей",
-  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Оптимизирует логику отслеживания сущностей, сокращая выделение объектов и используя широковещательную рассылку на основе массивов, что снижает нагрузку на память и процессор.",
+  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Оптимизирует рассылку пакетов сущностей и интегрируется с серверным отсечением сущностей для снижения сетевой нагрузки.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
