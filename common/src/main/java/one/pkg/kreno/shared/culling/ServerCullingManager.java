@@ -3,10 +3,14 @@ package one.pkg.kreno.shared.culling;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
@@ -15,11 +19,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import one.pkg.kreno.shared.ModConfig;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class ServerCullingManager {
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 4));
@@ -27,12 +34,21 @@ public class ServerCullingManager {
 
     private static final long CHECK_INTERVAL_MS = 500;
     private static final long HIDE_DELAY_MS = 1000;
+    private static final long REFRESH_SWEEP_INTERVAL_MS = 250;
+    private static final int MAX_REFRESHES_PER_SWEEP = 64;
+    private static final int MAX_DROPPED_TRACKED = 4096;
+    private static final double NEAR_DISTANCE_SQ = 64.0;
+
     private static final Map<Integer, Cache<BlockPos, CullingState>> BLOCK_VISIBILITY_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
+    private static final Map<Integer, Long> LAST_SWEEP_TIME = new ConcurrentHashMap<>();
 
     public static void onEnd() {
         BLOCK_VISIBILITY_CACHE.values().forEach(Cache::invalidateAll);
         BLOCK_VISIBILITY_CACHE.clear();
         VISIBILITY_CACHE.clear();
+        DROPPED_BLOCK_UPDATES.clear();
+        LAST_SWEEP_TIME.clear();
         EXECUTOR.close();
     }
 
@@ -45,27 +61,38 @@ public class ServerCullingManager {
         CullingState cachedState = cache.getIfPresent(pos);
         if (cachedState == null) {
             cachedState = new CullingState();
-            cache.put(pos, cachedState);
+            // Use immutable copies of BlockPos when storing as cache key.
+            cache.put(pos.immutable(), cachedState);
         }
         final CullingState state = cachedState;
 
         long now = System.currentTimeMillis();
 
-        Vec3 blockCenter = Vec3.atCenterOf(pos);
-        Vec3 eyePos = player.getEyePosition();
-        double distanceSq = eyePos.distanceToSqr(blockCenter);
+        double cx = pos.getX() + 0.5;
+        double cy = pos.getY() + 0.5;
+        double cz = pos.getZ() + 0.5;
+        double ex = player.getX();
+        double ey = player.getEyeY();
+        double ez = player.getZ();
+        double dx = cx - ex, dy = cy - ey, dz = cz - ez;
+        double distanceSq = dx * dx + dy * dy + dz * dz;
         state.lastDistanceSq = distanceSq;
 
-        if (distanceSq < 64.0) {
+        if (distanceSq < NEAR_DISTANCE_SQ) {
             state.lastRaytraceResult = true;
             state.isCurrentlyVisible = true;
             state.hiddenSince = 0;
             return true;
         }
 
-        Vec3 toBlock = blockCenter.subtract(eyePos).normalize();
         Vec3 lookVec = player.getLookAngle();
-        boolean inFOV = lookVec.dot(toBlock) >= -0.15;
+        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
+        boolean inFOV;
+        if (dot >= 0) {
+            inFOV = true;
+        } else {
+            inFOV = dot * dot <= 0.0225 * distanceSq;
+        }
 
         if (inFOV) {
             if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
@@ -74,6 +101,7 @@ public class ServerCullingManager {
                     state.lastCheckTime = now;
                     AABB aabb = new AABB(pos).inflate(0.1);
                     Level level = player.level();
+                    Vec3 eyePos = new Vec3(ex, ey, ez);
 
                     EXECUTOR.submit(() -> {
                         try {
@@ -104,6 +132,70 @@ public class ServerCullingManager {
         return state.isCurrentlyVisible;
     }
 
+    /**
+     * Records that a block update packet was dropped due to culling so that it can be re-sent later
+     * once the block becomes visible to the player again.
+     */
+    public static void recordDroppedBlock(ServerPlayer player, BlockPos pos) {
+        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.computeIfAbsent(player.getId(), k -> ConcurrentHashMap.newKeySet());
+        if (set.size() >= MAX_DROPPED_TRACKED) return;
+        set.add(pos.immutable());
+    }
+
+    /**
+     * Periodically sweeps the dropped-block set for the given player and re-sends a fresh
+     * {@link ClientboundBlockUpdatePacket} for any positions that have become visible again.
+     * The sweep is rate-limited per player by {@link #REFRESH_SWEEP_INTERVAL_MS}.
+     *
+     * @param player       the player whose dropped updates to sweep
+     * @param directSender a sender that sends the packet directly, bypassing the culling mixin
+     */
+    public static void maybeProcessPendingRefreshes(ServerPlayer player, Consumer<Packet<?>> directSender) {
+        if (!ModConfig.Culling.isBlockEnabled()) return;
+        int pid = player.getId();
+        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.get(pid);
+        if (set == null || set.isEmpty()) return;
+
+        long now = System.currentTimeMillis();
+        Long last = LAST_SWEEP_TIME.get(pid);
+        if (last != null && now - last < REFRESH_SWEEP_INTERVAL_MS) return;
+        LAST_SWEEP_TIME.put(pid, now);
+
+        Level level = player.level();
+        int processed = 0;
+        Iterator<BlockPos> it = set.iterator();
+        while (it.hasNext() && processed < MAX_REFRESHES_PER_SWEEP) {
+            BlockPos pos = it.next();
+            if (isBlockVisible(player, pos)) {
+                BlockState state = level.getBlockState(pos);
+                directSender.accept(new ClientboundBlockUpdatePacket(pos, state));
+                it.remove();
+                processed++;
+            }
+        }
+    }
+
+    /**
+     * Re-sends the actual block state of the 6 neighbors of the given position via the supplied
+     * direct sender. This is intended to recover from chunk-level block culling that may have
+     * replaced surrounded blocks with stone in the original chunk packet.
+     */
+    public static void refreshAdjacentBlocks(ServerPlayer player, BlockPos pos, Consumer<Packet<?>> directSender) {
+        if (!ModConfig.Culling.isChunkBlockCullingEnabled()) return;
+        Level level = player.level();
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (Direction dir : Direction.values()) {
+            cursor.setWithOffset(pos, dir);
+            BlockState neighborState = level.getBlockState(cursor);
+            if (!neighborState.isAir() && neighborState.isSolidRender()) {
+                BlockPos immutable = cursor.immutable();
+                directSender.accept(new ClientboundBlockUpdatePacket(immutable, neighborState));
+                Set<BlockPos> dropped = DROPPED_BLOCK_UPDATES.get(player.getId());
+                if (dropped != null) dropped.remove(immutable);
+            }
+        }
+    }
+
     public static boolean isEntityVisible(ServerPlayer player, Entity entity) {
         if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
 
@@ -114,7 +206,7 @@ public class ServerCullingManager {
         double distanceSq = player.distanceToSqr(entity);
         state.lastDistanceSq = distanceSq;
 
-        if (distanceSq < 64.0) {
+        if (distanceSq < NEAR_DISTANCE_SQ) {
             state.lastRaytraceResult = true;
             state.isCurrentlyVisible = true;
             state.hiddenSince = 0;
@@ -218,8 +310,11 @@ public class ServerCullingManager {
     }
 
     public static void removePlayer(ServerPlayer player) {
-        VISIBILITY_CACHE.remove(player.getId());
-        BLOCK_VISIBILITY_CACHE.remove(player.getId());
+        int pid = player.getId();
+        VISIBILITY_CACHE.remove(pid);
+        BLOCK_VISIBILITY_CACHE.remove(pid);
+        DROPPED_BLOCK_UPDATES.remove(pid);
+        LAST_SWEEP_TIME.remove(pid);
     }
 
     public static void removeEntity(Entity entity) {

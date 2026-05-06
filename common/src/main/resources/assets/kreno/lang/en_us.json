@@ -55,6 +55,8 @@
   "kreno.config.entry.culling.entity.desc": "Smart entity culling on server side",
   "kreno.config.entry.culling.block": "Block Culling",
   "kreno.config.entry.culling.block.desc": "Smart block/block entity culling on server side",
+  "kreno.config.entry.culling.chunk_block": "Chunk Block Culling",
+  "kreno.config.entry.culling.chunk_block.desc": "Replaces completely hidden blocks in chunk packets with stone to save bandwidth",
 
   "kreno.traffic.gui.title": "Krypton Reno Traffic Monitor",
   "kreno.traffic.gui.reset": "Reset Stats",

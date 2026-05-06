@@ -12,10 +12,12 @@
   "mixins": [
     "accessor.ClientboundMoveEntityPacketAccessor",
     "accessor.ConnectionAccessor",
+    "accessor.LevelChunkSectionAccessor",
     "network.chunk.ServerEntityCullingMixin",
     "network.chunk.ServerGamePacketListenerImplCullingMixin",
     "network.chunk.TrackedEntityMixin",
     "network.chunk.EntityCullingMixin",
+    "network.chunk.ClientboundLevelChunkPacketDataMixin",
     "network.experimental.RconClientMixin",
     "network.fix.ServerStatusPacketListenerImplMixin",
     "network.microopt.ConnectionMixin",

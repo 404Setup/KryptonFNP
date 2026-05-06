@@ -9,25 +9,64 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.block.state.BlockState;
+import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+
+import java.util.function.Consumer;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplCullingMixin extends ServerCommonPacketListenerImpl {
     @Shadow
     public ServerPlayer player;
 
+    @Unique
+    private static final ThreadLocal<Boolean> kreno$bypassCulling = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
     public ServerGamePacketListenerImplCullingMixin(MinecraftServer server, Connection connection, CommonListenerCookie cookie) {
         super(server, connection, cookie);
     }
 
+    @Unique
+    private void kreno$sendDirect(Packet<?> packet) {
+        kreno$bypassCulling.set(Boolean.TRUE);
+        try {
+            super.send(packet);
+        } finally {
+            kreno$bypassCulling.set(Boolean.FALSE);
+        }
+    }
+
     @Override
     public void send(@NonNull Packet<?> packet) {
+        if (kreno$bypassCulling.get()) {
+            super.send(packet);
+            return;
+        }
+
+        Consumer<Packet<?>> direct = this::kreno$sendDirect;
+        ServerCullingManager.maybeProcessPendingRefreshes(this.player, direct);
+
         if (packet instanceof ClientboundBlockEntityDataPacket blockEntityPacket) {
             if (!ServerCullingManager.isBlockVisible(this.player, blockEntityPacket.getPos())) {
+                ServerCullingManager.recordDroppedBlock(this.player, blockEntityPacket.getPos());
                 return;
+            }
+        } else if (packet instanceof ClientboundBlockUpdatePacket blockUpdatePacket) {
+            if (!ServerCullingManager.isBlockVisible(this.player, blockUpdatePacket.getPos())) {
+                ServerCullingManager.recordDroppedBlock(this.player, blockUpdatePacket.getPos());
+                return;
+            }
+
+            if (ModConfig.Culling.isChunkBlockCullingEnabled()) {
+                BlockState newState = blockUpdatePacket.getBlockState();
+                if (!newState.isSolidRender()) {
+                    ServerCullingManager.refreshAdjacentBlocks(this.player, blockUpdatePacket.getPos(), direct);
+                }
             }
         }
         super.send(packet);

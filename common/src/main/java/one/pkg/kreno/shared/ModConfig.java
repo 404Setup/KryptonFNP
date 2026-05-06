@@ -59,6 +59,8 @@ public class ModConfig {
     private static boolean cullingEntity = true;
     @ConfigTarget(group = "culling", value = "block", comment = "Smart block/block entity culling on server side")
     private static boolean cullingBlock = true;
+    @ConfigTarget(group = "culling", value = "chunk_block", comment = "Replaces completely hidden blocks in chunk packets with air to save bandwidth")
+    private static boolean cullingChunkBlock = true;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -187,6 +189,10 @@ public class ModConfig {
 
         public static boolean isBlockEnabled() {
             return cullingBlock;
+        }
+
+        public static boolean isChunkBlockCullingEnabled() {
+            return cullingChunkBlock;
         }
     }
 }
