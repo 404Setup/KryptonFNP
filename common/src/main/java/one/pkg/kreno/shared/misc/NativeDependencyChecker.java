@@ -7,6 +7,7 @@ import static one.pkg.kreno.shared.network.util.SystemInfo.IS_MAC;
 import static one.pkg.kreno.shared.network.util.SystemInfo.IS_WINDOWS;
 
 // TODO: Add a warning dialog (for client)
+// 
 public class NativeDependencyChecker {
 
     // Most PCs should include MSVC C++.
