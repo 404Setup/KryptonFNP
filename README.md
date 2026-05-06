@@ -114,6 +114,10 @@ culling:
   entity: true
   # Smart block/block entity culling on server side
   block: true
+  # Replaces completely hidden blocks in chunk packets with air to save bandwidth
+  chunk_block: true
+  # Treat light sections whose data array is fully zero as empty to skip 2KiB payload per section in ClientboundLevelChunkWithLightPacket / ClientboundLightUpdatePacket
+  chunk_light: true
 compress:
   # The compression level for packets, between 1-9.
   compressionLevel: 4
