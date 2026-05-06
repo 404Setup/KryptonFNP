@@ -164,7 +164,7 @@ public class BlockCullingUtil {
      */
     private static final class NeighborChunks {
         private final LevelChunk source;
-        private final LevelChunk[] cache = new LevelChunk[4]; // 0:west(-X) 1:east(+X) 2:north(-Z) 3:south(+Z)
+        private final LevelChunk[] cache = new LevelChunk[4];
         private final boolean[] resolved = new boolean[4];
 
         NeighborChunks(LevelChunk source) {
@@ -191,7 +191,7 @@ public class BlockCullingUtil {
                             cache[idx] = lc;
                         }
                     } catch (Throwable ignored) {
-                        // Defensive: chunk lookup may be unsafe off-thread; treat as unloaded.
+                        // chunk lookup may be unsafe off-thread; treat as unloaded.
                     }
                 }
             }
