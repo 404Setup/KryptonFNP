@@ -274,3 +274,5 @@ files, Config, ShaderPacks, ResourcePacks, Library and launcher into a whole zip
 - **RecastLib RecastXZ:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a MPL-2.0 License.
 - **RecastLib RecastSSL:** 2025-2026 404Setup. All rights reserved. Source code is licensed under a BSD-3-Clause
   License.
+- **SpringLotus:** 2026 404Setup. All rights reserved. Source code is licensed under a LGPL-3.0 Only License.
+  Redistribution is strictly prohibited.
