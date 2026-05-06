@@ -186,19 +186,19 @@ public class ModConfig {
 
     public static class Culling {
         public static boolean isEntityEnabled() {
-            return cullingEntity;
+            return !JavaLoader.INSTANCE.isClient() && cullingEntity;
         }
 
         public static boolean isBlockEnabled() {
-            return cullingBlock;
+            return !JavaLoader.INSTANCE.isClient() &&cullingBlock;
         }
 
         public static boolean isChunkBlockCullingEnabled() {
-            return cullingChunkBlock;
+            return !JavaLoader.INSTANCE.isClient() &&cullingChunkBlock;
         }
 
         public static boolean isChunkLightCullingEnabled() {
-            return cullingChunkLight;
+            return !JavaLoader.INSTANCE.isClient() &&cullingChunkLight;
         }
     }
 }

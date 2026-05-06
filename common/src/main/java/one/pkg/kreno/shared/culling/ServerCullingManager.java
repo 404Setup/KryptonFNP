@@ -53,7 +53,7 @@ public class ServerCullingManager {
     }
 
     public static boolean isBlockVisible(ServerPlayer player, BlockPos pos) {
-        if (!ModConfig.Culling.isBlockEnabled() || !player.level().getServer().isDedicatedServer()) return true;
+        if (!ModConfig.Culling.isBlockEnabled()) return true;
 
         Cache<BlockPos, CullingState> cache = BLOCK_VISIBILITY_CACHE.computeIfAbsent(player.getId(), k ->
                 CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(1, TimeUnit.MINUTES).build()
@@ -136,8 +136,8 @@ public class ServerCullingManager {
      * once the block becomes visible to the player again.
      *
      * @return {@code true} if the position was recorded (or already tracked) and the caller may safely
-     *         skip sending the packet; {@code false} if the tracking set is full, in which case the
-     *         caller MUST send the original packet to the client to avoid losing the update.
+     * skip sending the packet; {@code false} if the tracking set is full, in which case the
+     * caller MUST send the original packet to the client to avoid losing the update.
      */
     public static boolean recordDroppedBlock(ServerPlayer player, BlockPos pos) {
         Set<BlockPos> set = DROPPED_BLOCK_UPDATES.computeIfAbsent(player.getId(), k -> ConcurrentHashMap.newKeySet());
