@@ -52,29 +52,45 @@ public class ServerCullingManager {
         long now = System.currentTimeMillis();
 
         Vec3 blockCenter = Vec3.atCenterOf(pos);
-        state.lastDistanceSq = player.getEyePosition().distanceToSqr(blockCenter);
+        Vec3 eyePos = player.getEyePosition();
+        double distanceSq = eyePos.distanceToSqr(blockCenter);
+        state.lastDistanceSq = distanceSq;
 
-        if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
-            if (!state.isChecking) {
-                state.isChecking = true;
-                state.lastCheckTime = now;
-                AABB aabb = new AABB(pos).inflate(0.1);
-                Level level = player.level();
-                Vec3 eyePos = player.getEyePosition();
+        if (distanceSq < 64.0) {
+            state.lastRaytraceResult = true;
+            state.isCurrentlyVisible = true;
+            state.hiddenSince = 0;
+            return true;
+        }
 
-                EXECUTOR.submit(() -> {
-                    try {
-                        state.lastResult = checkAABBVisible(level, eyePos, aabb);
-                    } catch (Exception e) {
-                        state.lastResult = true;
-                    } finally {
-                        state.isChecking = false;
-                    }
-                });
+        Vec3 toBlock = blockCenter.subtract(eyePos).normalize();
+        Vec3 lookVec = player.getLookAngle();
+        boolean inFOV = lookVec.dot(toBlock) >= -0.15;
+
+        if (inFOV) {
+            if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
+                if (!state.isChecking) {
+                    state.isChecking = true;
+                    state.lastCheckTime = now;
+                    AABB aabb = new AABB(pos).inflate(0.1);
+                    Level level = player.level();
+
+                    EXECUTOR.submit(() -> {
+                        try {
+                            state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
+                        } catch (Exception e) {
+                            state.lastRaytraceResult = true;
+                        } finally {
+                            state.isChecking = false;
+                        }
+                    });
+                }
             }
         }
 
-        if (!state.lastResult) {
+        boolean isVisible = inFOV && state.lastRaytraceResult;
+
+        if (!isVisible) {
             if (state.hiddenSince == 0) {
                 state.hiddenSince = now;
             } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
@@ -95,17 +111,35 @@ public class ServerCullingManager {
         CullingState state = map.computeIfAbsent(entity.getId(), k -> new CullingState());
 
         long now = System.currentTimeMillis();
-        state.lastDistanceSq = player.distanceToSqr(entity);
+        double distanceSq = player.distanceToSqr(entity);
+        state.lastDistanceSq = distanceSq;
 
-        if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
-            if (!state.isChecking) {
-                state.isChecking = true;
-                state.lastCheckTime = now;
-                queueEntityCheck(player, entity, state);
+        if (distanceSq < 64.0) {
+            state.lastRaytraceResult = true;
+            state.isCurrentlyVisible = true;
+            state.hiddenSince = 0;
+            return true;
+        }
+
+        Vec3 eyePos = player.getEyePosition();
+        Vec3 entityCenter = entity.getBoundingBox().getCenter();
+        Vec3 toEntity = entityCenter.subtract(eyePos).normalize();
+        Vec3 lookVec = player.getLookAngle();
+        boolean inFOV = lookVec.dot(toEntity) >= -0.15;
+
+        if (inFOV) {
+            if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
+                if (!state.isChecking) {
+                    state.isChecking = true;
+                    state.lastCheckTime = now;
+                    queueEntityCheck(player, entity, state);
+                }
             }
         }
 
-        if (!state.lastResult) {
+        boolean isVisible = inFOV && state.lastRaytraceResult;
+
+        if (!isVisible) {
             if (state.hiddenSince == 0) {
                 state.hiddenSince = now;
             } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
@@ -147,9 +181,9 @@ public class ServerCullingManager {
 
         EXECUTOR.submit(() -> {
             try {
-                state.lastResult = checkAABBVisible(level, eyePos, aabb);
+                state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
             } catch (Exception e) {
-                state.lastResult = true;
+                state.lastRaytraceResult = true;
             } finally {
                 state.isChecking = false;
             }
@@ -160,21 +194,13 @@ public class ServerCullingManager {
         Vec3 center = aabb.getCenter();
         if (isLineOfSightClear(level, eye, center)) return true;
 
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.minY, aabb.minZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.minY, aabb.maxZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.maxY, aabb.minZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.maxY, aabb.maxZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.minY, aabb.minZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.minY, aabb.maxZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.maxY, aabb.minZ))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ))) return true;
-
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, center.y, center.z))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, center.y, center.z))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(center.x, aabb.minY, center.z))) return true;
         if (isLineOfSightClear(level, eye, new Vec3(center.x, aabb.maxY, center.z))) return true;
-        if (isLineOfSightClear(level, eye, new Vec3(center.x, center.y, aabb.minZ))) return true;
-        return isLineOfSightClear(level, eye, new Vec3(center.x, center.y, aabb.maxZ));
+        if (isLineOfSightClear(level, eye, new Vec3(center.x, aabb.minY, center.z))) return true;
+
+        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.maxY, aabb.minZ))) return true;
+        if (isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ))) return true;
+        if (isLineOfSightClear(level, eye, new Vec3(aabb.minX, aabb.minY, aabb.maxZ))) return true;
+        return isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.minY, aabb.minZ));
     }
 
     private static boolean isLineOfSightClear(Level level, Vec3 start, Vec3 end) {
@@ -205,7 +231,7 @@ public class ServerCullingManager {
 
     private static class CullingState {
         volatile boolean isCurrentlyVisible = true;
-        volatile boolean lastResult = true;
+        volatile boolean lastRaytraceResult = true;
         volatile long lastCheckTime = 0;
         volatile long hiddenSince = 0;
         volatile boolean isChecking = false;
