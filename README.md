@@ -33,6 +33,7 @@ For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Se
 - Continuously provide compatibility for stable versions (1.20.1, 1.21.1) and the latest versions
 - RecastLib provides acceleration features for **Windows** (x64/arm64)
 - Support RFC 8305 Happy Eyeballs for client connections
+- Server-side asynchronous (possibly) entity hiding – Hides entities that are not visible to the player
 - Further scalability optimizations
 
 ## Mandatory dependencies
