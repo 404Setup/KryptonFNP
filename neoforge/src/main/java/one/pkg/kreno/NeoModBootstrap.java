@@ -23,9 +23,9 @@ public class NeoModBootstrap {
         FMLTest.test();
         ModSharedBootstrap.run();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, context, environment) -> {
-            KrenoCommand.register(dispatcher);
-        });
+        CommandRegistrationCallback.EVENT.register(
+                (dispatcher, _, _) ->
+                KrenoCommand.register(dispatcher));
 
         if (JavaLoader.INSTANCE.isClient()) {
             Client.init(container);

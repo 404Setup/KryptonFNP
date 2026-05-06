@@ -67,8 +67,6 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
             TrafficMonitor.reset();
             this.repositionElements();
         }).width(100).build());
-        linearLayout.addChild(Button.builder(CommonComponents.GUI_DONE, (_) -> {
-            this.minecraft.setScreen(this.lastScreen);
-        }).width(100).build());
+        linearLayout.addChild(Button.builder(CommonComponents.GUI_DONE, (_) -> this.minecraft.setScreen(this.lastScreen)).width(100).build());
     }
 }
