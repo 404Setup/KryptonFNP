@@ -59,6 +59,8 @@
   "kreno.config.entry.culling.block.desc": "サーバー側でのスマートなブロック/ブロックエンティティカリングを有効にします",
   "kreno.config.entry.culling.chunk_block": "チャンクブロックカリング",
   "kreno.config.entry.culling.chunk_block.desc": "チャンクパケットの送信時に完全に隠れたブロックを丸石に置き換え、帯域幅を節約します",
+  "kreno.config.entry.culling.chunk_light": "チャンク光カリング",
+  "kreno.config.entry.culling.chunk_light.desc": "データ配列が完全にゼロである光セクションを空として扱い、セクションごとに 2KiB のペイロードをスキップします",
 
   "kreno.traffic.gui.title": "Krypton Reno トラフィックモニター",
   "kreno.traffic.gui.reset": "統計をリセット",

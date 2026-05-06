@@ -58,6 +58,8 @@
   "kreno.config.entry.culling.block.desc": "在服務端啟用智能方塊/方塊實體剔除",
   "kreno.config.entry.culling.chunk_block": "區塊方塊剔除",
   "kreno.config.entry.culling.chunk_block.desc": "在區塊發包時將完全被包裹的隱藏方塊替換為原石，以減少調色板大小並節省頻寬",
+  "kreno.config.entry.culling.chunk_light": "區塊光照剔除",
+  "kreno.config.entry.culling.chunk_light.desc": "將數據陣列全為零的光照層視為為空，從而在區塊和光照數據包中跳過每層 2KiB 的負載",
 
   "kreno.traffic.gui.title": "Krypton Reno 流量統計",
   "kreno.traffic.gui.reset": "重置統計",

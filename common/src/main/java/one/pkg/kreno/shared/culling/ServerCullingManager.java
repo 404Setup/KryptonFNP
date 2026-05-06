@@ -61,7 +61,6 @@ public class ServerCullingManager {
         CullingState cachedState = cache.getIfPresent(pos);
         if (cachedState == null) {
             cachedState = new CullingState();
-            // Use immutable copies of BlockPos when storing as cache key.
             cache.put(pos.immutable(), cachedState);
         }
         final CullingState state = cachedState;
@@ -135,11 +134,18 @@ public class ServerCullingManager {
     /**
      * Records that a block update packet was dropped due to culling so that it can be re-sent later
      * once the block becomes visible to the player again.
+     *
+     * @return {@code true} if the position was recorded (or already tracked) and the caller may safely
+     *         skip sending the packet; {@code false} if the tracking set is full, in which case the
+     *         caller MUST send the original packet to the client to avoid losing the update.
      */
-    public static void recordDroppedBlock(ServerPlayer player, BlockPos pos) {
+    public static boolean recordDroppedBlock(ServerPlayer player, BlockPos pos) {
         Set<BlockPos> set = DROPPED_BLOCK_UPDATES.computeIfAbsent(player.getId(), k -> ConcurrentHashMap.newKeySet());
-        if (set.size() >= MAX_DROPPED_TRACKED) return;
-        set.add(pos.immutable());
+        BlockPos immutable = pos.immutable();
+        if (set.contains(immutable)) return true;
+        if (set.size() >= MAX_DROPPED_TRACKED) return false;
+        set.add(immutable);
+        return true;
     }
 
     /**

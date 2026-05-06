@@ -59,6 +59,8 @@
   "kreno.config.entry.culling.block.desc": "Intelligentes Block/Block-Entity Culling auf der Serverseite",
   "kreno.config.entry.culling.chunk_block": "Chunk-Block-Culling",
   "kreno.config.entry.culling.chunk_block.desc": "Ersetzt vollständig verborgene Blöcke in Chunk-Paketen durch Stein, um Bandbreite zu sparen",
+  "kreno.config.entry.culling.chunk_light": "Chunk-Licht-Culling",
+  "kreno.config.entry.culling.chunk_light.desc": "Behandelt Lichtabschnitte, deren Datenarray vollständig Null ist, als leer, um 2 KiB Nutzlast pro Abschnitt zu überspringen",
 
   "kreno.traffic.gui.title": "Krypton Reno Verkehrsüberwachung",
   "kreno.traffic.gui.reset": "Statistiken zurücksetzen",

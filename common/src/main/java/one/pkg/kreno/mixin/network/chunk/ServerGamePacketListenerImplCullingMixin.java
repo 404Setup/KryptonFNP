@@ -53,12 +53,16 @@ public abstract class ServerGamePacketListenerImplCullingMixin extends ServerCom
 
         if (packet instanceof ClientboundBlockEntityDataPacket blockEntityPacket) {
             if (!ServerCullingManager.isBlockVisible(this.player, blockEntityPacket.getPos())) {
-                ServerCullingManager.recordDroppedBlock(this.player, blockEntityPacket.getPos());
-                return;
+                if (ServerCullingManager.recordDroppedBlock(this.player, blockEntityPacket.getPos())) {
+                    return;
+                }
             }
         } else if (packet instanceof ClientboundBlockUpdatePacket blockUpdatePacket) {
             if (!ServerCullingManager.isBlockVisible(this.player, blockUpdatePacket.getPos())) {
-                ServerCullingManager.recordDroppedBlock(this.player, blockUpdatePacket.getPos());
+                if (ServerCullingManager.recordDroppedBlock(this.player, blockUpdatePacket.getPos())) {
+                    return;
+                }
+                super.send(packet);
                 return;
             }
 

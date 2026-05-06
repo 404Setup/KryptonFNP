@@ -59,6 +59,8 @@
   "kreno.config.entry.culling.block.desc": "Умный куллинг блоков и блочных сущностей на стороне сервера",
   "kreno.config.entry.culling.chunk_block": "Отсечение блоков чанка",
   "kreno.config.entry.culling.chunk_block.desc": "Заменяет полностью скрытые блоки в пакетах чанков на камень для экономии пропускной способности",
+  "kreno.config.entry.culling.chunk_light": "Отсечение света чанка",
+  "kreno.config.entry.culling.chunk_light.desc": "Рассматривать световые секции, массив данных которых полностью заполнен нулями, как пустые, чтобы пропустить 2 КБ полезной нагрузки на секцию",
 
   "kreno.traffic.gui.title": "Мониторинг трафика Krypton Reno",
   "kreno.traffic.gui.reset": "Сбросить статистику",

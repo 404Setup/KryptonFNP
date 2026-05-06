@@ -18,6 +18,7 @@
     "network.chunk.TrackedEntityMixin",
     "network.chunk.EntityCullingMixin",
     "network.chunk.ClientboundLevelChunkPacketDataMixin",
+    "network.chunk.ClientboundLightUpdatePacketDataMixin",
     "network.experimental.RconClientMixin",
     "network.fix.ServerStatusPacketListenerImplMixin",
     "network.microopt.ConnectionMixin",
