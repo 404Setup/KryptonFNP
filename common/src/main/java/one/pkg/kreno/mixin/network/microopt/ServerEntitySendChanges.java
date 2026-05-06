@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import net.minecraft.world.phys.Vec3;
 
 @Mixin(ServerEntity.class)
 public class ServerEntitySendChanges {
@@ -102,6 +104,36 @@ public class ServerEntitySendChanges {
             }
         }
         original.call(synchronizer, packet);
+    }
+
+    /**
+     * Prevents the server from sending redundant 0-velocity packets.
+     * When both the current movement and the last sent movement are small enough 
+     * to be quantized as exactly 0 by LpVec3 (abs max < 3.051944088384301E-5),
+     * we pretend the distance to the last movement is exactly 0.0.
+     * This avoids waking up tracking clients with identical zero-velocity updates.
+     */
+    @Redirect(
+            method = { "sendChanges", "handleMinecartPosRot" },
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/phys/Vec3;distanceToSqr(Lnet/minecraft/world/phys/Vec3;)D"
+            )
+    )
+    private double kreno$optimizeRedundantMotion(Vec3 currentMovement, Vec3 lastSentMovement) {
+        double diff = currentMovement.distanceToSqr(lastSentMovement);
+        if (diff == 0.0) {
+            return 0.0;
+        }
+        
+        double maxCurr = Math.max(Math.abs(currentMovement.x), Math.max(Math.abs(currentMovement.y), Math.abs(currentMovement.z)));
+        double maxLast = Math.max(Math.abs(lastSentMovement.x), Math.max(Math.abs(lastSentMovement.y), Math.abs(lastSentMovement.z)));
+        
+        if (maxCurr < 3.051944088384301E-5 && maxLast < 3.051944088384301E-5) {
+            return 0.0;
+        }
+        
+        return diff;
     }
 
 }

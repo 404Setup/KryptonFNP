@@ -44,6 +44,8 @@ public class ModConfig {
     private static boolean connectionMicroOpt = true;
     @ConfigTarget(group = "mixin", value = "particlePacketOpt", comment = "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.")
     private static boolean particlePacketOpt = true;
+    @ConfigTarget(group = "mixin", value = "trackedEntityOpt", comment = "Optimizes entity tracking by reducing object allocation and using array-based broadcasting")
+    private static boolean trackedEntityOpt = true;
     @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
     @Range(min = 9, max = 51)
     @DisplayMode(EntryMode.SLIDER)
@@ -52,6 +54,11 @@ public class ModConfig {
     private static boolean nettyHe = false;
     @ConfigTarget(group = "gui", value = "oreui", comment = "Replace Minecraft style KReno UI with a newly designed OreUI")
     private static boolean guiUseOreUITheme = false;
+
+    @ConfigTarget(group = "culling", value = "entity", comment = "Smart entity culling on server side")
+    private static boolean cullingEntity = true;
+    @ConfigTarget(group = "culling", value = "block", comment = "Smart block/block entity culling on server side")
+    private static boolean cullingBlock = true;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -151,6 +158,10 @@ public class ModConfig {
         public static boolean isParticlePacketOpt() {
             return particlePacketOpt;
         }
+
+        public static boolean isTrackedEntityOpt() {
+            return trackedEntityOpt;
+        }
     }
 
     public static class Netty {
@@ -166,6 +177,16 @@ public class ModConfig {
     public static class GUI {
         public static boolean isOreUI() {
             return guiUseOreUITheme;
+        }
+    }
+
+    public static class Culling {
+        public static boolean isEntityEnabled() {
+            return cullingEntity;
+        }
+
+        public static boolean isBlockEnabled() {
+            return cullingBlock;
         }
     }
 }

@@ -6,8 +6,10 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
+  "kreno.config.category.culling": "Culling",
 
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
+  "kreno.config.category.culling.desc": "Configuration related to server-side culling",
 
   "kreno.config.entry.compress.compressionLevel": "Packet Compression Level",
   "kreno.config.entry.compress.compressionLevel.desc": "The compression level for packets, between 1-9.",
@@ -39,6 +41,8 @@
   "kreno.config.entry.mixin.connectionMicroOpt.desc": "Reduces object allocation and lock contention in the Connection class.",
   "kreno.config.entry.mixin.particlePacketOpt": "Particle Packet Optimization",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.",
+  "kreno.config.entry.mixin.trackedEntityOpt": "Tracked Entity Optimisation",
+  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Optimises entity tracking logic by reducing object allocation and using array-based broadcasting, reducing memory and CPU overhead.",
 
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",
@@ -47,6 +51,11 @@
 
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Replace Minecraft style KReno UI with a newly designed OreUI",
+
+  "kreno.config.entry.culling.entity": "Entity Culling",
+  "kreno.config.entry.culling.entity.desc": "Smart entity culling on server side",
+  "kreno.config.entry.culling.block": "Block Culling",
+  "kreno.config.entry.culling.block.desc": "Smart block/block entity culling on server side",
 
   "kreno.traffic.gui.title": "Krypton Reno Traffic Monitor",
   "kreno.traffic.gui.reset": "Reset Stats",

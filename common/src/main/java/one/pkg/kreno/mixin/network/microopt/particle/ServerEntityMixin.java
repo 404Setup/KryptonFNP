@@ -1,5 +1,7 @@
 package one.pkg.kreno.mixin.network.microopt.particle;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -31,24 +33,28 @@ public class ServerEntityMixin {
     @Shadow
     private Vec3 lastSentMovement;
 
-    @Redirect(
+    @WrapOperation(
             method = "sendChanges",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerEntity$Synchronizer;sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V",
-                    ordinal = 3
+                    target = "Lnet/minecraft/server/level/ServerEntity$Synchronizer;sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V"
             )
     )
     private void kreno$sendLessPacket(
             ServerEntity.Synchronizer instance,
             Packet<? super ClientGamePacketListener> packet,
+            Operation<Void> original,
             @Local(name = "positionChanged") boolean positionChanged
     ) {
-        if ((this.entity instanceof ItemEntity && positionChanged) ||
-                this.entity instanceof EyeOfEnder ||
-                this.entity instanceof Squid ||
-                this.entity instanceof ShulkerBullet) {
-            synchronizer.sendToTrackingPlayers(new ClientboundSetEntityMotionPacket(this.entity.getId(), this.lastSentMovement));
+        if (packet instanceof ClientboundSetEntityMotionPacket) {
+            if ((this.entity instanceof ItemEntity && positionChanged) ||
+                    this.entity instanceof EyeOfEnder ||
+                    this.entity instanceof Squid ||
+                    this.entity instanceof ShulkerBullet) {
+                original.call(instance, packet);
+            }
+        } else {
+            original.call(instance, packet);
         }
     }
 

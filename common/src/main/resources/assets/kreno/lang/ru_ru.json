@@ -6,8 +6,10 @@
   "kreno.config.category.mixin": "Mixin",
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
+  "kreno.config.category.culling": "Куллинг",
 
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
+  "kreno.config.category.culling.desc": "Настройки куллинга на стороне сервера",
 
   "kreno.config.entry.compress.compressionLevel": "Уровень сжатия пакетов",
   "kreno.config.entry.compress.compressionLevel.desc": "Уровень сжатия пакетов, от 1 до 9.",
@@ -38,6 +40,11 @@
   "kreno.config.entry.mixin.connectionMicroOpt": "Микро-оптимизация сетевого подключения",
   "kreno.config.entry.mixin.connectionMicroOpt.desc": "Уменьшает распределение объектов и конкуренцию за блокировки в классе Connection.",
 
+  "kreno.config.entry.mixin.particlePacketOpt": "Оптимизация пакетов частиц",
+  "kreno.config.entry.mixin.particlePacketOpt.desc": "Уменьшает количество потенциально бесполезных пакетов частиц. Эта настройка действует только на стороне сервера.",
+  "kreno.config.entry.mixin.trackedEntityOpt": "Оптимизация отслеживания сущностей",
+  "kreno.config.entry.mixin.trackedEntityOpt.desc": "Оптимизирует логику отслеживания сущностей, сокращая выделение объектов и используя широковещательную рассылку на основе массивов, что снижает нагрузку на память и процессор.",
+
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Изменить распределение памяти Netty по умолчанию с 16 МБ на 4 МБ, так как в Minecraft действует лимит на размер пакета в 2 МБ.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
@@ -45,6 +52,11 @@
   
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Заменить пользовательский интерфейс KReno в стиле Minecraft на новый дизайн OreUI",
+
+  "kreno.config.entry.culling.entity": "Куллинг сущностей",
+  "kreno.config.entry.culling.entity.desc": "Умный куллинг сущностей на стороне сервера",
+  "kreno.config.entry.culling.block": "Куллинг блоков",
+  "kreno.config.entry.culling.block.desc": "Умный куллинг блоков и блочных сущностей на стороне сервера",
 
   "kreno.traffic.gui.title": "Мониторинг трафика Krypton Reno",
   "kreno.traffic.gui.reset": "Сбросить статистику",

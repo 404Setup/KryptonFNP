@@ -3,7 +3,7 @@ moddev = "2.0.141"
 
 sewlia-config = "1.1.0-SNAPSHOT"
 recastlib = "3.4.0-SNAPSHOT"
-libsl = "1.0.0-alpha.3"
+libsl = "1.0.0-alpha.4"
 
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }

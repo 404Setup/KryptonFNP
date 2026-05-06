@@ -6,8 +6,12 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import one.pkg.kreno.shared.ModSharedBootstrap;
 import one.pkg.kreno.shared.command.KrenoCommand;
+import one.pkg.kreno.shared.culling.ServerCullingManager;
 import one.pkg.kreno.shared.gui.KRenoConfigGUI;
+import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.libsl.api.event.command.CommandRegistrationCallback;
+import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
+import one.pkg.libsl.api.event.lifecycle.ServerLifecycleEvents;
 import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.loader.FMLTest;
 
@@ -25,7 +29,11 @@ public class NeoModBootstrap {
 
         if (JavaLoader.INSTANCE.isClient()) {
             Client.init(container);
+        } else {
+            ServerPlayerEvents.LEAVE.register(ServerCullingManager::removePlayer);
         }
+        ServerPlayerEvents.LEAVE.register((player) -> TrafficMonitor.playerStats.remove(player.getUUID()));
+        ServerLifecycleEvents.STOPPING.register((_) -> ServerCullingManager.onEnd());
 
         //ModList.get().getModContainerById("kreno").get().registerExtensionPoint();
     }
