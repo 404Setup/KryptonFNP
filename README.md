@@ -95,24 +95,40 @@ mixin:
   clientEncrypt: true
   # Optimized RconClient implementation
   rconClient: false
+  # Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned
+  serverEntityMoveOpt: false
+  # Reduces object allocation and lock contention in the Connection class
+  connectionMicroOpt: true
+  # Reduces some potentially useless particle packets. This configuration only takes effect on the server side.
+  particlePacketOpt: true
+  # Optimizes entity tracking by reducing object allocation and using array-based broadcasting
+  trackedEntityOpt: true
 fix:
   issues128:
     # Fix Traffic Statistics
     enabled: false
     # Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.
     sync: true
+culling:
+  # Smart entity culling on server side
+  entity: true
+  # Smart block/block entity culling on server side
+  block: true
 compress:
   # The compression level for packets, between 1-9.
   compressionLevel: 4
   # Permit Oversized Packets
   permitOversizedPackets: false
+gui:
+  # Replace Minecraft style KReno UI with a newly designed OreUI
+  oreui: false
 compatibility:
   allow-wide-var-int: false
 netty:
   # Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
   allocatorMaxOrder: 9
-  # Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4.
-  happyEyeballs: true
+  # Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.
+  happyEyeballs: false
 ```
 
 ### Use env instead of jvm args
@@ -135,7 +151,7 @@ ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
 
 ## Benchmark
 
-<a href="https://github.com/404Setup/KryptonReno/blob/1.21.11/Benchmark.md">
+<a href="https://github.com/404Setup/KryptonReno/blob/26.1-new/Benchmark.md">
 <img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
 </a>
 
@@ -149,6 +165,8 @@ ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
 the
 other end doesn't have this mod, unless the server administrator has installed an anti-cheat mod that detects the mod
 list, in which case you should contact them to request permission.
+
+Unless otherwise specified, most of the functions can be run on the other end without this mod being installed.
 
 ----
 
@@ -171,7 +189,8 @@ Krypton Reno can't save you much. It can't push the physical limits.
 having to
 worry about Krypton Reno.
 
-Incompatible Mods: Krypton Reforged, Ceres, Pluto, KryptonFoxified, Chionanthus, Krypton Fabric with Connector
+Incompatible Mods: Krypton Reforged, Ceres, Pluto, KryptonFoxified, Krypton Hybrid, Chionanthus, Krypton Fabric with
+Connector
 
 ----
 
@@ -210,6 +229,25 @@ These libraries should be compatible with x64 and arm64 architectures, so you do
 
 ----
 
+### 7
+
+**Q:** Is the fork of KryptonFNP/Krypton Reno better than the original?
+
+**A:** Don't ask me this question. There are already so-called "fork users" causing trouble in my Issues and insulting
+my mod as a "garbage mod".
+
+----
+
+### 8
+
+**Q:** I want to create a mod that competes with KryptonReno/Krypton Fabric. Is that possible?
+
+**A:** I won't stop you from doing this, but some authors might not like it. We haven't stopped updating, yet you're
+competing with us using the same loader, the same codebase, and the same version, and you've removed us from the author
+list—that's not good.
+
+----
+
 ## Credit
 
 - [Krypton Fabric](https://modrinth.com/mod/krypton)
@@ -217,6 +255,8 @@ These libraries should be compatible with x64 and arm64 architectures, so you do
 - [VelocityNT Recast](https://github.com/404Setup/VelocityNT-Recast)
 - [Paper](https://github.com/PaperMC/Paper)
 - [RecastSSL](https://github.com/404Setup/RecastSSL)
+- [RecastXZ](https://github.com/404Setup/RecastXZ)
+- [SpringLotus](https://github.com/404Setup/SpringLotus)
 
 ## For Modpack
 
