@@ -6,6 +6,9 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.PacketEncoder;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +47,14 @@ public class PacketEncoderMixin {
                 }
             }
         }
-        TrafficMonitor.onOutboundPacket(uuid, name, packet.getClass().getSimpleName(), output.readableBytes());
+        String packetName = packet.getClass().getSimpleName();
+        if (packet instanceof ClientboundCustomPayloadPacket(CustomPacketPayload payload1)) {
+            packetName += "[" + payload1.type().id() + "]";
+        } else if (packet instanceof ServerboundCustomPayloadPacket(
+                CustomPacketPayload payload
+        )) {
+            packetName += "[" + payload.type().id() + "]";
+        }
+        TrafficMonitor.onOutboundPacket(uuid, name, packetName, output.readableBytes());
     }
 }

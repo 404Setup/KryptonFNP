@@ -50,15 +50,24 @@ public class TrafficMonitor {
     }
 
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
-        PacketStat globalStat = inboundStats.computeIfAbsent(packetName, k -> new PacketStat());
+        PacketStat globalStat = inboundStats.get(packetName);
+        if (globalStat == null) {
+            globalStat = inboundStats.computeIfAbsent(packetName, k -> new PacketStat());
+        }
         globalStat.count.increment();
         globalStat.bytes.add(bytes);
         totalInUncompressed.add(bytes);
         totalInPackets.increment();
 
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
-            PacketStat pPacketStat = pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            PlayerTrafficStat pStat = playerStats.get(playerUuid);
+            if (pStat == null) {
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+            }
+            PacketStat pPacketStat = pStat.inboundPackets.get(packetName);
+            if (pPacketStat == null) {
+                pPacketStat = pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            }
             pPacketStat.count.increment();
             pPacketStat.bytes.add(bytes);
             pStat.totalIn.add(bytes);
@@ -67,15 +76,24 @@ public class TrafficMonitor {
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
-        PacketStat globalStat = outboundStats.computeIfAbsent(packetName, _ -> new PacketStat());
+        PacketStat globalStat = outboundStats.get(packetName);
+        if (globalStat == null) {
+            globalStat = outboundStats.computeIfAbsent(packetName, k -> new PacketStat());
+        }
         globalStat.count.increment();
         globalStat.bytes.add(bytes);
         totalOutUncompressed.add(bytes);
         totalOutPackets.increment();
 
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
-            PacketStat pPacketStat = pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            PlayerTrafficStat pStat = playerStats.get(playerUuid);
+            if (pStat == null) {
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+            }
+            PacketStat pPacketStat = pStat.outboundPackets.get(packetName);
+            if (pPacketStat == null) {
+                pPacketStat = pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
+            }
             pPacketStat.count.increment();
             pPacketStat.bytes.add(bytes);
             pStat.totalOut.add(bytes);
@@ -161,7 +179,7 @@ public class TrafficMonitor {
     }
 
     public static String formatBytes(double bytes) {
-        if (bytes < 1024) return String.format("%.0f B", bytes);
+        if (bytes < 1024) return String.format("%.2f B", bytes);
         int exp = 0;
         double b = bytes;
         while (b >= 1024 && exp < 6) {

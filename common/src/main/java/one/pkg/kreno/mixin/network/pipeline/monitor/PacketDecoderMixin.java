@@ -5,6 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketDecoder;
 import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +59,17 @@ public class PacketDecoderMixin {
                         }
                     }
                 }
-                TrafficMonitor.onInboundPacket(uuid, name, packet.getClass().getSimpleName(), consumed);
+                String packetName = packet.getClass().getSimpleName();
+                if (packet instanceof ClientboundCustomPayloadPacket(
+                        CustomPacketPayload payload
+                )) {
+                    packetName += "[" + payload.type().id() + "]";
+                } else if (packet instanceof ServerboundCustomPayloadPacket(
+                        CustomPacketPayload payload
+                )) {
+                    packetName += "[" + payload.type().id() + "]";
+                }
+                TrafficMonitor.onInboundPacket(uuid, name, packetName, consumed);
             }
         }
     }
