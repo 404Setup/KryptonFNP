@@ -62,18 +62,6 @@ public class BlockCullingUtil {
         HAS_CACHED_DATA.set(false);
     }
 
-    private static BlockState pickAdaptiveReplacement(PalettedContainer<BlockState> container) {
-        for (int i = 0; i < 8; i++) {
-            BlockState state = container.get((i & 1) * 15, (i & 2) == 0 ? 0 : 15, (i & 4) == 0 ? 0 : 15);
-            if (!state.isAir() && state.isSolidRender()) {
-                return state;
-            }
-        }
-        BlockState center = container.get(7, 7, 7);
-        if (!center.isAir() && center.isSolidRender()) return center;
-        return null;
-    }
-
     private static PalettedContainer<BlockState> getCulledContainer(
             LevelChunk chunk, LevelChunkSection[] sections,
             NeighborChunks neighbors,
@@ -88,8 +76,7 @@ public class BlockCullingUtil {
 
         int sectionYOffset = chunk.getSectionYFromSectionIndex(sectionYIndex) * 16;
 
-        BlockState adaptive = pickAdaptiveReplacement(container);
-        BlockState replacement = adaptive != null ? adaptive : pickReplacement(chunk.getLevel(), sectionYOffset);
+        BlockState replacement = pickReplacement(chunk.getLevel(), sectionYOffset);
 
         PalettedContainer<BlockState> culled = null;
 
