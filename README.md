@@ -268,8 +268,6 @@ player, identifies blocks that are surrounded by opaque blocks, and batch replac
 I'm not sure if this will improve compression rates, but if it conflicts with your AntiXRay, you can also disable it.
 
 When a block is exposed to air, KReno will send the correct block to the player, ensuring visual accuracy.
-Currently, block culling may generate a large number of fake ores, but I don't want to fix this issue anymore, as it
-only affects cheaters anyway.
 
 ----
 
