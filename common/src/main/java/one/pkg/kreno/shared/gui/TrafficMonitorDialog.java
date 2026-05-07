@@ -21,14 +21,14 @@ public class TrafficMonitorDialog {
                 )
                 .append(N)
                 .append(Component.translatable("kreno.traffic.gui.bytes",
-                        TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.get()),
-                        TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.get())))
+                        TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.sum()),
+                        TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.sum())))
                 .append(N);
         if (TrafficMonitor.compressionEnabled) {
             component.append(
                     Component.translatable("kreno.traffic.gui.compressed",
-                            TrafficMonitor.formatBytes(TrafficMonitor.totalInCompressed.get()),
-                            TrafficMonitor.formatBytes(TrafficMonitor.totalOutCompressed.get()))
+                            TrafficMonitor.formatBytes(TrafficMonitor.totalInCompressed.sum()),
+                            TrafficMonitor.formatBytes(TrafficMonitor.totalOutCompressed.sum()))
             ).append(N);
         }
 
@@ -48,8 +48,8 @@ public class TrafficMonitorDialog {
             component.append(N).append(
                     Component.translatable("kreno.traffic.gui.player_stat",
                             p.name, TrafficMonitor.formatBytes(p.getTotal()),
-                            TrafficMonitor.formatBytes(p.totalOut.get()),
-                            TrafficMonitor.formatBytes(p.totalIn.get()))
+                            TrafficMonitor.formatBytes(p.totalOut.sum()),
+                            TrafficMonitor.formatBytes(p.totalIn.sum()))
             );
         }
 
@@ -63,7 +63,7 @@ public class TrafficMonitorDialog {
         for (int i = 0; i < topIn.size(); i++) {
             Map.Entry<String, TrafficMonitor.PacketStat> entry = topIn.get(i);
             component.append(N).append(Component.translatable("kreno.traffic.gui.packet_stat",
-                    (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.get())));
+                    (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())));
         }
 
         return new OreUIDialog(Component.translatable("kreno.traffic.gui.title"), lastScreen)

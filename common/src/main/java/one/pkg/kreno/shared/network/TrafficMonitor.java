@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 public class TrafficMonitor {
     public static final Map<String, PacketStat> inboundStats = new ConcurrentHashMap<>();
     public static final Map<String, PacketStat> outboundStats = new ConcurrentHashMap<>();
     public static final Map<UUID, PlayerTrafficStat> playerStats = new ConcurrentHashMap<>();
-    public static final AtomicLong totalInUncompressed = new AtomicLong();
-    public static final AtomicLong totalOutUncompressed = new AtomicLong();
-    public static final AtomicLong totalInCompressed = new AtomicLong();
-    public static final AtomicLong totalOutCompressed = new AtomicLong();
-    public static final AtomicLong totalInPackets = new AtomicLong();
-    public static final AtomicLong totalOutPackets = new AtomicLong();
+    public static final LongAdder totalInUncompressed = new LongAdder();
+    public static final LongAdder totalOutUncompressed = new LongAdder();
+    public static final LongAdder totalInCompressed = new LongAdder();
+    public static final LongAdder totalOutCompressed = new LongAdder();
+    public static final LongAdder totalInPackets = new LongAdder();
+    public static final LongAdder totalOutPackets = new LongAdder();
     public static double inRateBps = 0;
     public static double outRateBps = 0;
     public static double inRatePps = 0;
@@ -32,12 +32,12 @@ public class TrafficMonitor {
         inboundStats.clear();
         outboundStats.clear();
         playerStats.clear();
-        totalInUncompressed.set(0);
-        totalOutUncompressed.set(0);
-        totalInCompressed.set(0);
-        totalOutCompressed.set(0);
-        totalInPackets.set(0);
-        totalOutPackets.set(0);
+        totalInUncompressed.reset();
+        totalOutUncompressed.reset();
+        totalInCompressed.reset();
+        totalOutCompressed.reset();
+        totalInPackets.reset();
+        totalOutPackets.reset();
         inRateBps = 0;
         outRateBps = 0;
         inRatePps = 0;
@@ -51,52 +51,52 @@ public class TrafficMonitor {
 
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
         PacketStat globalStat = inboundStats.computeIfAbsent(packetName, k -> new PacketStat());
-        globalStat.count.incrementAndGet();
-        globalStat.bytes.addAndGet(bytes);
-        totalInUncompressed.addAndGet(bytes);
-        totalInPackets.incrementAndGet();
+        globalStat.count.increment();
+        globalStat.bytes.add(bytes);
+        totalInUncompressed.add(bytes);
+        totalInPackets.increment();
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
             PacketStat pPacketStat = pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
-            pPacketStat.count.incrementAndGet();
-            pPacketStat.bytes.addAndGet(bytes);
-            pStat.totalIn.addAndGet(bytes);
+            pPacketStat.count.increment();
+            pPacketStat.bytes.add(bytes);
+            pStat.totalIn.add(bytes);
         }
         updateRates();
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
         PacketStat globalStat = outboundStats.computeIfAbsent(packetName, _ -> new PacketStat());
-        globalStat.count.incrementAndGet();
-        globalStat.bytes.addAndGet(bytes);
-        totalOutUncompressed.addAndGet(bytes);
-        totalOutPackets.incrementAndGet();
+        globalStat.count.increment();
+        globalStat.bytes.add(bytes);
+        totalOutUncompressed.add(bytes);
+        totalOutPackets.increment();
 
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
             PacketStat pPacketStat = pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
-            pPacketStat.count.incrementAndGet();
-            pPacketStat.bytes.addAndGet(bytes);
-            pStat.totalOut.addAndGet(bytes);
+            pPacketStat.count.increment();
+            pPacketStat.bytes.add(bytes);
+            pStat.totalOut.add(bytes);
         }
         updateRates();
     }
 
     public static void onInboundCompressed(int bytes) {
-        totalInCompressed.addAndGet(bytes);
+        totalInCompressed.add(bytes);
     }
 
     public static void onOutboundCompressed(int bytes) {
-        totalOutCompressed.addAndGet(bytes);
+        totalOutCompressed.add(bytes);
     }
 
     public static void updateRates() {
         long now = System.currentTimeMillis();
         long diff = now - lastTime;
         if (diff >= 1000) {
-            long totalIn = compressionEnabled ? totalInCompressed.get() : totalInUncompressed.get();
-            long totalOut = compressionEnabled ? totalOutCompressed.get() : totalOutUncompressed.get();
+            long totalIn = compressionEnabled ? totalInCompressed.sum() : totalInUncompressed.sum();
+            long totalOut = compressionEnabled ? totalOutCompressed.sum() : totalOutUncompressed.sum();
             long packetsIn = getTotalInPackets();
             long packetsOut = getTotalOutPackets();
 
@@ -114,22 +114,22 @@ public class TrafficMonitor {
     }
 
     public static long getTotalInPackets() {
-        return totalInPackets.get();
+        return totalInPackets.sum();
     }
 
     public static long getTotalOutPackets() {
-        return totalOutPackets.get();
+        return totalOutPackets.sum();
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
         return inboundStats.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))
+                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
                 .limit(10).collect(Collectors.toList());
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Outbound() {
         return outboundStats.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))
+                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
                 .limit(10).collect(Collectors.toList());
     }
 
@@ -140,23 +140,23 @@ public class TrafficMonitor {
     }
 
     public static class PacketStat {
-        public final AtomicLong count = new AtomicLong();
-        public final AtomicLong bytes = new AtomicLong();
+        public final LongAdder count = new LongAdder();
+        public final LongAdder bytes = new LongAdder();
     }
 
     public static class PlayerTrafficStat {
         public final String name;
         public final Map<String, PacketStat> inboundPackets = new ConcurrentHashMap<>();
         public final Map<String, PacketStat> outboundPackets = new ConcurrentHashMap<>();
-        public final AtomicLong totalIn = new AtomicLong();
-        public final AtomicLong totalOut = new AtomicLong();
+        public final LongAdder totalIn = new LongAdder();
+        public final LongAdder totalOut = new LongAdder();
 
         public PlayerTrafficStat(String name) {
             this.name = name;
         }
 
         public long getTotal() {
-            return totalIn.get() + totalOut.get();
+            return totalIn.sum() + totalOut.sum();
         }
     }
 

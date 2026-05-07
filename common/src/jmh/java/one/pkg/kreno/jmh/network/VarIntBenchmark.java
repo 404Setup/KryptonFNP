@@ -31,28 +31,20 @@ public class VarIntBenchmark {
 
         Random random = new Random(12345);
 
-        // Small VarInts (1 byte)
         for (int i = 0; i < 1000; i++) {
             VarIntUtil.writeVarInt(smallBuffer, random.nextInt(128));
         }
 
-        // Medium VarInts (2-3 bytes)
         for (int i = 0; i < 1000; i++) {
-            // 2 bytes: 128 to 16383
-            // 3 bytes: 16384 to 2097151
             int val = 128 + random.nextInt(2097151 - 128);
             VarIntUtil.writeVarInt(mediumBuffer, val);
         }
 
-        // Large VarInts (4-5 bytes)
         for (int i = 0; i < 1000; i++) {
-            // 4 bytes: 2097152 to 268435455
-            // 5 bytes: 268435456 to MAX_VALUE
             int val = 2097152 + random.nextInt(Integer.MAX_VALUE - 2097152);
             VarIntUtil.writeVarInt(largeBuffer, val);
         }
 
-        // Mixed VarInts
         for (int i = 0; i < 3000; i++) {
              int val = random.nextInt(Integer.MAX_VALUE);
              VarIntUtil.writeVarInt(mixedBuffer, val);

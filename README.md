@@ -253,6 +253,26 @@ list—that's not good.
 
 ----
 
+### 9
+
+**Q:** What is entity culling and block culling?
+
+**A:** To reduce packet sending or improve compression rates, I've added a culling system. This culling system only
+works on dedicated servers.
+
+If an entity is not visible in a player's line of sight, KReno will not send that entity's data packets to the player,
+but the player can still hear sounds emitted by the entity.
+
+The block culling system is closer to Paper's AntiXRay. It quickly scans the palette before sending chunk data to the
+player, identifies blocks that are surrounded by opaque blocks, and batch replaces them with stone.
+I'm not sure if this will improve compression rates, but if it conflicts with your AntiXRay, you can also disable it.
+
+When a block is exposed to air, KReno will send the correct block to the player, ensuring visual accuracy.
+Currently, block culling may generate a large number of fake ores, but I don't want to fix this issue anymore, as it
+only affects cheaters anyway.
+
+----
+
 ## Credit
 
 - [Krypton Fabric](https://modrinth.com/mod/krypton)

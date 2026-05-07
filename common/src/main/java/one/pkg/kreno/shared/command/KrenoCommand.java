@@ -92,8 +92,8 @@ public class KrenoCommand {
 
         source.sendSuccess(() -> Component.translatable("kreno.command.all.header").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD), false);
         source.sendSuccess(() -> Component.translatable("kreno.command.all.total",
-                TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.get()),
-                TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.get())), false);
+                TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.sum()),
+                TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.sum())), false);
         source.sendSuccess(() -> Component.translatable("kreno.command.all.rate",
                 TrafficMonitor.formatBytes(TrafficMonitor.inRateBps), TrafficMonitor.inRatePps,
                 TrafficMonitor.formatBytes(TrafficMonitor.outRateBps), TrafficMonitor.outRatePps), false);
@@ -105,9 +105,9 @@ public class KrenoCommand {
 
             MutableComponent hoverText = Component.translatable("kreno.command.all.hover_header");
             p.outboundPackets.entrySet().stream()
-                    .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))
+                    .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
                     .limit(5)
-                    .forEach(e -> hoverText.append(Component.translatable("kreno.command.all.hover_entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.get()))));
+                    .forEach(e -> hoverText.append(Component.translatable("kreno.command.all.hover_entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()))));
 
             playerComp.withStyle(s -> s.withHoverEvent(new HoverEvent.ShowText(hoverText)));
 
@@ -115,8 +115,8 @@ public class KrenoCommand {
                     .append(playerComp)
                     .append(Component.translatable("kreno.command.all.player_summary",
                             TrafficMonitor.formatBytes(p.getTotal()),
-                            TrafficMonitor.formatBytes(p.totalOut.get()),
-                            TrafficMonitor.formatBytes(p.totalIn.get()))), false);
+                            TrafficMonitor.formatBytes(p.totalOut.sum()),
+                            TrafficMonitor.formatBytes(p.totalIn.sum()))), false);
         }
         return 1;
     }
@@ -137,15 +137,15 @@ public class KrenoCommand {
 
         source.sendSuccess(() -> Component.translatable("kreno.command.player.inbound").withStyle(ChatFormatting.GRAY), false);
         stat.inboundPackets.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))
+                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
                 .limit(10)
-                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.get()), e.getValue().count.get()), false));
+                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()), e.getValue().count.sum()), false));
 
         source.sendSuccess(() -> Component.translatable("kreno.command.player.outbound").withStyle(ChatFormatting.GRAY), false);
         stat.outboundPackets.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.get(), a.getValue().bytes.get()))
+                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
                 .limit(10)
-                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.get()), e.getValue().count.get()), false));
+                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()), e.getValue().count.sum()), false));
 
         return 1;
     }

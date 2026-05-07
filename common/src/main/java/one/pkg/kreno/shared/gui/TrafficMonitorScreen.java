@@ -27,13 +27,13 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
 
         this.list.addHeader(Component.translatable("kreno.traffic.gui.global").withStyle(s -> s.withBold(true).withColor(0xFFFFFF)));
         this.list.addHeader(Component.translatable("kreno.traffic.gui.bytes",
-                TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.get()),
-                TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.get())));
+                TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.sum()),
+                TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.sum())));
         
         if (TrafficMonitor.compressionEnabled) {
             this.list.addHeader(Component.translatable("kreno.traffic.gui.compressed",
-                    TrafficMonitor.formatBytes(TrafficMonitor.totalInCompressed.get()),
-                    TrafficMonitor.formatBytes(TrafficMonitor.totalOutCompressed.get())));
+                    TrafficMonitor.formatBytes(TrafficMonitor.totalInCompressed.sum()),
+                    TrafficMonitor.formatBytes(TrafficMonitor.totalOutCompressed.sum())));
         }
         
         this.list.addHeader(Component.translatable("kreno.traffic.gui.rate",
@@ -46,8 +46,8 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
         for (TrafficMonitor.PlayerTrafficStat p : topPlayers) {
             this.list.addHeader(Component.translatable("kreno.traffic.gui.player_stat",
                     p.name, TrafficMonitor.formatBytes(p.getTotal()),
-                    TrafficMonitor.formatBytes(p.totalOut.get()),
-                    TrafficMonitor.formatBytes(p.totalIn.get())));
+                    TrafficMonitor.formatBytes(p.totalOut.sum()),
+                    TrafficMonitor.formatBytes(p.totalIn.sum())));
         }
         
         this.list.addHeader(Component.literal(""));
@@ -56,7 +56,7 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
         for (int i = 0; i < topIn.size(); i++) {
             Map.Entry<String, TrafficMonitor.PacketStat> entry = topIn.get(i);
             this.list.addHeader(Component.translatable("kreno.traffic.gui.packet_stat",
-                    (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.get())));
+                    (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())));
         }
     }
 
