@@ -1,6 +1,6 @@
 package one.pkg.kreno.shared.network.quic.token;
 
-import io.netty.incubator.codec.quic.QuicConnectionIdGenerator;
+import io.netty.handler.codec.quic.QuicConnectionIdGenerator;
 import io.netty.util.internal.ObjectUtil;
 
 import java.nio.ByteBuffer;

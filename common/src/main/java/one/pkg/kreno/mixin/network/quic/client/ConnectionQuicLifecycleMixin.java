@@ -1,7 +1,7 @@
 package one.pkg.kreno.mixin.network.quic.client;
 
 import io.netty.channel.Channel;
-import io.netty.incubator.codec.quic.QuicStreamChannel;
+import io.netty.handler.codec.quic.QuicStreamChannel;
 import net.minecraft.network.Connection;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;

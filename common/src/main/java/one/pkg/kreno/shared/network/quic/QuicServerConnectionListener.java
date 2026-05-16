@@ -2,11 +2,11 @@ package one.pkg.kreno.shared.network.quic;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
+import io.netty.handler.codec.quic.QuicPathEvent;
+import io.netty.handler.codec.quic.QuicServerCodecBuilder;
+import io.netty.handler.codec.quic.QuicSslContextBuilder;
+import io.netty.handler.codec.quic.QuicStreamChannel;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import io.netty.incubator.codec.quic.QuicPathEvent;
-import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
-import io.netty.incubator.codec.quic.QuicSslContextBuilder;
-import io.netty.incubator.codec.quic.QuicStreamChannel;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
