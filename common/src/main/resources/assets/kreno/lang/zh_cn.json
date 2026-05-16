@@ -7,22 +7,17 @@
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
   "kreno.config.category.culling": "剔除",
-
   "kreno.config.category.gui.desc": "与 KReno GUI 相关的配置",
   "kreno.config.category.culling.desc": "与服务端剔除相关的配置",
-
   "kreno.config.entry.compress.compressionLevel": "数据包压缩等级",
   "kreno.config.entry.compress.compressionLevel.desc": "数据包的压缩等级，范围为 1-9。",
   "kreno.config.entry.compress.permitOversizedPackets": "允许发送过大的数据包",
   "kreno.config.entry.compress.permitOversizedPackets.desc": "允许发送超过标准限制的大型数据包",
-
   "kreno.config.entry.fix.issues128.enabled": "启用修复",
   "kreno.config.entry.fix.issues128.enabled.desc": "修复流量统计失效的问题",
   "kreno.config.entry.fix.issues128.sync": "同步流量监控",
   "kreno.config.entry.fix.issues128.sync.desc": "在同步线程运行带宽统计，这更接近原版行为。",
-
   "kreno.config.entry.compatibility.allow-wide-var-int": "允许宽字节 VarInt",
-
   "kreno.config.entry.mixin.loginVT": "登录验证虚拟线程",
   "kreno.config.entry.mixin.loginVT.desc": "使用虚拟线程替换玩家登录验证线程",
   "kreno.config.entry.mixin.textFilterVT": "文本过滤虚拟线程",
@@ -43,15 +38,12 @@
   "kreno.config.entry.mixin.particlePacketOpt.desc": "减少一部分可能无用的粒子发包。此配置仅在服务端生效。",
   "kreno.config.entry.mixin.trackedEntityOpt": "实体追踪优化",
   "kreno.config.entry.mixin.trackedEntityOpt.desc": "优化实体数据包广播，并与服务端实体剔除集成以降低网络开销。",
-
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty 分配器最大阶数 (MaxOrder)",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "将 Netty 默认的 16MiB 内存分配改为 4MiB，因为 Minecraft 的数据包限制为 2MiB。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "为客户端连接启用 Happy Eyeballs，同时尝试 IPv6 和 IPv4 连接。可能导致部分服务器 (如 Velocity) 暂时拒绝连接。",
-
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "使用全新设计的 OreUI 替换 Minecraft 风格的 KReno UI",
-
   "kreno.config.entry.culling.entity": "实体剔除",
   "kreno.config.entry.culling.entity.desc": "在服务端启用智能实体剔除",
   "kreno.config.entry.culling.block": "方块剔除",
@@ -60,18 +52,19 @@
   "kreno.config.entry.culling.chunk_block.desc": "在区块发包时将完全被包裹的隐藏方块替换为原石，以减少调色板大小并节省带宽",
   "kreno.config.entry.culling.chunk_light": "区块光照剔除",
   "kreno.config.entry.culling.chunk_light.desc": "将数据数组全为零的光照层视为为空，从而在区块和光照数据包中跳过每层 2KiB 的负载",
-
   "kreno.traffic.gui.title": "Krypton Reno 流量监控",
   "kreno.traffic.gui.reset": "重置统计",
   "kreno.traffic.gui.global": "=== 全局流量统计 ===",
   "kreno.traffic.gui.bytes": "字节 - 输入: %s | 输出: %s",
   "kreno.traffic.gui.compressed": "压缩后 - 输入: %s | 输出: %s",
-  "kreno.traffic.gui.rate": "速率: 输入 %s/s | 输出 %s/s",
+  "kreno.traffic.gui.rate": "速率: 输入 %s/s (%.2f pps) | 输出 %s/s (%.2f pps)",
   "kreno.traffic.gui.top_players": "=== 前10名玩家 ===",
   "kreno.traffic.gui.player_stat": "%s: 总计 %s (上传 %s | 下载 %s)",
+  "kreno.traffic.gui.player_stat_compressed": "  压缩后: %s (上传 %s | 下载 %s)",
+  "kreno.traffic.gui.player_stat_dropped": "  过滤/优化节省: %s",
+  "kreno.traffic.gui.player_stat_dropped_detail": "    - %s: %s",
   "kreno.traffic.gui.top_inbound": "=== 前10名输入数据包 ===",
   "kreno.traffic.gui.packet_stat": "%d. %s: %s",
-
   "kreno.command.reset.success": "流量统计已重置。",
   "kreno.command.all.header": "=== Krypton Reno 全局流量 ===",
   "kreno.command.all.total": "总计: 输入 %s | 输出 %s",
@@ -84,5 +77,6 @@
   "kreno.command.player.inbound": "下载 (Inbound):",
   "kreno.command.player.outbound": "上传 (Outbound):",
   "kreno.command.player.entry": "- %s: %s (%d 个包)",
-  "kreno.command.player.not_found": "未在统计中找到该玩家。"
+  "kreno.command.player.not_found": "未在统计中找到该玩家。",
+  "kreno.traffic.gui.top_outbound": "=== 前10名输出数据包 ==="
 }

@@ -5,11 +5,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import net.minecraft.network.Connection;
+import net.minecraft.network.PacketListener;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.player.Player;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.TrafficMonitor;
+import one.pkg.kreno.shared.network.util.ClientMonitorUtils;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
+import one.pkg.libsl.api.loader.JavaLoader;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.velocitypowered.natives.util.MoreByteBufUtils.ensureCompatible;
@@ -19,6 +27,11 @@ import static com.velocitypowered.natives.util.MoreByteBufUtils.preferredBuffer;
  * Decompresses a Minecraft packet.
  */
 public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
+
+    private Connection kreno$cachedConnection;
+    private UUID kreno$cachedUuid;
+    private String kreno$cachedName = "Unknown";
+    private boolean kreno$isPlayerResolved;
 
     private static final int VANILLA_MAXIMUM_UNCOMPRESSED_SIZE = 8 * 1024 * 1024; // 8MiB
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
@@ -41,7 +54,30 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         TrafficMonitor.compressionEnabled = true;
-        TrafficMonitor.onInboundCompressed(in.readableBytes() + one.pkg.kreno.shared.network.util.VarIntUtil.getVarIntLength(in.readableBytes()));
+        if (!kreno$isPlayerResolved) {
+            if (kreno$cachedConnection == null) {
+                kreno$cachedConnection = ctx.pipeline().get(Connection.class);
+            }
+            if (kreno$cachedConnection != null) {
+                PacketListener listener = kreno$cachedConnection.getPacketListener();
+                if (listener instanceof ServerGamePacketListenerImpl s) {
+                    ServerPlayer player = s.getPlayer();
+                    if (player != null) {
+                        kreno$cachedUuid = player.getUUID();
+                        kreno$cachedName = player.getScoreboardName();
+                        kreno$isPlayerResolved = true;
+                    }
+                } else if (JavaLoader.INSTANCE.isClient()) {
+                    Player player = ClientMonitorUtils.onMonitor(listener);
+                    if (player != null) {
+                        kreno$cachedUuid = player.getUUID();
+                        kreno$cachedName = player.getScoreboardName();
+                        kreno$isPlayerResolved = true;
+                    }
+                }
+            }
+        }
+        TrafficMonitor.onInboundCompressed(kreno$cachedUuid, kreno$cachedName, in.readableBytes() + VarIntUtil.getVarIntLength(in.readableBytes()));
         int claimedUncompressedSize = VarIntUtil.readVarInt(in);
 
         if (claimedUncompressedSize == 0) {

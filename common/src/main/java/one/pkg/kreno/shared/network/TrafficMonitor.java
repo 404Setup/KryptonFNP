@@ -72,7 +72,6 @@ public class TrafficMonitor {
             pPacketStat.bytes.add(bytes);
             pStat.totalIn.add(bytes);
         }
-        updateRates();
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
@@ -98,15 +97,40 @@ public class TrafficMonitor {
             pPacketStat.bytes.add(bytes);
             pStat.totalOut.add(bytes);
         }
-        updateRates();
     }
 
-    public static void onInboundCompressed(int bytes) {
+    public static void onInboundCompressed(UUID playerUuid, String playerName, int bytes) {
         totalInCompressed.add(bytes);
+        if (playerUuid != null) {
+            PlayerTrafficStat pStat = playerStats.get(playerUuid);
+            if (pStat == null) {
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+            }
+            pStat.totalInCompressed.add(bytes);
+        }
     }
 
-    public static void onOutboundCompressed(int bytes) {
+    public static void onOutboundCompressed(UUID playerUuid, String playerName, int bytes) {
         totalOutCompressed.add(bytes);
+        if (playerUuid != null) {
+            PlayerTrafficStat pStat = playerStats.get(playerUuid);
+            if (pStat == null) {
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+            }
+            pStat.totalOutCompressed.add(bytes);
+        }
+    }
+
+    public static void onDroppedPacket(UUID playerUuid, String reason, int estimatedBytes) {
+        if (playerUuid != null) {
+            PlayerTrafficStat pStat = playerStats.get(playerUuid);
+            if (pStat != null) {
+                PacketStat pPacketStat = pStat.droppedPackets.computeIfAbsent(reason, k -> new PacketStat());
+                pPacketStat.count.increment();
+                pPacketStat.bytes.add(estimatedBytes);
+                pStat.totalDropped.add(estimatedBytes);
+            }
+        }
     }
 
     public static void updateRates() {
@@ -166,8 +190,12 @@ public class TrafficMonitor {
         public final String name;
         public final Map<String, PacketStat> inboundPackets = new ConcurrentHashMap<>();
         public final Map<String, PacketStat> outboundPackets = new ConcurrentHashMap<>();
+        public final Map<String, PacketStat> droppedPackets = new ConcurrentHashMap<>();
         public final LongAdder totalIn = new LongAdder();
         public final LongAdder totalOut = new LongAdder();
+        public final LongAdder totalInCompressed = new LongAdder();
+        public final LongAdder totalOutCompressed = new LongAdder();
+        public final LongAdder totalDropped = new LongAdder();
 
         public PlayerTrafficStat(String name) {
             this.name = name;
@@ -175,6 +203,14 @@ public class TrafficMonitor {
 
         public long getTotal() {
             return totalIn.sum() + totalOut.sum();
+        }
+        
+        public long getTotalCompressed() {
+            return totalInCompressed.sum() + totalOutCompressed.sum();
+        }
+        
+        public long getTotalDropped() {
+            return totalDropped.sum();
         }
     }
 

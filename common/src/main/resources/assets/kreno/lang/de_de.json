@@ -7,22 +7,17 @@
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
   "kreno.config.category.culling": "Culling",
-
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
   "kreno.config.category.culling.desc": "Konfiguration für serverseitiges Culling",
-
   "kreno.config.entry.compress.compressionLevel": "Paket-Kompressionsstufe",
   "kreno.config.entry.compress.compressionLevel.desc": "Die Kompressionsstufe für Pakete, zwischen 1-9.",
   "kreno.config.entry.compress.permitOversizedPackets": "Übergroße Pakete erlauben",
   "kreno.config.entry.compress.permitOversizedPackets.desc": "Erlaubt das Senden von Paketen, die das Standardlimit überschreiten.",
-
   "kreno.config.entry.fix.issues128.enabled": "Aktiviert",
   "kreno.config.entry.fix.issues128.enabled.desc": "Verkehrsstatistiken korrigieren",
   "kreno.config.entry.fix.issues128.sync": "Synchrone Verkehrsüberwachung",
   "kreno.config.entry.fix.issues128.sync.desc": "Bandbreitenstatistiken im synchronen Thread ausführen, was dem Vanilla-Verhalten näher kommt.",
-
   "kreno.config.entry.compatibility.allow-wide-var-int": "Breite VarInt erlauben",
-
   "kreno.config.entry.mixin.loginVT": "Virtueller Login-Thread",
   "kreno.config.entry.mixin.loginVT.desc": "Ersetzt den Thread zur Validierung der Spieleranmeldung durch einen virtuellen Thread",
   "kreno.config.entry.mixin.textFilterVT": "Virtueller Textfilter-Thread",
@@ -39,20 +34,16 @@
   "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "Überspringt das Senden von Bewegungspaketen, wenn sich die Entität nicht bewegt hat, und stuft Kombi-Pakete auf reine Rotations-Pakete herunter, wenn nur eine Drehung stattgefunden hat.",
   "kreno.config.entry.mixin.connectionMicroOpt": "Netzwerk-Verbindung Mikro-Optimierung",
   "kreno.config.entry.mixin.connectionMicroOpt.desc": "Reduziert Objektzuweisungen und Sperrenkonflikte in der Connection-Klasse.",
-
   "kreno.config.entry.mixin.particlePacketOpt": "Partikel-Paket-Optimierung",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "Reduziert einige potenziell nutzlose Partikel-Pakete. Diese Konfiguration wird nur auf der Serverseite wirksam.",
   "kreno.config.entry.mixin.trackedEntityOpt": "Entitäts-Tracking-Optimierung",
   "kreno.config.entry.mixin.trackedEntityOpt.desc": "Optimiert die Übertragung von Entitäts-Paketen und integriert server-seitiges Entitäts-Culling zur Reduzierung der Netzwerkbelastung.",
-
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Ändert die Standard-Speicherzuweisung von Netty von 16MiB auf 4MiB, da Minecraft ein Paketlimit von 2MiB hat.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "Aktiviert Happy Eyeballs (RFC 8305) für Client-Verbindungen, um IPv6 und IPv4 gleichzeitig zu versuchen. Kann dazu führen, dass einige Server (wie Velocity) Verbindungen vorübergehend ablehnen.",
-
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Ersetze Minecraft-Stil KReno UI durch ein neu gestaltetes OreUI",
-
   "kreno.config.entry.culling.entity": "Entity Culling",
   "kreno.config.entry.culling.entity.desc": "Intelligentes Entity Culling auf der Serverseite",
   "kreno.config.entry.culling.block": "Block Culling",
@@ -61,18 +52,19 @@
   "kreno.config.entry.culling.chunk_block.desc": "Ersetzt vollständig verborgene Blöcke in Chunk-Paketen durch Stein, um Bandbreite zu sparen",
   "kreno.config.entry.culling.chunk_light": "Chunk-Licht-Culling",
   "kreno.config.entry.culling.chunk_light.desc": "Behandelt Lichtabschnitte, deren Datenarray vollständig Null ist, als leer, um 2 KiB Nutzlast pro Abschnitt zu überspringen",
-
   "kreno.traffic.gui.title": "Krypton Reno Verkehrsüberwachung",
   "kreno.traffic.gui.reset": "Statistiken zurücksetzen",
   "kreno.traffic.gui.global": "=== Globale Verkehrsstatistiken ===",
   "kreno.traffic.gui.bytes": "Bytes - In: %s | Out: %s",
   "kreno.traffic.gui.compressed": "Komprimiert - In: %s | Out: %s",
-  "kreno.traffic.gui.rate": "Rate: In %s/s | Out %s/s",
+  "kreno.traffic.gui.rate": "Rate: In %s/s (%.2f pps) | Out %s/s (%.2f pps)",
   "kreno.traffic.gui.top_players": "=== Top 10 Spieler ===",
   "kreno.traffic.gui.player_stat": "%s: Gesamt %s (Up %s | Down %s)",
+  "kreno.traffic.gui.player_stat_compressed": "  Komprimiert: %s (Up %s | Down %s)",
+  "kreno.traffic.gui.player_stat_dropped": "  Verworfen/Optimiert: %s",
+  "kreno.traffic.gui.player_stat_dropped_detail": "    - %s: %s",
   "kreno.traffic.gui.top_inbound": "=== Top 10 eingehende Pakete ===",
   "kreno.traffic.gui.packet_stat": "%d. %s: %s",
-
   "kreno.command.reset.success": "Verkehrsstatistiken wurden zurückgesetzt.",
   "kreno.command.all.header": "=== Krypton Reno Globaler Verkehr ===",
   "kreno.command.all.total": "Gesamt: In %s | Out %s",
@@ -85,5 +77,6 @@
   "kreno.command.player.inbound": "Eingehend (Download):",
   "kreno.command.player.outbound": "Ausgehend (Upload):",
   "kreno.command.player.entry": "- %s: %s (%d Pakete)",
-  "kreno.command.player.not_found": "Spieler nicht in den Statistiken gefunden."
+  "kreno.command.player.not_found": "Spieler nicht in den Statistiken gefunden.",
+  "kreno.traffic.gui.top_outbound": "=== Top 10 eingehende Pakete ==="
 }

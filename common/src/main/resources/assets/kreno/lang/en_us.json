@@ -7,21 +7,17 @@
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
   "kreno.config.category.culling": "Culling",
-
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
   "kreno.config.category.culling.desc": "Configuration related to server-side culling",
   "kreno.config.entry.compress.compressionLevel": "Packet Compression Level",
   "kreno.config.entry.compress.compressionLevel.desc": "The compression level for packets, between 1-9.",
   "kreno.config.entry.compress.permitOversizedPackets": "Permit Oversized Packets",
   "kreno.config.entry.compress.permitOversizedPackets.desc": "Permit Oversized Packets",
-
   "kreno.config.entry.fix.issues128.enabled": "Enabled",
   "kreno.config.entry.fix.issues128.enabled.desc": "Fix Traffic Statistics",
   "kreno.config.entry.fix.issues128.sync": "Sync Traffic Monitoring",
   "kreno.config.entry.fix.issues128.sync.desc": "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.",
-
   "kreno.config.entry.compatibility.allow-wide-var-int": "Allow Wide VarInt",
-
   "kreno.config.entry.mixin.loginVT": "Login Virtual Thread",
   "kreno.config.entry.mixin.loginVT.desc": "Replace player login validation thread with virtual thread",
   "kreno.config.entry.mixin.textFilterVT": "Text Filter Virtual Thread",
@@ -42,15 +38,12 @@
   "kreno.config.entry.mixin.particlePacketOpt.desc": "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.",
   "kreno.config.entry.mixin.trackedEntityOpt": "Tracked Entity Optimization",
   "kreno.config.entry.mixin.trackedEntityOpt.desc": "Optimizes entity packet broadcasting and integrates with server-side entity culling to reduce network overhead.",
-
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty Allocator Max Order",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.",
-
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Replace Minecraft style KReno UI with a newly designed OreUI",
-
   "kreno.config.entry.culling.entity": "Entity Culling",
   "kreno.config.entry.culling.entity.desc": "Smart entity culling on server side",
   "kreno.config.entry.culling.block": "Block Culling",
@@ -59,18 +52,19 @@
   "kreno.config.entry.culling.chunk_block.desc": "Replaces completely hidden blocks in chunk packets with stone to save bandwidth",
   "kreno.config.entry.culling.chunk_light": "Chunk Light Culling",
   "kreno.config.entry.culling.chunk_light.desc": "Treat light sections whose data array is fully zero as empty to skip 2KiB payload per section",
-
   "kreno.traffic.gui.title": "Krypton Reno Traffic Monitor",
   "kreno.traffic.gui.reset": "Reset Stats",
   "kreno.traffic.gui.global": "=== Global Traffic Stats ===",
   "kreno.traffic.gui.bytes": "Bytes - In: %s | Out: %s",
   "kreno.traffic.gui.compressed": "Compressed - In: %s | Out: %s",
-  "kreno.traffic.gui.rate": "Rate: In %s/s | Out %s/s",
+  "kreno.traffic.gui.rate": "Rate: In %s/s (%.2f pps) | Out %s/s (%.2f pps)",
   "kreno.traffic.gui.top_players": "=== Top 10 Players ===",
   "kreno.traffic.gui.player_stat": "%s: Total %s (Up %s | Down %s)",
+  "kreno.traffic.gui.player_stat_compressed": "  Compressed: %s (Up %s | Down %s)",
+  "kreno.traffic.gui.player_stat_dropped": "  Dropped/Optimized: %s",
+  "kreno.traffic.gui.player_stat_dropped_detail": "    - %s: %s",
   "kreno.traffic.gui.top_inbound": "=== Top 10 Inbound Packets ===",
   "kreno.traffic.gui.packet_stat": "%d. %s: %s",
-
   "kreno.command.reset.success": "Traffic statistics have been reset.",
   "kreno.command.all.header": "=== Krypton Reno Global Traffic ===",
   "kreno.command.all.total": "Total: In %s | Out %s",
@@ -83,5 +77,6 @@
   "kreno.command.player.inbound": "Inbound (Download):",
   "kreno.command.player.outbound": "Outbound (Upload):",
   "kreno.command.player.entry": "- %s: %s (%d pkts)",
-  "kreno.command.player.not_found": "Player not found in statistics."
+  "kreno.command.player.not_found": "Player not found in statistics.",
+  "kreno.traffic.gui.top_outbound": "=== Top 10 Outbound Packets ==="
 }

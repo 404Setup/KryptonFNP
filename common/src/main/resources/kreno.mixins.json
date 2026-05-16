@@ -17,6 +17,7 @@
     "network.chunk.ServerGamePacketListenerImplCullingMixin",
     "network.chunk.TrackedEntityMixin",
     "network.chunk.EntityCullingMixin",
+    "network.chunk.ServerLevelMixin",
     "network.chunk.ClientboundLevelChunkPacketDataMixin",
     "network.chunk.ClientboundLightUpdatePacketDataMixin",
     "network.experimental.RconClientMixin",

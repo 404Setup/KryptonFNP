@@ -7,22 +7,17 @@
   "kreno.config.category.netty": "Netty",
   "kreno.config.category.gui": "GUI",
   "kreno.config.category.culling": "カリング",
-
   "kreno.config.category.gui.desc": "Configuration related to KReno GUI",
   "kreno.config.category.culling.desc": "サーバー側でのカリングに関する設定",
-
   "kreno.config.entry.compress.compressionLevel": "パケット圧縮レベル",
   "kreno.config.entry.compress.compressionLevel.desc": "パケットの圧縮レベル（1-9）。",
   "kreno.config.entry.compress.permitOversizedPackets": "特大パケットを許可",
   "kreno.config.entry.compress.permitOversizedPackets.desc": "標準制限を超える大きなパケットの送信を許可します。",
-
   "kreno.config.entry.fix.issues128.enabled": "有効化",
   "kreno.config.entry.fix.issues128.enabled.desc": "トラフィック統計の問題を修正します。",
   "kreno.config.entry.fix.issues128.sync": "同期トラフィック監視",
   "kreno.config.entry.fix.issues128.sync.desc": "バニラの動作に近い同期スレッドで帯域幅統計を実行します。",
-
   "kreno.config.entry.compatibility.allow-wide-var-int": "ワイド VarInt を許可",
-
   "kreno.config.entry.mixin.loginVT": "ログイン検証仮想スレッド",
   "kreno.config.entry.mixin.loginVT.desc": "ログイン検証スレッドを仮想スレッドに置き換えます。",
   "kreno.config.entry.mixin.textFilterVT": "テキストフィルター仮想スレッド",
@@ -39,20 +34,16 @@
   "kreno.config.entry.mixin.serverEntityMoveOpt.desc": "エンティティが移動していない場合は位置パケットの送信をスキップし、回転のみの場合は「位置+回転」パケットを「回転のみ」にダウングレードします。",
   "kreno.config.entry.mixin.connectionMicroOpt": "ネットワーク接続の微細な最適化",
   "kreno.config.entry.mixin.connectionMicroOpt.desc": "Connectionクラスでのオブジェクト割り当てとロック競合を削減します。",
-
   "kreno.config.entry.mixin.particlePacketOpt": "パーティクルパケットの最適化",
   "kreno.config.entry.mixin.particlePacketOpt.desc": "潜在的に無用なパーティクルパケットの一部を削減します。この設定はサーバー側でのみ有効です。",
   "kreno.config.entry.mixin.trackedEntityOpt": "エンティティトラッキングの最適化",
   "kreno.config.entry.mixin.trackedEntityOpt.desc": "エンティティパケットのブロードキャストを最適化し、サーバー側のエンティティカリングと統合してネットワークオーバーヘッドを削減します。",
-
   "kreno.config.entry.netty.allocatorMaxOrder": "Netty アロケータ最大オーダー",
   "kreno.config.entry.netty.allocatorMaxOrder.desc": "Minecraft のパケットサイズ制限が 2MiB であるため、Netty のデフォルトの 16MiB メモリ割り当てを 4MiB に変更します。",
   "kreno.config.entry.netty.happyEyeballs": "Happy Eyeballs (RFC 8305)",
   "kreno.config.entry.netty.happyEyeballs.desc": "クライアント接続で IPv6 と IPv4 を競合させる Happy Eyeballs を有効にします。Velocity などの一部のサーバーで一時的に接続が拒否される場合があります。",
-
   "kreno.config.entry.gui.oreui": "OreUI",
   "kreno.config.entry.gui.oreui.desc": "Minecraft スタイルの KReno UI を新しく設計された OreUI に置き換えます",
-
   "kreno.config.entry.culling.entity": "エンティティカリング",
   "kreno.config.entry.culling.entity.desc": "サーバー側でのスマートなエンティティカリングを有効にします",
   "kreno.config.entry.culling.block": "ブロックカリング",
@@ -61,18 +52,19 @@
   "kreno.config.entry.culling.chunk_block.desc": "チャンクパケットの送信時に完全に隠れたブロックを丸石に置き換え、帯域幅を節約します",
   "kreno.config.entry.culling.chunk_light": "チャンク光カリング",
   "kreno.config.entry.culling.chunk_light.desc": "データ配列が完全にゼロである光セクションを空として扱い、セクションごとに 2KiB のペイロードをスキップします",
-
   "kreno.traffic.gui.title": "Krypton Reno トラフィックモニター",
   "kreno.traffic.gui.reset": "統計をリセット",
   "kreno.traffic.gui.global": "=== グローバルトラフィック統計 ===",
   "kreno.traffic.gui.bytes": "バイト - 受信: %s | 送信: %s",
   "kreno.traffic.gui.compressed": "圧縮後 - 受信: %s | 送信: %s",
-  "kreno.traffic.gui.rate": "レート: 受信 %s/s | 送信 %s/s",
+  "kreno.traffic.gui.rate": "レート: 受信 %s/s (%.2f pps) | 送信 %s/s (%.2f pps)",
   "kreno.traffic.gui.top_players": "=== 上位10名のプレイヤー ===",
   "kreno.traffic.gui.player_stat": "%s: 合計 %s (アップ %s | ダウン %s)",
+  "kreno.traffic.gui.player_stat_compressed": "  圧縮後: %s (アップ %s | ダウン %s)",
+  "kreno.traffic.gui.player_stat_dropped": "  破棄/最適化: %s",
+  "kreno.traffic.gui.player_stat_dropped_detail": "    - %s: %s",
   "kreno.traffic.gui.top_inbound": "=== 上位10名の受信パケット ===",
   "kreno.traffic.gui.packet_stat": "%d. %s: %s",
-
   "kreno.command.reset.success": "トラフィック統計がリセットされました。",
   "kreno.command.all.header": "=== Krypton Reno グローバルトラフィック ===",
   "kreno.command.all.total": "合計: 受信 %s | 送信 %s",
@@ -85,5 +77,6 @@
   "kreno.command.player.inbound": "受信 (ダウンロード):",
   "kreno.command.player.outbound": "送信 (アップロード):",
   "kreno.command.player.entry": "- %s: %s (%d パケット)",
-  "kreno.command.player.not_found": "統計にプレイヤーが見つかりませんでした。"
+  "kreno.command.player.not_found": "統計にプレイヤーが見つかりませんでした。",
+  "kreno.traffic.gui.top_outbound": "=== 上位10名の送信パケット ==="
 }

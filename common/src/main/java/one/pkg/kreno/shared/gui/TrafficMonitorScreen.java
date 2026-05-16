@@ -37,8 +37,8 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
         }
         
         this.list.addHeader(Component.translatable("kreno.traffic.gui.rate",
-                TrafficMonitor.formatBytes(TrafficMonitor.inRateBps),
-                TrafficMonitor.formatBytes(TrafficMonitor.outRateBps)));
+                TrafficMonitor.formatBytes(TrafficMonitor.inRateBps), TrafficMonitor.inRatePps,
+                TrafficMonitor.formatBytes(TrafficMonitor.outRateBps), TrafficMonitor.outRatePps));
 
         this.list.addHeader(Component.literal(""));
         this.list.addHeader(Component.translatable("kreno.traffic.gui.top_players").withStyle(s -> s.withBold(true).withColor(0xAAAAAA)));
@@ -48,6 +48,20 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
                     p.name, TrafficMonitor.formatBytes(p.getTotal()),
                     TrafficMonitor.formatBytes(p.totalOut.sum()),
                     TrafficMonitor.formatBytes(p.totalIn.sum())));
+            if (TrafficMonitor.compressionEnabled) {
+                this.list.addHeader(Component.translatable("kreno.traffic.gui.player_stat_compressed",
+                        TrafficMonitor.formatBytes(p.getTotalCompressed()),
+                        TrafficMonitor.formatBytes(p.totalOutCompressed.sum()),
+                        TrafficMonitor.formatBytes(p.totalInCompressed.sum())));
+            }
+            if (p.getTotalDropped() > 0) {
+                this.list.addHeader(Component.translatable("kreno.traffic.gui.player_stat_dropped",
+                        TrafficMonitor.formatBytes(p.getTotalDropped())));
+                for (Map.Entry<String, TrafficMonitor.PacketStat> entry : p.droppedPackets.entrySet()) {
+                    this.list.addHeader(Component.translatable("kreno.traffic.gui.player_stat_dropped_detail",
+                            entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())));
+                }
+            }
         }
         
         this.list.addHeader(Component.literal(""));
@@ -55,6 +69,15 @@ public class TrafficMonitorScreen extends OptionsSubScreen {
         List<Map.Entry<String, TrafficMonitor.PacketStat>> topIn = TrafficMonitor.getTop10Inbound();
         for (int i = 0; i < topIn.size(); i++) {
             Map.Entry<String, TrafficMonitor.PacketStat> entry = topIn.get(i);
+            this.list.addHeader(Component.translatable("kreno.traffic.gui.packet_stat",
+                    (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())));
+        }
+
+        this.list.addHeader(Component.literal(""));
+        this.list.addHeader(Component.translatable("kreno.traffic.gui.top_outbound").withStyle(s -> s.withBold(true).withColor(0xAAAAAA)));
+        List<Map.Entry<String, TrafficMonitor.PacketStat>> topOut = TrafficMonitor.getTop10Outbound();
+        for (int i = 0; i < topOut.size(); i++) {
+            Map.Entry<String, TrafficMonitor.PacketStat> entry = topOut.get(i);
             this.list.addHeader(Component.translatable("kreno.traffic.gui.packet_stat",
                     (i + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())));
         }

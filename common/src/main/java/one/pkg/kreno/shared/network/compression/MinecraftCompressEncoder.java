@@ -5,12 +5,25 @@ import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import net.minecraft.network.Connection;
+import net.minecraft.network.PacketListener;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.player.Player;
 import one.pkg.kreno.shared.network.TrafficMonitor;
+import one.pkg.kreno.shared.network.util.ClientMonitorUtils;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
+import one.pkg.libsl.api.loader.JavaLoader;
+
+import java.util.UUID;
 
 public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
 
     private final VelocityCompressor compressor;
+    private Connection kreno$cachedConnection;
+    private UUID kreno$cachedUuid;
+    private String kreno$cachedName = "Unknown";
+    private boolean kreno$isPlayerResolved;
     private int threshold;
 
     public MinecraftCompressEncoder(int threshold, VelocityCompressor compressor) {
@@ -36,7 +49,30 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
             }
         }
         TrafficMonitor.compressionEnabled = true;
-        TrafficMonitor.onOutboundCompressed(out.readableBytes());
+        if (!kreno$isPlayerResolved) {
+            if (kreno$cachedConnection == null) {
+                kreno$cachedConnection = ctx.pipeline().get(Connection.class);
+            }
+            if (kreno$cachedConnection != null) {
+                PacketListener listener = kreno$cachedConnection.getPacketListener();
+                if (listener instanceof ServerGamePacketListenerImpl s) {
+                    ServerPlayer player = s.getPlayer();
+                    if (player != null) {
+                        kreno$cachedUuid = player.getUUID();
+                        kreno$cachedName = player.getScoreboardName();
+                        kreno$isPlayerResolved = true;
+                    }
+                } else if (JavaLoader.INSTANCE.isClient()) {
+                    Player player = ClientMonitorUtils.onMonitor(listener);
+                    if (player != null) {
+                        kreno$cachedUuid = player.getUUID();
+                        kreno$cachedName = player.getScoreboardName();
+                        kreno$isPlayerResolved = true;
+                    }
+                }
+            }
+        }
+        TrafficMonitor.onOutboundCompressed(kreno$cachedUuid, kreno$cachedName, out.readableBytes());
     }
 
     @Override

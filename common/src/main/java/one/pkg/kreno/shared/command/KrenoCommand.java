@@ -19,6 +19,7 @@ import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.libsl.api.loader.JavaLoader;
 
 import java.util.List;
+import java.util.Map;
 
 public class KrenoCommand {
     private static SuggestionProvider<CommandSourceStack> suggestPlayers() {
@@ -94,6 +95,11 @@ public class KrenoCommand {
         source.sendSuccess(() -> Component.translatable("kreno.command.all.total",
                 TrafficMonitor.formatBytes(TrafficMonitor.totalInUncompressed.sum()),
                 TrafficMonitor.formatBytes(TrafficMonitor.totalOutUncompressed.sum())), false);
+        if (TrafficMonitor.compressionEnabled) {
+            source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.compressed",
+                    TrafficMonitor.formatBytes(TrafficMonitor.totalInCompressed.sum()),
+                    TrafficMonitor.formatBytes(TrafficMonitor.totalOutCompressed.sum())), false);
+        }
         source.sendSuccess(() -> Component.translatable("kreno.command.all.rate",
                 TrafficMonitor.formatBytes(TrafficMonitor.inRateBps), TrafficMonitor.inRatePps,
                 TrafficMonitor.formatBytes(TrafficMonitor.outRateBps), TrafficMonitor.outRatePps), false);
@@ -117,6 +123,39 @@ public class KrenoCommand {
                             TrafficMonitor.formatBytes(p.getTotal()),
                             TrafficMonitor.formatBytes(p.totalOut.sum()),
                             TrafficMonitor.formatBytes(p.totalIn.sum()))), false);
+            
+            if (TrafficMonitor.compressionEnabled) {
+                source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.player_stat_compressed",
+                        TrafficMonitor.formatBytes(p.getTotalCompressed()),
+                        TrafficMonitor.formatBytes(p.totalOutCompressed.sum()),
+                        TrafficMonitor.formatBytes(p.totalInCompressed.sum())), false);
+            }
+            if (p.getTotalDropped() > 0) {
+                source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.player_stat_dropped",
+                        TrafficMonitor.formatBytes(p.getTotalDropped())), false);
+                for (Map.Entry<String, TrafficMonitor.PacketStat> entry : p.droppedPackets.entrySet()) {
+                    source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.player_stat_dropped_detail",
+                            entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())), false);
+                }
+            }
+        }
+        
+        source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.top_inbound").withStyle(ChatFormatting.YELLOW), false);
+        List<Map.Entry<String, TrafficMonitor.PacketStat>> topIn = TrafficMonitor.getTop10Inbound();
+        for (int i = 0; i < topIn.size(); i++) {
+            Map.Entry<String, TrafficMonitor.PacketStat> entry = topIn.get(i);
+            int finalI = i;
+            source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.packet_stat",
+                    (finalI + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())), false);
+        }
+
+        source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.top_outbound").withStyle(ChatFormatting.YELLOW), false);
+        List<Map.Entry<String, TrafficMonitor.PacketStat>> topOut = TrafficMonitor.getTop10Outbound();
+        for (int i = 0; i < topOut.size(); i++) {
+            Map.Entry<String, TrafficMonitor.PacketStat> entry = topOut.get(i);
+            int finalI = i;
+            source.sendSuccess(() -> Component.translatable("kreno.traffic.gui.packet_stat",
+                    (finalI + 1), entry.getKey(), TrafficMonitor.formatBytes(entry.getValue().bytes.sum())), false);
         }
         return 1;
     }

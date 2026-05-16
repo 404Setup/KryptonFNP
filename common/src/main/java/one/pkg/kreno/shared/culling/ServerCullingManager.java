@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.network.TrafficMonitor;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -90,7 +92,7 @@ public class ServerCullingManager {
         if (dot >= 0) {
             inFOV = true;
         } else {
-            inFOV = dot * dot <= 0.0225 * distanceSq;
+            inFOV = (dot * dot <= 0.0225 * distanceSq) || (dot * dot >= 0.25 * distanceSq);
         }
 
         if (inFOV) {
@@ -223,7 +225,8 @@ public class ServerCullingManager {
         Vec3 entityCenter = entity.getBoundingBox().getCenter();
         Vec3 toEntity = entityCenter.subtract(eyePos).normalize();
         Vec3 lookVec = player.getLookAngle();
-        boolean inFOV = lookVec.dot(toEntity) >= -0.15;
+        double dot = lookVec.dot(toEntity);
+        boolean inFOV = dot >= -0.15 || dot <= -0.5;
 
         if (inFOV) {
             if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
@@ -301,7 +304,7 @@ public class ServerCullingManager {
         return isLineOfSightClear(level, eye, new Vec3(aabb.maxX, aabb.minY, aabb.minZ));
     }
 
-    private static boolean isLineOfSightClear(Level level, Vec3 start, Vec3 end) {
+    public static boolean isLineOfSightClear(Level level, Vec3 start, Vec3 end) {
         try {
             int chunkX = (int) end.x >> 4;
             int chunkZ = (int) end.z >> 4;
@@ -312,6 +315,16 @@ public class ServerCullingManager {
             return level.clip(ctx).getType() == HitResult.Type.MISS;
         } catch (Throwable t) {
             return true;
+        }
+    }
+
+    public static void estimateParticlePacketOptSavings(Entity entity, int estimatedBytes) {
+        if (entity.level() instanceof ServerLevel sl) {
+            for (ServerPlayer p : sl.players()) {
+                if (p.distanceToSqr(entity) < 4096) {
+                    TrafficMonitor.onDroppedPacket(p.getUUID(), "particlePacketOpt", estimatedBytes);
+                }
+            }
         }
     }
 

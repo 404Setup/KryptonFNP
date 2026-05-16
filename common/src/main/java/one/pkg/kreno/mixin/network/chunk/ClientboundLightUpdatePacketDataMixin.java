@@ -7,6 +7,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.culling.ILightUpdatePacketDataSavedBytes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +29,10 @@ import java.util.List;
  * array, so promoting such sections to the empty mask is observably identical for vanilla clients.
  */
 @Mixin(ClientboundLightUpdatePacketData.class)
-public class ClientboundLightUpdatePacketDataMixin {
+public class ClientboundLightUpdatePacketDataMixin implements ILightUpdatePacketDataSavedBytes {
+
+    @Unique
+    private int kreno$savedBytes = 0;
 
     @Unique
     private static boolean kreno$isAllZero(byte[] data) {
@@ -38,6 +42,11 @@ public class ClientboundLightUpdatePacketDataMixin {
             }
         }
         return true;
+    }
+
+    @Override
+    public int kreno$getSavedBytes() {
+        return this.kreno$savedBytes;
     }
 
     @Inject(
@@ -75,6 +84,7 @@ public class ClientboundLightUpdatePacketDataMixin {
         byte[] raw = data.getData();
         if (kreno$isAllZero(raw)) {
             emptyMask.set(sectionIndex);
+            this.kreno$savedBytes += 2048;
         } else {
             mask.set(sectionIndex);
             updates.add(raw.clone());
