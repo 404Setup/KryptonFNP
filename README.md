@@ -269,6 +269,16 @@ I'm not sure if this will improve compression rates, but if it conflicts with yo
 
 When a block is exposed to air, KReno will send the correct block to the player, ensuring visual accuracy.
 
+## 10
+**Q**: What would happen if I urged KryptonReno to update?
+
+**A**: I will pretend I didn't see your issues
+
+## 11
+**Q**: Where is the Fabric version of KryptonReno?
+
+**A**: I don't want to make a competing mod
+
 ----
 
 ## Credit
