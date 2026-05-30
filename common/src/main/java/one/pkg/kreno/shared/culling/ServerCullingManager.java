@@ -39,7 +39,7 @@ public class ServerCullingManager {
     private static final long REFRESH_SWEEP_INTERVAL_MS = 250;
     private static final int MAX_REFRESHES_PER_SWEEP = 64;
     private static final int MAX_DROPPED_TRACKED = 4096;
-    private static final double NEAR_DISTANCE_SQ = 64.0;
+    public static final double NEAR_DISTANCE_SQ = 64.0;
 
     private static final Map<Integer, Cache<BlockPos, CullingState>> BLOCK_VISIBILITY_CACHE = new ConcurrentHashMap<>();
     private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
@@ -92,7 +92,7 @@ public class ServerCullingManager {
         if (dot >= 0) {
             inFOV = true;
         } else {
-            inFOV = (dot * dot <= 0.0225 * distanceSq) || (dot * dot >= 0.25 * distanceSq);
+            inFOV = (dot * dot <= 0.0225 * distanceSq);
         }
 
         if (inFOV) {
@@ -223,10 +223,17 @@ public class ServerCullingManager {
 
         Vec3 eyePos = player.getEyePosition();
         Vec3 entityCenter = entity.getBoundingBox().getCenter();
-        Vec3 toEntity = entityCenter.subtract(eyePos).normalize();
+        double dx = entityCenter.x - eyePos.x;
+        double dy = entityCenter.y - eyePos.y;
+        double dz = entityCenter.z - eyePos.z;
         Vec3 lookVec = player.getLookAngle();
-        double dot = lookVec.dot(toEntity);
-        boolean inFOV = dot >= -0.15 || dot <= -0.5;
+        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
+        boolean inFOV;
+        if (dot >= 0) {
+            inFOV = true;
+        } else {
+            inFOV = (dot * dot <= 0.0225 * distanceSq);
+        }
 
         if (inFOV) {
             if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
