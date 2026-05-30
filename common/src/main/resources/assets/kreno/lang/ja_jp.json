@@ -78,5 +78,7 @@
   "kreno.command.player.outbound": "送信 (アップロード):",
   "kreno.command.player.entry": "- %s: %s (%d パケット)",
   "kreno.command.player.not_found": "統計にプレイヤーが見つかりませんでした。",
-  "kreno.traffic.gui.top_outbound": "=== 上位10名の送信パケット ==="
+  "kreno.traffic.gui.top_outbound": "=== 上位10名の送信パケット ===",
+  "kreno.config.entry.culling.particle": "パーティクルカリング",
+  "kreno.config.entry.culling.particle.desc": "サーバー側でのスマートなパーティクルカリング"
 }
