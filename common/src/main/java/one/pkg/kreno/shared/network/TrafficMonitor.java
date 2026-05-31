@@ -186,21 +186,45 @@ public class TrafficMonitor {
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
-        return inboundStats.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
-                .limit(10).collect(Collectors.toList());
+        java.util.PriorityQueue<Map.Entry<String, PacketStat>> pq = new java.util.PriorityQueue<>(11,
+            java.util.Comparator.comparingLong((Map.Entry<String, PacketStat> e) -> e.getValue().bytes.sum()));
+        for (Map.Entry<String, PacketStat> entry : inboundStats.entrySet()) {
+            pq.offer(entry);
+            if (pq.size() > 10) {
+                pq.poll();
+            }
+        }
+        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(pq);
+        result.sort((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()));
+        return result;
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Outbound() {
-        return outboundStats.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
-                .limit(10).collect(Collectors.toList());
+        java.util.PriorityQueue<Map.Entry<String, PacketStat>> pq = new java.util.PriorityQueue<>(11,
+            java.util.Comparator.comparingLong((Map.Entry<String, PacketStat> e) -> e.getValue().bytes.sum()));
+        for (Map.Entry<String, PacketStat> entry : outboundStats.entrySet()) {
+            pq.offer(entry);
+            if (pq.size() > 10) {
+                pq.poll();
+            }
+        }
+        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(pq);
+        result.sort((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()));
+        return result;
     }
 
     public static List<PlayerTrafficStat> getTop10Players() {
-        return playerStats.values().stream()
-                .sorted((a, b) -> Long.compare(b.getTotal(), a.getTotal()))
-                .limit(10).collect(Collectors.toList());
+        java.util.PriorityQueue<PlayerTrafficStat> pq = new java.util.PriorityQueue<>(11,
+            java.util.Comparator.comparingLong(PlayerTrafficStat::getTotal));
+        for (PlayerTrafficStat stat : playerStats.values()) {
+            pq.offer(stat);
+            if (pq.size() > 10) {
+                pq.poll();
+            }
+        }
+        List<PlayerTrafficStat> result = new java.util.ArrayList<>(pq);
+        result.sort((a, b) -> Long.compare(b.getTotal(), a.getTotal()));
+        return result;
     }
 
     public static class PacketStat {
