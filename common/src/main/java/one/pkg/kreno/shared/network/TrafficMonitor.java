@@ -11,6 +11,7 @@ public class TrafficMonitor {
     public static final Map<String, PacketStat> inboundStats = new ConcurrentHashMap<>();
     public static final Map<String, PacketStat> outboundStats = new ConcurrentHashMap<>();
     public static final Map<UUID, PlayerTrafficStat> playerStats = new ConcurrentHashMap<>();
+    public static final Map<String, UUID> playerNameCache = new ConcurrentHashMap<>();
     public static final LongAdder totalInUncompressed = new LongAdder();
     public static final LongAdder totalOutUncompressed = new LongAdder();
     public static final LongAdder totalInCompressed = new LongAdder();
@@ -32,6 +33,7 @@ public class TrafficMonitor {
         inboundStats.clear();
         outboundStats.clear();
         playerStats.clear();
+        playerNameCache.clear();
         totalInUncompressed.reset();
         totalOutUncompressed.reset();
         totalInCompressed.reset();
@@ -62,7 +64,12 @@ public class TrafficMonitor {
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.get(playerUuid);
             if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
+                    if (playerName != null) {
+                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
+                    }
+                    return new PlayerTrafficStat(playerName);
+                });
             }
             PacketStat pPacketStat = pStat.inboundPackets.get(packetName);
             if (pPacketStat == null) {
@@ -87,7 +94,12 @@ public class TrafficMonitor {
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.get(playerUuid);
             if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
+                    if (playerName != null) {
+                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
+                    }
+                    return new PlayerTrafficStat(playerName);
+                });
             }
             PacketStat pPacketStat = pStat.outboundPackets.get(packetName);
             if (pPacketStat == null) {
@@ -104,7 +116,12 @@ public class TrafficMonitor {
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.get(playerUuid);
             if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
+                    if (playerName != null) {
+                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
+                    }
+                    return new PlayerTrafficStat(playerName);
+                });
             }
             pStat.totalInCompressed.add(bytes);
         }
@@ -115,7 +132,12 @@ public class TrafficMonitor {
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.get(playerUuid);
             if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> new PlayerTrafficStat(playerName));
+                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
+                    if (playerName != null) {
+                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
+                    }
+                    return new PlayerTrafficStat(playerName);
+                });
             }
             pStat.totalOutCompressed.add(bytes);
         }

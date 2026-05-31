@@ -20,6 +20,7 @@ import one.pkg.libsl.api.loader.JavaLoader;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class KrenoCommand {
     private static SuggestionProvider<CommandSourceStack> suggestPlayers() {
@@ -162,9 +163,8 @@ public class KrenoCommand {
 
     private static int displayPlayerTraffic(CommandContext<CommandSourceStack> context) {
         String name = StringArgumentType.getString(context, "player");
-        TrafficMonitor.PlayerTrafficStat stat = TrafficMonitor.playerStats.values().stream()
-                .filter(s -> s.name.equalsIgnoreCase(name))
-                .findFirst().orElse(null);
+        UUID uuid = TrafficMonitor.playerNameCache.get(name.toLowerCase(java.util.Locale.ROOT));
+        TrafficMonitor.PlayerTrafficStat stat = uuid != null ? TrafficMonitor.playerStats.get(uuid) : null;
 
         if (stat == null) {
             context.getSource().sendFailure(Component.translatable("kreno.command.player.not_found"));
