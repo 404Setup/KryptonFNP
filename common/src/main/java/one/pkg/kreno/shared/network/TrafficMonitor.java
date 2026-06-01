@@ -261,14 +261,31 @@ public class TrafficMonitor {
     }
 
     public static String formatBytes(double bytes) {
-        if (bytes < 1024) return String.format("%.2f B", bytes);
+        if (Double.isNaN(bytes)) return "NaN B";
+        if (Double.isInfinite(bytes)) return (bytes > 0 ? "Infinity" : "-Infinity") + " B";
+        if (bytes < 1024 && bytes > -1024) return formatDouble(bytes) + " B";
+
         int exp = 0;
-        double b = bytes;
+        double b = Math.abs(bytes);
         while (b >= 1024 && exp < 6) {
             b /= 1024;
             exp++;
         }
-        String pre = "KMGTPE".charAt(exp - 1) + "";
-        return String.format("%.2f %sB", b, pre);
+        char pre = "KMGTPE".charAt(exp - 1);
+        return formatDouble(bytes < 0 ? -b : b) + " " + pre + "B";
+    }
+
+    private static String formatDouble(double d) {
+        long whole = (long) d;
+        long frac = Math.round((Math.abs(d) - Math.abs(whole)) * 100);
+        if (frac == 100) {
+            whole += (d < 0 ? -1 : 1);
+            frac = 0;
+        }
+        if (frac < 10) {
+            return (d < 0 && whole == 0 ? "-0" : whole) + ".0" + frac;
+        } else {
+            return (d < 0 && whole == 0 ? "-0" : whole) + "." + frac;
+        }
     }
 }
