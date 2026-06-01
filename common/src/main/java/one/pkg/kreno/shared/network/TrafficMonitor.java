@@ -185,45 +185,84 @@ public class TrafficMonitor {
         return totalOutPackets.sum();
     }
 
+    private static class CachedPacketStatEntry implements Comparable<CachedPacketStatEntry> {
+        final Map.Entry<String, PacketStat> entry;
+        final long sum;
+
+        CachedPacketStatEntry(Map.Entry<String, PacketStat> entry) {
+            this.entry = entry;
+            this.sum = entry.getValue().bytes.sum();
+        }
+
+        @Override
+        public int compareTo(CachedPacketStatEntry o) {
+            return Long.compare(this.sum, o.sum);
+        }
+    }
+
+    private static class CachedPlayerStat implements Comparable<CachedPlayerStat> {
+        final PlayerTrafficStat stat;
+        final long total;
+
+        CachedPlayerStat(PlayerTrafficStat stat) {
+            this.stat = stat;
+            this.total = stat.getTotal();
+        }
+
+        @Override
+        public int compareTo(CachedPlayerStat o) {
+            return Long.compare(this.total, o.total);
+        }
+    }
+
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
-        java.util.PriorityQueue<Map.Entry<String, PacketStat>> pq = new java.util.PriorityQueue<>(11,
-            java.util.Comparator.comparingLong((Map.Entry<String, PacketStat> e) -> e.getValue().bytes.sum()));
+        java.util.PriorityQueue<CachedPacketStatEntry> pq = new java.util.PriorityQueue<>(11);
         for (Map.Entry<String, PacketStat> entry : inboundStats.entrySet()) {
-            pq.offer(entry);
+            pq.offer(new CachedPacketStatEntry(entry));
             if (pq.size() > 10) {
                 pq.poll();
             }
         }
-        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(pq);
-        result.sort((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()));
+        List<CachedPacketStatEntry> cachedResult = new java.util.ArrayList<>(pq);
+        cachedResult.sort((a, b) -> Long.compare(b.sum, a.sum));
+        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(cachedResult.size());
+        for (CachedPacketStatEntry ce : cachedResult) {
+            result.add(ce.entry);
+        }
         return result;
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Outbound() {
-        java.util.PriorityQueue<Map.Entry<String, PacketStat>> pq = new java.util.PriorityQueue<>(11,
-            java.util.Comparator.comparingLong((Map.Entry<String, PacketStat> e) -> e.getValue().bytes.sum()));
+        java.util.PriorityQueue<CachedPacketStatEntry> pq = new java.util.PriorityQueue<>(11);
         for (Map.Entry<String, PacketStat> entry : outboundStats.entrySet()) {
-            pq.offer(entry);
+            pq.offer(new CachedPacketStatEntry(entry));
             if (pq.size() > 10) {
                 pq.poll();
             }
         }
-        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(pq);
-        result.sort((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()));
+        List<CachedPacketStatEntry> cachedResult = new java.util.ArrayList<>(pq);
+        cachedResult.sort((a, b) -> Long.compare(b.sum, a.sum));
+        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(cachedResult.size());
+        for (CachedPacketStatEntry ce : cachedResult) {
+            result.add(ce.entry);
+        }
         return result;
     }
 
     public static List<PlayerTrafficStat> getTop10Players() {
-        java.util.PriorityQueue<PlayerTrafficStat> pq = new java.util.PriorityQueue<>(11,
-            java.util.Comparator.comparingLong(PlayerTrafficStat::getTotal));
+        java.util.PriorityQueue<CachedPlayerStat> pq = new java.util.PriorityQueue<>(11);
         for (PlayerTrafficStat stat : playerStats.values()) {
-            pq.offer(stat);
+            pq.offer(new CachedPlayerStat(stat));
             if (pq.size() > 10) {
                 pq.poll();
             }
         }
-        List<PlayerTrafficStat> result = new java.util.ArrayList<>(pq);
-        result.sort((a, b) -> Long.compare(b.getTotal(), a.getTotal()));
+        List<CachedPlayerStat> cachedResult = new java.util.ArrayList<>(pq);
+        cachedResult.sort((a, b) -> Long.compare(b.total, a.total));
+        List<PlayerTrafficStat> result = new java.util.ArrayList<>(cachedResult.size());
+        for (CachedPlayerStat cs : cachedResult) {
+            result.add(cs.stat);
+        }
         return result;
     }
 
