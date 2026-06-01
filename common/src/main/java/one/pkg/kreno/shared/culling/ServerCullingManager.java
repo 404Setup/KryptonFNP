@@ -34,6 +34,10 @@ public class ServerCullingManager {
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 4));
     private static final Map<Integer, Map<Integer, CullingState>> VISIBILITY_CACHE = new ConcurrentHashMap<>();
 
+    private static final Object ACTIVE_MAPS_LOCK = new Object();
+    @SuppressWarnings("unchecked")
+    private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
+
     private static final long CHECK_INTERVAL_MS = 500;
     private static final long HIDE_DELAY_MS = 1000;
     private static final long REFRESH_SWEEP_INTERVAL_MS = 250;
@@ -45,10 +49,18 @@ public class ServerCullingManager {
     private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
     private static final Map<Integer, Long> LAST_SWEEP_TIME = new ConcurrentHashMap<>();
 
+    @SuppressWarnings("unchecked")
+    private static void updateActiveVisibilityMaps() {
+        synchronized (ACTIVE_MAPS_LOCK) {
+            activeVisibilityMaps = VISIBILITY_CACHE.values().toArray(new Map[0]);
+        }
+    }
+
     public static void onEnd() {
         BLOCK_VISIBILITY_CACHE.values().forEach(Cache::invalidateAll);
         BLOCK_VISIBILITY_CACHE.clear();
         VISIBILITY_CACHE.clear();
+        updateActiveVisibilityMaps();
         DROPPED_BLOCK_UPDATES.clear();
         LAST_SWEEP_TIME.clear();
         EXECUTOR.close();
@@ -207,7 +219,16 @@ public class ServerCullingManager {
     public static boolean isEntityVisible(ServerPlayer player, Entity entity) {
         if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
 
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.computeIfAbsent(player.getId(), _ -> new ConcurrentHashMap<>());
+        int playerId = player.getId();
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(playerId);
+        if (map == null) {
+            Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
+            map = VISIBILITY_CACHE.putIfAbsent(playerId, newMap);
+            if (map == null) {
+                map = newMap;
+                updateActiveVisibilityMaps();
+            }
+        }
         CullingState state = map.computeIfAbsent(entity.getId(), k -> new CullingState());
 
         long now = System.currentTimeMillis();
@@ -270,7 +291,16 @@ public class ServerCullingManager {
     }
 
     public static void setLastSentVisible(ServerPlayer player, Entity entity, boolean visible) {
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.computeIfAbsent(player.getId(), k -> new ConcurrentHashMap<>());
+        int playerId = player.getId();
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(playerId);
+        if (map == null) {
+            Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
+            map = VISIBILITY_CACHE.putIfAbsent(playerId, newMap);
+            if (map == null) {
+                map = newMap;
+                updateActiveVisibilityMaps();
+            }
+        }
         CullingState state = map.computeIfAbsent(entity.getId(), k -> new CullingState());
         state.lastSentVisible = visible;
     }
@@ -337,7 +367,9 @@ public class ServerCullingManager {
 
     public static void removePlayer(ServerPlayer player) {
         int pid = player.getId();
-        VISIBILITY_CACHE.remove(pid);
+        if (VISIBILITY_CACHE.remove(pid) != null) {
+            updateActiveVisibilityMaps();
+        }
         BLOCK_VISIBILITY_CACHE.remove(pid);
         DROPPED_BLOCK_UPDATES.remove(pid);
         LAST_SWEEP_TIME.remove(pid);
@@ -345,7 +377,7 @@ public class ServerCullingManager {
 
     public static void removeEntity(Entity entity) {
         int id = entity.getId();
-        for (Map<Integer, CullingState> map : VISIBILITY_CACHE.values()) {
+        for (Map<Integer, CullingState> map : activeVisibilityMaps) {
             map.remove(id);
         }
     }
