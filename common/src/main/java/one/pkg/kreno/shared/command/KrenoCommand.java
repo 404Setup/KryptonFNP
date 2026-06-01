@@ -88,6 +88,17 @@ public class KrenoCommand {
         return 1;
     }
 
+    static class CachedPacketStat {
+        String key;
+        TrafficMonitor.PacketStat stat;
+        long bytesSum;
+        CachedPacketStat(Map.Entry<String, TrafficMonitor.PacketStat> entry) {
+            this.key = entry.getKey();
+            this.stat = entry.getValue();
+            this.bytesSum = entry.getValue().bytes.sum();
+        }
+    }
+
     private static int displayAllTraffic(CommandContext<CommandSourceStack> context) {
         TrafficMonitor.updateRates();
         CommandSourceStack source = context.getSource();
@@ -111,10 +122,19 @@ public class KrenoCommand {
             MutableComponent playerComp = Component.literal(p.name).withStyle(ChatFormatting.AQUA);
 
             MutableComponent hoverText = Component.translatable("kreno.command.all.hover_header");
-            p.outboundPackets.entrySet().stream()
-                    .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
-                    .limit(5)
-                    .forEach(e -> hoverText.append(Component.translatable("kreno.command.all.hover_entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()))));
+            java.util.PriorityQueue<CachedPacketStat> pq = new java.util.PriorityQueue<>(6,
+                java.util.Comparator.comparingLong(c -> c.bytesSum));
+            for (Map.Entry<String, TrafficMonitor.PacketStat> entry : p.outboundPackets.entrySet()) {
+                pq.offer(new CachedPacketStat(entry));
+                if (pq.size() > 5) {
+                    pq.poll();
+                }
+            }
+            List<CachedPacketStat> top5 = new java.util.ArrayList<>(pq);
+            top5.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+            for (CachedPacketStat c : top5) {
+                hoverText.append(Component.translatable("kreno.command.all.hover_entry", c.key, TrafficMonitor.formatBytes(c.bytesSum)));
+            }
 
             playerComp.withStyle(s -> s.withHoverEvent(new HoverEvent.ShowText(hoverText)));
 
@@ -175,16 +195,34 @@ public class KrenoCommand {
         source.sendSuccess(() -> Component.translatable("kreno.command.player.header", stat.name).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD), false);
 
         source.sendSuccess(() -> Component.translatable("kreno.command.player.inbound").withStyle(ChatFormatting.GRAY), false);
-        stat.inboundPackets.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
-                .limit(10)
-                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()), e.getValue().count.sum()), false));
+        java.util.PriorityQueue<CachedPacketStat> pqIn = new java.util.PriorityQueue<>(11,
+            java.util.Comparator.comparingLong(c -> c.bytesSum));
+        for (Map.Entry<String, TrafficMonitor.PacketStat> entry : stat.inboundPackets.entrySet()) {
+            pqIn.offer(new CachedPacketStat(entry));
+            if (pqIn.size() > 10) {
+                pqIn.poll();
+            }
+        }
+        List<CachedPacketStat> top10In = new java.util.ArrayList<>(pqIn);
+        top10In.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+        for (CachedPacketStat c : top10In) {
+            source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", c.key, TrafficMonitor.formatBytes(c.bytesSum), c.stat.count.sum()), false);
+        }
 
         source.sendSuccess(() -> Component.translatable("kreno.command.player.outbound").withStyle(ChatFormatting.GRAY), false);
-        stat.outboundPackets.entrySet().stream()
-                .sorted((a, b) -> Long.compare(b.getValue().bytes.sum(), a.getValue().bytes.sum()))
-                .limit(10)
-                .forEach(e -> source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", e.getKey(), TrafficMonitor.formatBytes(e.getValue().bytes.sum()), e.getValue().count.sum()), false));
+        java.util.PriorityQueue<CachedPacketStat> pqOut = new java.util.PriorityQueue<>(11,
+            java.util.Comparator.comparingLong(c -> c.bytesSum));
+        for (Map.Entry<String, TrafficMonitor.PacketStat> entry : stat.outboundPackets.entrySet()) {
+            pqOut.offer(new CachedPacketStat(entry));
+            if (pqOut.size() > 10) {
+                pqOut.poll();
+            }
+        }
+        List<CachedPacketStat> top10Out = new java.util.ArrayList<>(pqOut);
+        top10Out.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+        for (CachedPacketStat c : top10Out) {
+            source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", c.key, TrafficMonitor.formatBytes(c.bytesSum), c.stat.count.sum()), false);
+        }
 
         return 1;
     }
