@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class ServerCullingManager {
+    private static final Direction[] DIRECTIONS = Direction.values();
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 4));
     private static final Map<Integer, Map<Integer, CullingState>> VISIBILITY_CACHE = new ConcurrentHashMap<>();
 
@@ -204,7 +205,7 @@ public class ServerCullingManager {
         if (!ModConfig.Culling.isChunkBlockCullingEnabled()) return;
         Level level = player.level();
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (Direction dir : Direction.values()) {
+        for (Direction dir : DIRECTIONS) {
             cursor.setWithOffset(pos, dir);
             BlockState neighborState = level.getBlockState(cursor);
             if (!neighborState.isAir() && neighborState.isSolidRender()) {
