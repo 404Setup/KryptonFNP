@@ -44,12 +44,11 @@ public class NativeDependencyChecker {
 
         if (IS_WINDOWS) {
             String systemDrive = System.getenv("SystemDrive");
-            if (systemDrive == null || systemDrive.isEmpty()) {
+            if (systemDrive == null || !systemDrive.matches("^[a-zA-Z]:$")) {
                 systemDrive = "C:";
             }
 
             String[] possiblePaths = {
-                    System.getenv("OPENSSL_DIR"),
                     systemDrive + "\\Program Files\\OpenSSL-Win64\\bin",
                     systemDrive + "\\Program Files\\OpenSSL\\bin",
                     systemDrive + "\\OpenSSL-Win64\\bin",
