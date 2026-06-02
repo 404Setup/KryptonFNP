@@ -377,9 +377,10 @@ public class ServerCullingManager {
     }
 
     public static void removeEntity(Entity entity) {
-        int id = entity.getId();
-        for (Map<Integer, CullingState> map : activeVisibilityMaps) {
-            map.remove(id);
+        Integer id = entity.getId();
+        Map<Integer, CullingState>[] maps = activeVisibilityMaps;
+        for (int i = 0; i < maps.length; i++) {
+            maps[i].remove(id);
         }
     }
 
