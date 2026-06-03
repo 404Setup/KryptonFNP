@@ -88,6 +88,19 @@ public class ServerCullingManager {
         double ex = player.getX();
         double ey = player.getEyeY();
         double ez = player.getZ();
+        float rotX = player.getXRot();
+        float rotY = player.getYRot();
+
+        if (Math.abs(state.lastPx - ex) < 0.1 && Math.abs(state.lastPy - ey) < 0.1 && Math.abs(state.lastPz - ez) < 0.1 &&
+            Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
+            Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+            return state.isCurrentlyVisible;
+        }
+
+        state.lastPx = ex; state.lastPy = ey; state.lastPz = ez;
+        state.lastTx = cx; state.lastTy = cy; state.lastTz = cz;
+        state.lastRotX = rotX; state.lastRotY = rotY;
+
         double dx = cx - ex, dy = cy - ey, dz = cz - ez;
         double distanceSq = dx * dx + dy * dy + dz * dz;
         state.lastDistanceSq = distanceSq;
@@ -99,8 +112,17 @@ public class ServerCullingManager {
             return true;
         }
 
-        Vec3 lookVec = player.getLookAngle();
-        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
+        float f = rotX * ((float)Math.PI / 180F);
+        float g = -rotY * ((float)Math.PI / 180F);
+        float h = (float)Math.cos(g);
+        float i = (float)Math.sin(g);
+        float j = (float)Math.cos(f);
+        float k = (float)Math.sin(f);
+        double lVx = (i * j);
+        double lVy = (-k);
+        double lVz = (h * j);
+
+        double dot = lVx * dx + lVy * dy + lVz * dz;
         boolean inFOV;
         if (dot >= 0) {
             inFOV = true;
@@ -115,11 +137,11 @@ public class ServerCullingManager {
                     state.lastCheckTime = now;
                     AABB aabb = new AABB(pos).inflate(0.1);
                     Level level = player.level();
-                    Vec3 eyePos = new Vec3(ex, ey, ez);
+                    Vec3 rayEyePos = new Vec3(ex, ey, ez);
 
                     EXECUTOR.submit(() -> {
                         try {
-                            state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
+                            state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
                         } catch (Exception e) {
                             state.lastRaytraceResult = true;
                         } finally {
@@ -233,6 +255,26 @@ public class ServerCullingManager {
         CullingState state = map.computeIfAbsent(entity.getId(), k -> new CullingState());
 
         long now = System.currentTimeMillis();
+
+        double ex = player.getX();
+        double ey = player.getEyeY();
+        double ez = player.getZ();
+        double cx = entity.getX();
+        double cy = entity.getY() + entity.getBbHeight() / 2.0;
+        double cz = entity.getZ();
+        float rotX = player.getXRot();
+        float rotY = player.getYRot();
+
+        if (Math.abs(state.lastPx - ex) < 0.1 && Math.abs(state.lastPy - ey) < 0.1 && Math.abs(state.lastPz - ez) < 0.1 &&
+            Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
+            Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+            return state.isCurrentlyVisible;
+        }
+
+        state.lastPx = ex; state.lastPy = ey; state.lastPz = ez;
+        state.lastTx = cx; state.lastTy = cy; state.lastTz = cz;
+        state.lastRotX = rotX; state.lastRotY = rotY;
+
         double distanceSq = player.distanceToSqr(entity);
         state.lastDistanceSq = distanceSq;
 
@@ -243,13 +285,21 @@ public class ServerCullingManager {
             return true;
         }
 
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 entityCenter = entity.getBoundingBox().getCenter();
-        double dx = entityCenter.x - eyePos.x;
-        double dy = entityCenter.y - eyePos.y;
-        double dz = entityCenter.z - eyePos.z;
-        Vec3 lookVec = player.getLookAngle();
-        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
+        double dx = cx - ex;
+        double dy = cy - ey;
+        double dz = cz - ez;
+
+        float f = rotX * ((float)Math.PI / 180F);
+        float g = -rotY * ((float)Math.PI / 180F);
+        float h = (float)Math.cos(g);
+        float i = (float)Math.sin(g);
+        float j = (float)Math.cos(f);
+        float k = (float)Math.sin(f);
+        double lVx = (i * j);
+        double lVy = (-k);
+        double lVz = (h * j);
+
+        double dot = lVx * dx + lVy * dy + lVz * dz;
         boolean inFOV;
         if (dot >= 0) {
             inFOV = true;
@@ -392,5 +442,14 @@ public class ServerCullingManager {
         volatile boolean isChecking = false;
         volatile double lastDistanceSq = 0;
         volatile boolean lastSentVisible = true;
+
+        volatile double lastPx = Double.MAX_VALUE;
+        volatile double lastPy = Double.MAX_VALUE;
+        volatile double lastPz = Double.MAX_VALUE;
+        volatile double lastTx = Double.MAX_VALUE;
+        volatile double lastTy = Double.MAX_VALUE;
+        volatile double lastTz = Double.MAX_VALUE;
+        volatile float lastRotX = Float.MAX_VALUE;
+        volatile float lastRotY = Float.MAX_VALUE;
     }
 }
