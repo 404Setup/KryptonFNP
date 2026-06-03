@@ -215,55 +215,33 @@ public class TrafficMonitor {
         }
     }
 
-    public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
-        java.util.PriorityQueue<CachedPacketStatEntry> pq = new java.util.PriorityQueue<>(11);
-        for (Map.Entry<String, PacketStat> entry : inboundStats.entrySet()) {
-            pq.offer(new CachedPacketStatEntry(entry));
-            if (pq.size() > 10) {
+    private static <T, C extends Comparable<C>> List<T> getTopN(Iterable<T> source, int n, java.util.function.Function<T, C> wrapper, java.util.function.Function<C, T> unwrapper) {
+        java.util.PriorityQueue<C> pq = new java.util.PriorityQueue<>(n + 1);
+        for (T item : source) {
+            pq.offer(wrapper.apply(item));
+            if (pq.size() > n) {
                 pq.poll();
             }
         }
-        List<CachedPacketStatEntry> cachedResult = new java.util.ArrayList<>(pq);
-        cachedResult.sort((a, b) -> Long.compare(b.sum, a.sum));
-        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(cachedResult.size());
-        for (CachedPacketStatEntry ce : cachedResult) {
-            result.add(ce.entry);
+        List<C> cachedResult = new java.util.ArrayList<>(pq);
+        cachedResult.sort(java.util.Collections.reverseOrder());
+        List<T> result = new java.util.ArrayList<>(cachedResult.size());
+        for (C ce : cachedResult) {
+            result.add(unwrapper.apply(ce));
         }
         return result;
+    }
+
+    public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
+        return getTopN(inboundStats.entrySet(), 10, CachedPacketStatEntry::new, c -> c.entry);
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Outbound() {
-        java.util.PriorityQueue<CachedPacketStatEntry> pq = new java.util.PriorityQueue<>(11);
-        for (Map.Entry<String, PacketStat> entry : outboundStats.entrySet()) {
-            pq.offer(new CachedPacketStatEntry(entry));
-            if (pq.size() > 10) {
-                pq.poll();
-            }
-        }
-        List<CachedPacketStatEntry> cachedResult = new java.util.ArrayList<>(pq);
-        cachedResult.sort((a, b) -> Long.compare(b.sum, a.sum));
-        List<Map.Entry<String, PacketStat>> result = new java.util.ArrayList<>(cachedResult.size());
-        for (CachedPacketStatEntry ce : cachedResult) {
-            result.add(ce.entry);
-        }
-        return result;
+        return getTopN(outboundStats.entrySet(), 10, CachedPacketStatEntry::new, c -> c.entry);
     }
 
     public static List<PlayerTrafficStat> getTop10Players() {
-        java.util.PriorityQueue<CachedPlayerStat> pq = new java.util.PriorityQueue<>(11);
-        for (PlayerTrafficStat stat : playerStats.values()) {
-            pq.offer(new CachedPlayerStat(stat));
-            if (pq.size() > 10) {
-                pq.poll();
-            }
-        }
-        List<CachedPlayerStat> cachedResult = new java.util.ArrayList<>(pq);
-        cachedResult.sort((a, b) -> Long.compare(b.total, a.total));
-        List<PlayerTrafficStat> result = new java.util.ArrayList<>(cachedResult.size());
-        for (CachedPlayerStat cs : cachedResult) {
-            result.add(cs.stat);
-        }
-        return result;
+        return getTopN(playerStats.values(), 10, CachedPlayerStat::new, c -> c.stat);
     }
 
     public static class PacketStat {
