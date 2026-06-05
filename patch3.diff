@@ -1,0 +1,30 @@
+--- common/src/main/java/one/pkg/kreno/shared/network/TrafficMonitor.java
++++ common/src/main/java/one/pkg/kreno/shared/network/TrafficMonitor.java
+@@ -188,7 +188,11 @@
+         return totalOutPackets.sum();
+     }
+
+-    private static abstract class ItemScorer<T> implements Comparable<ItemScorer<T>> {
++    /**
++     * A generic wrapper for precomputing and caching score value for sorting.
++     * Avoiding repetitive evaluation of potentially expensive aggregation functions like LongAdder.sum()
++     */
++    private static class ItemScorer<T> implements Comparable<ItemScorer<T>> {
+         final T item;
+         final long score;
+
+@@ -213,12 +217,12 @@
+         for (T item : source) {
+             long score = scorer.applyAsLong(item);
+             if (pq.size() < n) {
+-                pq.offer(new ItemScorer<>(item, score) {});
++                pq.offer(new ItemScorer<>(item, score));
+             } else {
+                 ItemScorer<T> peek = pq.peek();
+                 if (peek != null && score > peek.score) {
+                     pq.poll();
+-                    pq.offer(new ItemScorer<>(item, score) {});
++                    pq.offer(new ItemScorer<>(item, score));
+                 }
+             }
+         }
