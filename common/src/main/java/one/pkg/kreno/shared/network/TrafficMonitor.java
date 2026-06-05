@@ -185,63 +185,58 @@ public class TrafficMonitor {
         return totalOutPackets.sum();
     }
 
-    private static class CachedPacketStatEntry implements Comparable<CachedPacketStatEntry> {
-        final Map.Entry<String, PacketStat> entry;
-        final long sum;
+    /**
+     * A generic wrapper for precomputing and caching score value for sorting.
+     * Avoiding repetitive evaluation of potentially expensive aggregation functions like LongAdder.sum()
+     */
+    private static class ItemScorer<T> implements Comparable<ItemScorer<T>> {
+        final T item;
+        final long score;
 
-        CachedPacketStatEntry(Map.Entry<String, PacketStat> entry) {
-            this.entry = entry;
-            this.sum = entry.getValue().bytes.sum();
+        ItemScorer(T item, long score) {
+            this.item = item;
+            this.score = score;
         }
 
         @Override
-        public int compareTo(CachedPacketStatEntry o) {
-            return Long.compare(this.sum, o.sum);
+        public int compareTo(ItemScorer<T> o) {
+            return Long.compare(this.score, o.score);
         }
     }
 
-    private static class CachedPlayerStat implements Comparable<CachedPlayerStat> {
-        final PlayerTrafficStat stat;
-        final long total;
-
-        CachedPlayerStat(PlayerTrafficStat stat) {
-            this.stat = stat;
-            this.total = stat.getTotal();
-        }
-
-        @Override
-        public int compareTo(CachedPlayerStat o) {
-            return Long.compare(this.total, o.total);
-        }
-    }
-
-    private static <T, C extends Comparable<C>> List<T> getTopN(Iterable<T> source, int n, java.util.function.Function<T, C> wrapper, java.util.function.Function<C, T> unwrapper) {
-        java.util.PriorityQueue<C> pq = new java.util.PriorityQueue<>(n + 1);
+    private static <T> List<T> getTopN(Iterable<T> source, int n, java.util.function.ToLongFunction<T> scorer) {
+        java.util.PriorityQueue<ItemScorer<T>> pq = new java.util.PriorityQueue<>(n + 1);
         for (T item : source) {
-            pq.offer(wrapper.apply(item));
-            if (pq.size() > n) {
-                pq.poll();
+            long score = scorer.applyAsLong(item);
+            if (pq.size() < n) {
+                pq.offer(new ItemScorer<>(item, score));
+            } else {
+                ItemScorer<T> peek = pq.peek();
+                if (peek != null && score > peek.score) {
+                    pq.poll();
+                    pq.offer(new ItemScorer<>(item, score));
+                }
             }
         }
-        List<C> cachedResult = new java.util.ArrayList<>(pq);
+        List<ItemScorer<T>> cachedResult = new java.util.ArrayList<>(pq);
         cachedResult.sort(java.util.Collections.reverseOrder());
         List<T> result = new java.util.ArrayList<>(cachedResult.size());
-        for (C ce : cachedResult) {
-            result.add(unwrapper.apply(ce));
+        for (ItemScorer<T> ce : cachedResult) {
+            result.add(ce.item);
         }
         return result;
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
-        return getTopN(inboundStats.entrySet(), 10, CachedPacketStatEntry::new, c -> c.entry);
+        return getTopN(inboundStats.entrySet(), 10, e -> e.getValue().bytes.sum());
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Outbound() {
-        return getTopN(outboundStats.entrySet(), 10, CachedPacketStatEntry::new, c -> c.entry);
+        return getTopN(outboundStats.entrySet(), 10, e -> e.getValue().bytes.sum());
     }
 
     public static List<PlayerTrafficStat> getTop10Players() {
-        return getTopN(playerStats.values(), 10, CachedPlayerStat::new, c -> c.stat);
+        return getTopN(playerStats.values(), 10, PlayerTrafficStat::getTotal);
     }
 
     public static class PacketStat {
