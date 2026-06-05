@@ -2,6 +2,7 @@
 import json
 import sys
 import os
+import re
 from collections import defaultdict
 
 def main():
@@ -33,6 +34,8 @@ def main():
             continue
 
         benchmark_name = benchmark.split('.')[-1]
+        benchmark_name = os.path.basename(benchmark_name)
+        benchmark_name = re.sub(r'[^a-zA-Z0-9_-]', '', benchmark_name)
 
         score = item.get('primaryMetric', {}).get('score')
         if score is None:
