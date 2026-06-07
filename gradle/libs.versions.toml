@@ -1,14 +1,16 @@
 [versions]
 moddev = "2.0.141"
 
-sewlia-config = "1.1.0-SNAPSHOT"
+sewlia-config = "1.1.1-SNAPSHOT"
 recastlib = "3.4.0-SNAPSHOT"
-libsl = "1.0.0-alpha.5"
+libsl = "1.0.0-alpha.7"
+tinyutils = "2.4.0"
 
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
 
 [libraries]
+pkg-tinyutils = { group = "one.pkg", name = "tiny-utils", version.ref = "tinyutils" }
 pkg-sewlia-config = { group = "one.pkg", name = "sewlia-config", version.ref = "sewlia-config" }
 recastlib = { group = "one.pkg.velocity_rc", name = "velocity-native", version.ref = "recastlib" }
 libsl-fabric = { group = "one.pkg.libsl", name = "fabric", version.ref = "libsl" }

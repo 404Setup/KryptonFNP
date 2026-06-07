@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    compileOnly(libs.pkg.tinyutils)
     jarJar(libs.recastlib) {
         exclude group: 'io.netty'
     }

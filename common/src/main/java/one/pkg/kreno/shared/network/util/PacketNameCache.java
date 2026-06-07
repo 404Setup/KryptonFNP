@@ -3,7 +3,7 @@ package one.pkg.kreno.shared.network.util;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import one.pkg.libsl.utils.map.WeakConcurrentHashMap;
+import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 import java.util.Map;
 

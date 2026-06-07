@@ -35,7 +35,6 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
         int uncompressed = msg.readableBytes();
         if (uncompressed < threshold) {
-            // Under the threshold, there is nothing to do.
             VarIntUtil.writeVarInt(out, 0);
             out.writeBytes(msg);
         } else {

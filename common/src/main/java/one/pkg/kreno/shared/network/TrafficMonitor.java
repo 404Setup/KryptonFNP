@@ -1,11 +1,9 @@
 package one.pkg.kreno.shared.network;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.stream.Collectors;
+import java.util.function.ToLongFunction;
 
 public class TrafficMonitor {
     public static final Map<String, PacketStat> inboundStats = new ConcurrentHashMap<>();
@@ -18,6 +16,7 @@ public class TrafficMonitor {
     public static final LongAdder totalOutCompressed = new LongAdder();
     public static final LongAdder totalInPackets = new LongAdder();
     public static final LongAdder totalOutPackets = new LongAdder();
+    private static final String[] SUFFIXES = {" B", " KB", " MB", " GB", " TB", " PB", " EB"};
     public static double inRateBps = 0;
     public static double outRateBps = 0;
     public static double inRatePps = 0;
@@ -185,27 +184,8 @@ public class TrafficMonitor {
         return totalOutPackets.sum();
     }
 
-    /**
-     * A generic wrapper for precomputing and caching score value for sorting.
-     * Avoiding repetitive evaluation of potentially expensive aggregation functions like LongAdder.sum()
-     */
-    private static class ItemScorer<T> implements Comparable<ItemScorer<T>> {
-        final T item;
-        final long score;
-
-        ItemScorer(T item, long score) {
-            this.item = item;
-            this.score = score;
-        }
-
-        @Override
-        public int compareTo(ItemScorer<T> o) {
-            return Long.compare(this.score, o.score);
-        }
-    }
-
-    private static <T> List<T> getTopN(Iterable<T> source, int n, java.util.function.ToLongFunction<T> scorer) {
-        java.util.PriorityQueue<ItemScorer<T>> pq = new java.util.PriorityQueue<>(n + 1);
+    private static <T> List<T> getTopN(Iterable<T> source, int n, ToLongFunction<T> scorer) {
+        PriorityQueue<ItemScorer<T>> pq = new PriorityQueue<>(n + 1);
         for (T item : source) {
             long score = scorer.applyAsLong(item);
             if (pq.size() < n) {
@@ -218,9 +198,9 @@ public class TrafficMonitor {
                 }
             }
         }
-        List<ItemScorer<T>> cachedResult = new java.util.ArrayList<>(pq);
-        cachedResult.sort(java.util.Collections.reverseOrder());
-        List<T> result = new java.util.ArrayList<>(cachedResult.size());
+        List<ItemScorer<T>> cachedResult = new ArrayList<>(pq);
+        cachedResult.sort(Collections.reverseOrder());
+        List<T> result = new ArrayList<>(cachedResult.size());
         for (ItemScorer<T> ce : cachedResult) {
             result.add(ce.item);
         }
@@ -238,41 +218,6 @@ public class TrafficMonitor {
     public static List<PlayerTrafficStat> getTop10Players() {
         return getTopN(playerStats.values(), 10, PlayerTrafficStat::getTotal);
     }
-
-    public static class PacketStat {
-        public final LongAdder count = new LongAdder();
-        public final LongAdder bytes = new LongAdder();
-    }
-
-    public static class PlayerTrafficStat {
-        public final String name;
-        public final Map<String, PacketStat> inboundPackets = new ConcurrentHashMap<>();
-        public final Map<String, PacketStat> outboundPackets = new ConcurrentHashMap<>();
-        public final Map<String, PacketStat> droppedPackets = new ConcurrentHashMap<>();
-        public final LongAdder totalIn = new LongAdder();
-        public final LongAdder totalOut = new LongAdder();
-        public final LongAdder totalInCompressed = new LongAdder();
-        public final LongAdder totalOutCompressed = new LongAdder();
-        public final LongAdder totalDropped = new LongAdder();
-
-        public PlayerTrafficStat(String name) {
-            this.name = name;
-        }
-
-        public long getTotal() {
-            return totalIn.sum() + totalOut.sum();
-        }
-        
-        public long getTotalCompressed() {
-            return totalInCompressed.sum() + totalOutCompressed.sum();
-        }
-        
-        public long getTotalDropped() {
-            return totalDropped.sum();
-        }
-    }
-
-    private static final String[] SUFFIXES = {" B", " KB", " MB", " GB", " TB", " PB", " EB"};
 
     public static String formatBytes(double bytes) {
         if (Double.isNaN(bytes)) return "NaN B";
@@ -299,6 +244,51 @@ public class TrafficMonitor {
             return prefix + ".0" + frac + SUFFIXES[exp];
         } else {
             return prefix + "." + frac + SUFFIXES[exp];
+        }
+    }
+
+    /**
+     * A generic wrapper for precomputing and caching score value for sorting.
+     * Avoiding repetitive evaluation of potentially expensive aggregation functions like LongAdder.sum()
+     */
+    private record ItemScorer<T>(T item, long score) implements Comparable<ItemScorer<T>> {
+
+        @Override
+        public int compareTo(ItemScorer<T> o) {
+            return Long.compare(this.score, o.score);
+        }
+    }
+
+    public static class PacketStat {
+        public final LongAdder count = new LongAdder();
+        public final LongAdder bytes = new LongAdder();
+    }
+
+    public static class PlayerTrafficStat {
+        public final String name;
+        public final Map<String, PacketStat> inboundPackets = new ConcurrentHashMap<>();
+        public final Map<String, PacketStat> outboundPackets = new ConcurrentHashMap<>();
+        public final Map<String, PacketStat> droppedPackets = new ConcurrentHashMap<>();
+        public final LongAdder totalIn = new LongAdder();
+        public final LongAdder totalOut = new LongAdder();
+        public final LongAdder totalInCompressed = new LongAdder();
+        public final LongAdder totalOutCompressed = new LongAdder();
+        public final LongAdder totalDropped = new LongAdder();
+
+        public PlayerTrafficStat(String name) {
+            this.name = name;
+        }
+
+        public long getTotal() {
+            return totalIn.sum() + totalOut.sum();
+        }
+
+        public long getTotalCompressed() {
+            return totalInCompressed.sum() + totalOutCompressed.sum();
+        }
+
+        public long getTotalDropped() {
+            return totalDropped.sum();
         }
     }
 }

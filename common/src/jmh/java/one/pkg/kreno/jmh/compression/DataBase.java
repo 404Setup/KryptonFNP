@@ -102,21 +102,21 @@ public class DataBase {
 
     void generateBlockUpdatePacket(ByteBuf buf, int targetSize) {
         while (buf.readableBytes() < targetSize - 20) {
-            writeVarInt(buf, random.nextInt(1000)); // X
-            writeVarInt(buf, random.nextInt(256));  // Y
-            writeVarInt(buf, random.nextInt(1000)); // Z
-            writeVarInt(buf, random.nextInt(100));  // Block ID
+            writeVarInt(buf, random.nextInt(1000));
+            writeVarInt(buf, random.nextInt(256));
+            writeVarInt(buf, random.nextInt(1000));
+            writeVarInt(buf, random.nextInt(100));
         }
     }
 
     void generateEntityMovePacket(ByteBuf buf, int targetSize) {
         while (buf.readableBytes() < targetSize - 50) {
-            writeVarInt(buf, random.nextInt(10000)); // Entity ID
-            buf.writeDouble(random.nextDouble() * 1000); // X
-            buf.writeDouble(random.nextDouble() * 256); // Y
-            buf.writeDouble(random.nextDouble() * 1000); // Z
-            buf.writeFloat(random.nextFloat() * 360);   // Yaw
-            buf.writeFloat(random.nextFloat() * 180);   // Pitch
+            writeVarInt(buf, random.nextInt(10000));
+            buf.writeDouble(random.nextDouble() * 1000);
+            buf.writeDouble(random.nextDouble() * 256);
+            buf.writeDouble(random.nextDouble() * 1000);
+            buf.writeFloat(random.nextFloat() * 360);
+            buf.writeFloat(random.nextFloat() * 180);
         }
     }
 

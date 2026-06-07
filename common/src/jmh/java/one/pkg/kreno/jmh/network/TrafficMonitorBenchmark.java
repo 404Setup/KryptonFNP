@@ -30,8 +30,6 @@ public class TrafficMonitorBenchmark {
 
     @Benchmark
     public void baseline() {
-        // We will test the baseline by letting it call the method we'll overwrite.
-        // The original method is modified by the next implementation we will make for "optimized"
         TrafficMonitor.onInboundPacket(playerUuid, playerName, packetName, bytes);
         TrafficMonitor.onOutboundPacket(playerUuid, playerName, packetName, bytes);
     }

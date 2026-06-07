@@ -31,24 +31,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class ServerCullingManager {
+    public static final double NEAR_DISTANCE_SQ = 64.0;
     private static final Direction[] DIRECTIONS = Direction.values();
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 4));
     private static final Map<Integer, Map<Integer, CullingState>> VISIBILITY_CACHE = new ConcurrentHashMap<>();
-
     private static final Object ACTIVE_MAPS_LOCK = new Object();
-    @SuppressWarnings("unchecked")
-    private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
-
     private static final long CHECK_INTERVAL_MS = 500;
     private static final long HIDE_DELAY_MS = 1000;
     private static final long REFRESH_SWEEP_INTERVAL_MS = 250;
     private static final int MAX_REFRESHES_PER_SWEEP = 64;
     private static final int MAX_DROPPED_TRACKED = 4096;
-    public static final double NEAR_DISTANCE_SQ = 64.0;
-
     private static final Map<Integer, Cache<BlockPos, CullingState>> BLOCK_VISIBILITY_CACHE = new ConcurrentHashMap<>();
     private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
     private static final Map<Integer, Long> LAST_SWEEP_TIME = new ConcurrentHashMap<>();
+    @SuppressWarnings("unchecked")
+    private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
 
     @SuppressWarnings("unchecked")
     private static void updateActiveVisibilityMaps() {
@@ -92,14 +89,19 @@ public class ServerCullingManager {
         float rotY = player.getYRot();
 
         if (Math.abs(state.lastPx - ex) < 0.1 && Math.abs(state.lastPy - ey) < 0.1 && Math.abs(state.lastPz - ez) < 0.1 &&
-            Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
-            Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+                Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
+                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
             return state.isCurrentlyVisible;
         }
 
-        state.lastPx = ex; state.lastPy = ey; state.lastPz = ez;
-        state.lastTx = cx; state.lastTy = cy; state.lastTz = cz;
-        state.lastRotX = rotX; state.lastRotY = rotY;
+        state.lastPx = ex;
+        state.lastPy = ey;
+        state.lastPz = ez;
+        state.lastTx = cx;
+        state.lastTy = cy;
+        state.lastTz = cz;
+        state.lastRotX = rotX;
+        state.lastRotY = rotY;
 
         double dx = cx - ex, dy = cy - ey, dz = cz - ez;
         double distanceSq = dx * dx + dy * dy + dz * dz;
@@ -112,12 +114,12 @@ public class ServerCullingManager {
             return true;
         }
 
-        float f = rotX * ((float)Math.PI / 180F);
-        float g = -rotY * ((float)Math.PI / 180F);
-        float h = (float)Math.cos(g);
-        float i = (float)Math.sin(g);
-        float j = (float)Math.cos(f);
-        float k = (float)Math.sin(f);
+        float f = rotX * ((float) Math.PI / 180F);
+        float g = -rotY * ((float) Math.PI / 180F);
+        float h = (float) Math.cos(g);
+        float i = (float) Math.sin(g);
+        float j = (float) Math.cos(f);
+        float k = (float) Math.sin(f);
         double lVx = (i * j);
         double lVy = (-k);
         double lVz = (h * j);
@@ -266,14 +268,19 @@ public class ServerCullingManager {
         float rotY = player.getYRot();
 
         if (Math.abs(state.lastPx - ex) < 0.1 && Math.abs(state.lastPy - ey) < 0.1 && Math.abs(state.lastPz - ez) < 0.1 &&
-            Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
-            Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+                Math.abs(state.lastTx - cx) < 0.1 && Math.abs(state.lastTy - cy) < 0.1 && Math.abs(state.lastTz - cz) < 0.1 &&
+                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
             return state.isCurrentlyVisible;
         }
 
-        state.lastPx = ex; state.lastPy = ey; state.lastPz = ez;
-        state.lastTx = cx; state.lastTy = cy; state.lastTz = cz;
-        state.lastRotX = rotX; state.lastRotY = rotY;
+        state.lastPx = ex;
+        state.lastPy = ey;
+        state.lastPz = ez;
+        state.lastTx = cx;
+        state.lastTy = cy;
+        state.lastTz = cz;
+        state.lastRotX = rotX;
+        state.lastRotY = rotY;
 
         double distanceSq = player.distanceToSqr(entity);
         state.lastDistanceSq = distanceSq;
@@ -289,12 +296,12 @@ public class ServerCullingManager {
         double dy = cy - ey;
         double dz = cz - ez;
 
-        float f = rotX * ((float)Math.PI / 180F);
-        float g = -rotY * ((float)Math.PI / 180F);
-        float h = (float)Math.cos(g);
-        float i = (float)Math.sin(g);
-        float j = (float)Math.cos(f);
-        float k = (float)Math.sin(f);
+        float f = rotX * ((float) Math.PI / 180F);
+        float g = -rotY * ((float) Math.PI / 180F);
+        float h = (float) Math.cos(g);
+        float i = (float) Math.sin(g);
+        float j = (float) Math.cos(f);
+        float k = (float) Math.sin(f);
         double lVx = (i * j);
         double lVy = (-k);
         double lVz = (h * j);
@@ -428,9 +435,8 @@ public class ServerCullingManager {
 
     public static void removeEntity(Entity entity) {
         Integer id = entity.getId();
-        Map<Integer, CullingState>[] maps = activeVisibilityMaps;
-        for (int i = 0; i < maps.length; i++) {
-            maps[i].remove(id);
+        for (int i = 0; i < activeVisibilityMaps.length; i++) {
+            activeVisibilityMaps[i].remove(id);
         }
     }
 

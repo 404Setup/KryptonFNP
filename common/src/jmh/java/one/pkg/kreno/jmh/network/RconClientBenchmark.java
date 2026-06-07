@@ -19,7 +19,6 @@ public class RconClientBenchmark {
     private static final int CHUNK_SIZE = 4096;
     private static final int PACKET_OVERHEAD = 10;
 
-    // Simulate the mixin field
     private final byte[] chunkBuffer = new byte[CHUNK_SIZE];
 
     private byte[] messageBytes;
@@ -65,7 +64,6 @@ public class RconClientBenchmark {
         }
     }
 
-    // Simulate the send method in RconClientMixin
     private void send(int id, int type, byte[] messageBytes, int length, Blackhole bh) {
         ByteBuf buf = allocator.buffer(length + PACKET_OVERHEAD + 4);
         try {
@@ -76,25 +74,22 @@ public class RconClientBenchmark {
             buf.writeByte(0);
             buf.writeByte(0);
 
-            // Consume the buffer content to simulate I/O
             bh.consume(buf);
         } finally {
             buf.release();
         }
     }
 
-    // Simulate the optimized send method
     private void sendOptimized(int id, int type, byte[] messageBytes, int offset, int length, Blackhole bh) {
         ByteBuf buf = allocator.buffer(length + PACKET_OVERHEAD + 4);
         try {
             buf.writeIntLE(length + PACKET_OVERHEAD);
             buf.writeIntLE(id);
             buf.writeIntLE(type);
-            buf.writeBytes(messageBytes, offset, length); // Use offset here
+            buf.writeBytes(messageBytes, offset, length);
             buf.writeByte(0);
             buf.writeByte(0);
 
-            // Consume the buffer content to simulate I/O
             bh.consume(buf);
         } finally {
             buf.release();

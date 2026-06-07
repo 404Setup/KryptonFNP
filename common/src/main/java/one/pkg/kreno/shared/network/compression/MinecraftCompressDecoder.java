@@ -33,8 +33,8 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private String kreno$cachedName = "Unknown";
     private boolean kreno$isPlayerResolved;
 
-    private static final int VANILLA_MAXIMUM_UNCOMPRESSED_SIZE = 8 * 1024 * 1024; // 8MiB
-    private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024; // 128MiB
+    private static final int VANILLA_MAXIMUM_UNCOMPRESSED_SIZE = 8 * 1024 * 1024;
+    private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024;
 
     private static final int UNCOMPRESSED_CAP =
             ModConfig.Compression.isPermitOversizedPackets()
