@@ -82,6 +82,10 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
                 "one.pkg.kreno.mixin.network.pipeline.encryption.ConnectionMixin",
                 "e4mc",
                 CompatibilityType.DISABLE),
+        ClientLoginWithE4MC(
+                "one.pkg.kreno.mixin.network.pipeline.encryption.ClientLoginMixin",
+                "e4mc",
+                CompatibilityType.DISABLE),
         ;
 
         public final String mixinClass;

@@ -57,9 +57,21 @@ public class ClientLoginMixin {
         return null;
     }
 
-    @Inject(method = "handleHello", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", ordinal = 0, shift = At.Shift.AFTER), cancellable = true)
-    public void handleExec(ClientboundHelloPacket packet, CallbackInfo ci,
-                           @Local(name = "s") String s, @Local(name = "serverboundkeypacket") ServerboundKeyPacket serverboundkeypacket) {
+    @Inject(
+            method = "handleHello",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", ordinal = 0,
+                    shift = At.Shift.AFTER
+            ),
+            cancellable = true
+    )
+    public void handleExec(
+            ClientboundHelloPacket packet,
+            CallbackInfo ci,
+            @Local(name = "s") String s,
+            @Local(name = "serverboundkeypacket") ServerboundKeyPacket serverboundkeypacket
+    ) {
         HttpUtil.DOWNLOAD_EXECUTOR.submit(() -> {
             Component component = this.authenticateServer(s);
             if (component != null) {
