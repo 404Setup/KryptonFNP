@@ -78,6 +78,10 @@ public class BlockCullingUtil {
 
         BlockState replacement = pickReplacement(chunk.getLevel(), sectionYOffset);
 
+        if (!container.maybeHas(state -> !state.isAir() && state.isSolidRender() && state != replacement)) {
+            return null;
+        }
+
         PalettedContainer<BlockState> culled = null;
 
         for (int x = 0; x < 16; x++) {
