@@ -130,8 +130,12 @@ public class KrenoCommand {
                     pq.poll();
                 }
             }
-            List<CachedPacketStat> top5 = new java.util.ArrayList<>(pq);
-            top5.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+            int pqSize = pq.size();
+            CachedPacketStat[] arr = new CachedPacketStat[pqSize];
+            for (int i = pqSize - 1; i >= 0; i--) {
+                arr[i] = pq.poll();
+            }
+            List<CachedPacketStat> top5 = java.util.Arrays.asList(arr);
             for (CachedPacketStat c : top5) {
                 hoverText.append(Component.translatable("kreno.command.all.hover_entry", c.key, TrafficMonitor.formatBytes(c.bytesSum)));
             }
@@ -203,8 +207,12 @@ public class KrenoCommand {
                 pqIn.poll();
             }
         }
-        List<CachedPacketStat> top10In = new java.util.ArrayList<>(pqIn);
-        top10In.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+        int pqInSize = pqIn.size();
+        CachedPacketStat[] arrIn = new CachedPacketStat[pqInSize];
+        for (int i = pqInSize - 1; i >= 0; i--) {
+            arrIn[i] = pqIn.poll();
+        }
+        List<CachedPacketStat> top10In = java.util.Arrays.asList(arrIn);
         for (CachedPacketStat c : top10In) {
             source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", c.key, TrafficMonitor.formatBytes(c.bytesSum), c.stat.count.sum()), false);
         }
@@ -218,8 +226,12 @@ public class KrenoCommand {
                 pqOut.poll();
             }
         }
-        List<CachedPacketStat> top10Out = new java.util.ArrayList<>(pqOut);
-        top10Out.sort((a, b) -> Long.compare(b.bytesSum, a.bytesSum));
+        int pqOutSize = pqOut.size();
+        CachedPacketStat[] arrOut = new CachedPacketStat[pqOutSize];
+        for (int i = pqOutSize - 1; i >= 0; i--) {
+            arrOut[i] = pqOut.poll();
+        }
+        List<CachedPacketStat> top10Out = java.util.Arrays.asList(arrOut);
         for (CachedPacketStat c : top10Out) {
             source.sendSuccess(() -> Component.translatable("kreno.command.player.entry", c.key, TrafficMonitor.formatBytes(c.bytesSum), c.stat.count.sum()), false);
         }
