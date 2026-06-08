@@ -181,13 +181,13 @@ public class TrafficMonitor {
                 }
             }
         }
-        List<ItemScorer<T>> cachedResult = new ArrayList<>(pq);
-        cachedResult.sort(Collections.reverseOrder());
-        List<T> result = new ArrayList<>(cachedResult.size());
-        for (ItemScorer<T> ce : cachedResult) {
-            result.add(ce.item);
+        int size = pq.size();
+        @SuppressWarnings("unchecked")
+        T[] temp = (T[]) new Object[size];
+        for (int i = size - 1; i >= 0; i--) {
+            temp[i] = pq.poll().item;
         }
-        return result;
+        return Arrays.asList(temp);
     }
 
     public static List<Map.Entry<String, PacketStat>> getTop10Inbound() {
