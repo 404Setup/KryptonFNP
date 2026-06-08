@@ -242,6 +242,10 @@ public class ServerCullingManager {
     }
 
     public static boolean isEntityVisible(ServerPlayer player, Entity entity) {
+        return isEntityVisible(player, entity, System.currentTimeMillis());
+    }
+
+    public static boolean isEntityVisible(ServerPlayer player, Entity entity, long now) {
         if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
 
         int playerId = player.getId();
@@ -255,8 +259,6 @@ public class ServerCullingManager {
             }
         }
         CullingState state = map.computeIfAbsent(entity.getId(), k -> new CullingState());
-
-        long now = System.currentTimeMillis();
 
         double ex = player.getX();
         double ey = player.getEyeY();
