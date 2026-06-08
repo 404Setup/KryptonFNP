@@ -50,6 +50,21 @@ public class TrafficMonitor {
         lastTime = System.currentTimeMillis();
     }
 
+    private static PlayerTrafficStat getOrCreatePlayerStat(UUID playerUuid, String playerName) {
+        PlayerTrafficStat pStat = playerStats.get(playerUuid);
+        if (pStat == null) {
+            PlayerTrafficStat newStat = new PlayerTrafficStat(playerName);
+            pStat = playerStats.putIfAbsent(playerUuid, newStat);
+            if (pStat == null) {
+                pStat = newStat;
+                if (playerName != null) {
+                    playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
+                }
+            }
+        }
+        return pStat;
+    }
+
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
         PacketStat globalStat = inboundStats.get(packetName);
         if (globalStat == null) {
@@ -61,15 +76,7 @@ public class TrafficMonitor {
         totalInPackets.increment();
 
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.get(playerUuid);
-            if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
-                    if (playerName != null) {
-                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
-                    }
-                    return new PlayerTrafficStat(playerName);
-                });
-            }
+            PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
             PacketStat pPacketStat = pStat.inboundPackets.get(packetName);
             if (pPacketStat == null) {
                 pPacketStat = pStat.inboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
@@ -91,15 +98,7 @@ public class TrafficMonitor {
         totalOutPackets.increment();
 
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.get(playerUuid);
-            if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
-                    if (playerName != null) {
-                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
-                    }
-                    return new PlayerTrafficStat(playerName);
-                });
-            }
+            PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
             PacketStat pPacketStat = pStat.outboundPackets.get(packetName);
             if (pPacketStat == null) {
                 pPacketStat = pStat.outboundPackets.computeIfAbsent(packetName, k -> new PacketStat());
@@ -113,15 +112,7 @@ public class TrafficMonitor {
     public static void onInboundCompressed(UUID playerUuid, String playerName, int bytes) {
         totalInCompressed.add(bytes);
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.get(playerUuid);
-            if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
-                    if (playerName != null) {
-                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
-                    }
-                    return new PlayerTrafficStat(playerName);
-                });
-            }
+            PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
             pStat.totalInCompressed.add(bytes);
         }
     }
@@ -129,15 +120,7 @@ public class TrafficMonitor {
     public static void onOutboundCompressed(UUID playerUuid, String playerName, int bytes) {
         totalOutCompressed.add(bytes);
         if (playerUuid != null) {
-            PlayerTrafficStat pStat = playerStats.get(playerUuid);
-            if (pStat == null) {
-                pStat = playerStats.computeIfAbsent(playerUuid, k -> {
-                    if (playerName != null) {
-                        playerNameCache.putIfAbsent(playerName.toLowerCase(java.util.Locale.ROOT), playerUuid);
-                    }
-                    return new PlayerTrafficStat(playerName);
-                });
-            }
+            PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
             pStat.totalOutCompressed.add(bytes);
         }
     }
