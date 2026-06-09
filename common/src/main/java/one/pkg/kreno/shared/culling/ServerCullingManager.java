@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 public class ServerCullingManager {
     public static final double NEAR_DISTANCE_SQ = 64.0;
     private static final Direction[] DIRECTIONS = Direction.values();
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 4));
+    private static final ExecutorService EXECUTOR = Executors.newWorkStealingPool();
     private static final Map<Integer, Map<Integer, CullingState>> VISIBILITY_CACHE = new ConcurrentHashMap<>();
     private static final Object ACTIVE_MAPS_LOCK = new Object();
     private static final long CHECK_INTERVAL_MS = 500;

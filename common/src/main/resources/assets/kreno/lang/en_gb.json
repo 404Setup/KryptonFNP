@@ -76,5 +76,7 @@
   "kreno.command.player.not_found": "Player not found in statistics.",
   "kreno.traffic.gui.top_outbound": "=== Top 10 Outbound Packets ===",
   "kreno.config.entry.culling.particle": "Particle Culling",
-  "kreno.config.entry.culling.particle.desc": "Smart particle culling on server side"
+  "kreno.config.entry.culling.particle.desc": "Smart particle culling on server side",
+  "kreno.config.entry.culling.asyncMode": "Asynchronous Culling",
+  "kreno.config.entry.culling.asyncMode.desc": "Asynchronous execution mode for Cuttings system"
 }
