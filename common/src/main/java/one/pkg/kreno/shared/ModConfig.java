@@ -65,6 +65,8 @@ public class ModConfig {
     private static boolean cullingChunkBlock = true;
     @ConfigTarget(group = "culling", value = "chunk_light", comment = "Treat light sections whose data array is fully zero as empty to skip 2KiB payload per section in ClientboundLevelChunkWithLightPacket / ClientboundLightUpdatePacket")
     private static boolean cullingChunkLight = true;
+    @ConfigTarget(group = "culling", value = "asyncMode", comment = "Asynchronous execution mode for Cuttings system")
+    private static boolean cullingAsyncMode = true;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -205,6 +207,10 @@ public class ModConfig {
 
         public static boolean isChunkLightCullingEnabled() {
             return !JavaLoader.INSTANCE.isClient() &&cullingChunkLight;
+        }
+
+        public static boolean isAsyncMode() {
+            return cullingAsyncMode;
         }
     }
 }
