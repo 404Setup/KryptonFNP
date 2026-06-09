@@ -80,5 +80,7 @@
   "kreno.command.player.not_found": "統計にプレイヤーが見つかりませんでした。",
   "kreno.traffic.gui.top_outbound": "=== 上位10名の送信パケット ===",
   "kreno.config.entry.culling.particle": "パーティクルカリング",
-  "kreno.config.entry.culling.particle.desc": "サーバー側でのスマートなパーティクルカリング"
+  "kreno.config.entry.culling.particle.desc": "サーバー側でのスマートなパーティクルカリング",
+  "kreno.config.entry.culling.asyncMode": "非同期カリング",
+  "kreno.config.entry.culling.asyncMode.desc": "カリングシステムの非同期実行モード"
 }

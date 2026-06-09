@@ -80,5 +80,7 @@
   "kreno.command.player.not_found": "Игрок не найден в статистике.",
   "kreno.traffic.gui.top_outbound": "=== Топ 10 входящих пакетов ===",
   "kreno.config.entry.culling.particle": "Отсечение частиц",
-  "kreno.config.entry.culling.particle.desc": "Умное отсечение частиц на стороне сервера"
+  "kreno.config.entry.culling.particle.desc": "Умное отсечение частиц на стороне сервера",
+  "kreno.config.entry.culling.asyncMode": "Асинхронное отсечение",
+  "kreno.config.entry.culling.asyncMode.desc": "Асинхронный режим выполнения для системы отсечения"
 }

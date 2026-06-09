@@ -32,26 +32,7 @@ public class ServerLevelMixin {
         if (!ModConfig.Culling.isParticleEnabled())
             return;
 
-        Vec3 eyePos = player.getEyePosition();
-        double dx = x - eyePos.x;
-        double dy = y - eyePos.y;
-        double dz = z - eyePos.z;
-        double distanceSq = dx * dx + dy * dy + dz * dz;
-
-        if (distanceSq < ServerCullingManager.NEAR_DISTANCE_SQ)
-            return;
-
-        Vec3 lookVec = player.getLookAngle();
-        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
-        boolean inFOV;
-        if (dot >= 0) {
-            inFOV = true;
-        } else {
-            inFOV = (dot * dot <= 0.0225 * distanceSq);
-        }
-
-        Vec3 particlePos = new Vec3(x, y, z);
-        if (!inFOV || !ServerCullingManager.isLineOfSightClear(player.level(), eyePos, particlePos)) {
+        if (!ServerCullingManager.isParticleVisible(player, x, y, z)) {
             TrafficMonitor.onDroppedPacket(player.getUUID(), "particleCulling", 30);
             cir.setReturnValue(false);
         }

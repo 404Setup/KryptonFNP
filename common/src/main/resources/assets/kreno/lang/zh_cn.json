@@ -80,5 +80,7 @@
   "kreno.command.player.not_found": "未在统计中找到该玩家。",
   "kreno.traffic.gui.top_outbound": "=== 前10名输出数据包 ===",
   "kreno.config.entry.culling.particle": "粒子剔除",
-  "kreno.config.entry.culling.particle.desc": "在服务端启用智能粒子剔除"
+  "kreno.config.entry.culling.particle.desc": "在服务端启用智能粒子剔除",
+  "kreno.config.entry.culling.asyncMode": "异步剔除",
+  "kreno.config.entry.culling.asyncMode.desc": "为剔除系统启用异步执行模式"
 }
