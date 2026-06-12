@@ -3,7 +3,7 @@ moddev = "2.0.141"
 
 sewlia-config = "1.1.1-SNAPSHOT"
 recastlib = "3.4.0-SNAPSHOT"
-libsl = "1.0.0-alpha.7"
+libsl = "1.0.0-alpha.8"
 tinyutils = "2.4.0"
 
 [plugins]

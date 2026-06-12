@@ -9,7 +9,7 @@ import one.pkg.kreno.shared.command.KrenoCommand;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
 import one.pkg.kreno.shared.gui.KRenoConfigGUI;
 import one.pkg.kreno.shared.network.TrafficMonitor;
-import one.pkg.libsl.api.event.command.CommandRegistrationCallback;
+import one.pkg.libsl.api.event.command.CommandRegistrationEvent;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.api.event.lifecycle.ServerLifecycleEvents;
 import one.pkg.libsl.api.loader.JavaLoader;
@@ -23,9 +23,9 @@ public class NeoModBootstrap {
         FMLTest.test();
         ModSharedBootstrap.run();
 
-        CommandRegistrationCallback.EVENT.register(
+        CommandRegistrationEvent.EVENT.register(
                 (dispatcher, _, _) ->
-                KrenoCommand.register(dispatcher));
+                        KrenoCommand.register(dispatcher));
 
         if (JavaLoader.INSTANCE.isClient()) {
             Client.init(container);
@@ -42,7 +42,7 @@ public class NeoModBootstrap {
         private static void init(ModContainer container) {
             container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoConfigGUI(parent));
 
-            CommandRegistrationCallback.EVENT.register((dispatcher, context, environment) -> {
+            CommandRegistrationEvent.EVENT.register((dispatcher, context, environment) -> {
                 KrenoCommand.Client.register(dispatcher);
             });
         }
