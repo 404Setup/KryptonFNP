@@ -35,7 +35,13 @@ public class ClientboundLightUpdatePacketDataMixin implements ILightUpdatePacket
     private int kreno$savedBytes = 0;
 
     @Unique
+    private static final byte[] KRENO$ZERO_ARRAY = new byte[2048];
+
+    @Unique
     private static boolean kreno$isAllZero(byte[] data) {
+        if (data.length == 2048) {
+            return java.util.Arrays.equals(data, KRENO$ZERO_ARRAY);
+        }
         for (byte b : data) {
             if (b != 0) {
                 return false;
