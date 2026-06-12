@@ -97,6 +97,11 @@ public class KrenoCommand {
             this.stat = entry.getValue();
             this.bytesSum = entry.getValue().bytes.sum();
         }
+        CachedPacketStat(String key, TrafficMonitor.PacketStat stat, long bytesSum) {
+            this.key = key;
+            this.stat = stat;
+            this.bytesSum = bytesSum;
+        }
     }
 
     private static int displayAllTraffic(CommandContext<CommandSourceStack> context) {
@@ -125,9 +130,15 @@ public class KrenoCommand {
             java.util.PriorityQueue<CachedPacketStat> pq = new java.util.PriorityQueue<>(6,
                 java.util.Comparator.comparingLong(c -> c.bytesSum));
             for (Map.Entry<String, TrafficMonitor.PacketStat> entry : p.outboundPackets.entrySet()) {
-                pq.offer(new CachedPacketStat(entry));
-                if (pq.size() > 5) {
-                    pq.poll();
+                long sum = entry.getValue().bytes.sum();
+                if (pq.size() < 5) {
+                    pq.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+                } else {
+                    CachedPacketStat peek = pq.peek();
+                    if (peek != null && sum > peek.bytesSum) {
+                        pq.poll();
+                        pq.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+                    }
                 }
             }
             int pqSize = pq.size();
@@ -202,9 +213,15 @@ public class KrenoCommand {
         java.util.PriorityQueue<CachedPacketStat> pqIn = new java.util.PriorityQueue<>(11,
             java.util.Comparator.comparingLong(c -> c.bytesSum));
         for (Map.Entry<String, TrafficMonitor.PacketStat> entry : stat.inboundPackets.entrySet()) {
-            pqIn.offer(new CachedPacketStat(entry));
-            if (pqIn.size() > 10) {
-                pqIn.poll();
+            long sum = entry.getValue().bytes.sum();
+            if (pqIn.size() < 10) {
+                pqIn.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+            } else {
+                CachedPacketStat peek = pqIn.peek();
+                if (peek != null && sum > peek.bytesSum) {
+                    pqIn.poll();
+                    pqIn.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+                }
             }
         }
         int pqInSize = pqIn.size();
@@ -221,9 +238,15 @@ public class KrenoCommand {
         java.util.PriorityQueue<CachedPacketStat> pqOut = new java.util.PriorityQueue<>(11,
             java.util.Comparator.comparingLong(c -> c.bytesSum));
         for (Map.Entry<String, TrafficMonitor.PacketStat> entry : stat.outboundPackets.entrySet()) {
-            pqOut.offer(new CachedPacketStat(entry));
-            if (pqOut.size() > 10) {
-                pqOut.poll();
+            long sum = entry.getValue().bytes.sum();
+            if (pqOut.size() < 10) {
+                pqOut.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+            } else {
+                CachedPacketStat peek = pqOut.peek();
+                if (peek != null && sum > peek.bytesSum) {
+                    pqOut.poll();
+                    pqOut.offer(new CachedPacketStat(entry.getKey(), entry.getValue(), sum));
+                }
             }
         }
         int pqOutSize = pqOut.size();
