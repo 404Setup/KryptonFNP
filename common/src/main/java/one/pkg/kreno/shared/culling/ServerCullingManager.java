@@ -457,8 +457,18 @@ public class ServerCullingManager {
 
     public static void estimateParticlePacketOptSavings(Entity entity, int estimatedBytes) {
         if (entity.level() instanceof ServerLevel sl) {
+            double tx = entity.getX();
+            double ty = entity.getY();
+            double tz = entity.getZ();
             for (ServerPlayer p : sl.getChunkSource().chunkMap.getPlayers(entity.chunkPosition(), false)) {
-                if (p.distanceToSqr(entity) < 4096) {
+                double dx = p.getX() - tx;
+                if (dx * dx >= 4096.0) continue;
+                double dy = p.getY() - ty;
+                if (dy * dy >= 4096.0) continue;
+                double dz = p.getZ() - tz;
+                if (dz * dz >= 4096.0) continue;
+
+                if (dx * dx + dy * dy + dz * dz < 4096.0) {
                     TrafficMonitor.onDroppedPacket(p.getUUID(), "particlePacketOpt", estimatedBytes);
                 }
             }
