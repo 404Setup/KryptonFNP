@@ -45,6 +45,7 @@ public class ServerCullingManager {
     private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
     private static final Map<Integer, Long> LAST_SWEEP_TIME = new ConcurrentHashMap<>();
     private static final Map<Integer, ParticleCullCache> PARTICLE_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, EntityCullCache> ENTITY_CACHE = new ConcurrentHashMap<>();
     @SuppressWarnings("unchecked")
     private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
 
@@ -63,6 +64,7 @@ public class ServerCullingManager {
         DROPPED_BLOCK_UPDATES.clear();
         LAST_SWEEP_TIME.clear();
         PARTICLE_CACHE.clear();
+        ENTITY_CACHE.clear();
         EXECUTOR.close();
     }
 
@@ -185,6 +187,17 @@ public class ServerCullingManager {
         } else {
             state.hiddenSince = 0;
             state.isCurrentlyVisible = true;
+        }
+
+        if (state.isCurrentlyVisible) {
+            EntityCullCache hashCache = ENTITY_CACHE.get(playerId);
+            if (hashCache != null) {
+                int gridX = (int) Math.floor(cx / 8.0);
+                int gridY = (int) Math.floor(cy / 8.0);
+                int gridZ = (int) Math.floor(cz / 8.0);
+                long gridKey = ((long) (gridX & 0x3FFFFF) << 42) | ((long) (gridY & 0xFFFFF) << 22) | (gridZ & 0x3FFFFF);
+                hashCache.grid.put(gridKey, true);
+            }
         }
 
         return state.isCurrentlyVisible;
@@ -319,6 +332,25 @@ public class ServerCullingManager {
             return true;
         }
 
+        EntityCullCache hashCache = ENTITY_CACHE.computeIfAbsent(playerId, k -> new EntityCullCache());
+        long tickCount = player.level().getServer().getTickCount();
+        if (hashCache.lastTick != tickCount) {
+            hashCache.grid.clear();
+            hashCache.lastTick = tickCount;
+        }
+
+        int gridX = (int) Math.floor(cx / 8.0);
+        int gridY = (int) Math.floor(cy / 8.0);
+        int gridZ = (int) Math.floor(cz / 8.0);
+        long gridKey = ((long) (gridX & 0x3FFFFF) << 42) | ((long) (gridY & 0xFFFFF) << 22) | (gridZ & 0x3FFFFF);
+
+        Boolean cellVisible = hashCache.grid.get(gridKey);
+        if (cellVisible != null && cellVisible) {
+            state.isCurrentlyVisible = true;
+            state.hiddenSince = 0;
+            return true;
+        }
+
         float dx = cx - ex;
         float dy = cy - ey;
         float dz = cz - ez;
@@ -362,6 +394,10 @@ public class ServerCullingManager {
         } else {
             state.hiddenSince = 0;
             state.isCurrentlyVisible = true;
+        }
+
+        if (state.isCurrentlyVisible) {
+            hashCache.grid.put(gridKey, true);
         }
 
         return state.isCurrentlyVisible;
@@ -535,6 +571,11 @@ public class ServerCullingManager {
         float lastY = Float.MAX_VALUE;
         float lastZ = Float.MAX_VALUE;
         boolean lastResult = true;
+    }
+
+    private static class EntityCullCache {
+        final Map<Long, Boolean> grid = new ConcurrentHashMap<>();
+        long lastTick = -1;
     }
 
     private static class CullingState {
