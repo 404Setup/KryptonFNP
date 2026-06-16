@@ -154,15 +154,7 @@ public class ServerCullingManager {
                     Vec3 rayEyePos = new Vec3(ex, ey, ez);
 
                     if (ModConfig.Culling.isAsyncMode()) {
-                        EXECUTOR.submit(() -> {
-                            try {
-                                state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
-                            } catch (Exception e) {
-                                state.lastRaytraceResult = true;
-                            } finally {
-                                state.isChecking = false;
-                            }
-                        });
+                        EXECUTOR.submit(new AsyncAABBCheckTask(state, level, rayEyePos, aabb));
                     } else {
                         try {
                             state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
@@ -212,7 +204,14 @@ public class ServerCullingManager {
      * caller MUST send the original packet to the client to avoid losing the update.
      */
     public static boolean recordDroppedBlock(ServerPlayer player, BlockPos pos) {
-        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.computeIfAbsent(player, k -> ConcurrentHashMap.newKeySet());
+        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.get(player);
+        if (set == null) {
+            set = ConcurrentHashMap.newKeySet();
+            Set<BlockPos> existing = DROPPED_BLOCK_UPDATES.putIfAbsent(player, set);
+            if (existing != null) {
+                set = existing;
+            }
+        }
         BlockPos immutable = pos.immutable();
         if (set.contains(immutable)) return true;
         if (set.size() >= MAX_DROPPED_TRACKED) return false;
@@ -330,7 +329,14 @@ public class ServerCullingManager {
             return true;
         }
 
-        EntityCullCache hashCache = ENTITY_CACHE.computeIfAbsent(player, k -> new EntityCullCache());
+        EntityCullCache hashCache = ENTITY_CACHE.get(player);
+        if (hashCache == null) {
+            hashCache = new EntityCullCache();
+            EntityCullCache existing = ENTITY_CACHE.putIfAbsent(player, hashCache);
+            if (existing != null) {
+                hashCache = existing;
+            }
+        }
         long tickCount = player.level().getServer().getTickCount();
         if (hashCache.lastTick != tickCount) {
             hashCache.grid.clear();
@@ -441,15 +447,7 @@ public class ServerCullingManager {
         Level level = player.level();
 
         if (ModConfig.Culling.isAsyncMode()) {
-            EXECUTOR.submit(() -> {
-                try {
-                    state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
-                } catch (Exception e) {
-                    state.lastRaytraceResult = true;
-                } finally {
-                    state.isChecking = false;
-                }
-            });
+            EXECUTOR.submit(new AsyncAABBCheckTask(state, level, eyePos, aabb));
         } else {
             try {
                 state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
@@ -572,6 +570,31 @@ public class ServerCullingManager {
     private static class EntityCullCache {
         final Map<Long, Boolean> grid = new ConcurrentHashMap<>();
         long lastTick = -1;
+    }
+
+    private static class AsyncAABBCheckTask implements Runnable {
+        private final CullingState state;
+        private final Level level;
+        private final Vec3 eyePos;
+        private final AABB aabb;
+
+        public AsyncAABBCheckTask(CullingState state, Level level, Vec3 eyePos, AABB aabb) {
+            this.state = state;
+            this.level = level;
+            this.eyePos = eyePos;
+            this.aabb = aabb;
+        }
+
+        @Override
+        public void run() {
+            try {
+                state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
+            } catch (Exception e) {
+                state.lastRaytraceResult = true;
+            } finally {
+                state.isChecking = false;
+            }
+        }
     }
 
     private static class CullingState {
