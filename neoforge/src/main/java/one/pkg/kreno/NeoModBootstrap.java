@@ -8,7 +8,6 @@ import one.pkg.kreno.shared.ModSharedBootstrap;
 import one.pkg.kreno.shared.command.KrenoCommand;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
 import one.pkg.kreno.shared.gui.KRenoConfigGUI;
-import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.libsl.api.event.command.CommandRegistrationEvent;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.api.event.lifecycle.ServerLifecycleEvents;
@@ -32,7 +31,6 @@ public class NeoModBootstrap {
         } else {
             ServerPlayerEvents.LEAVE.register(ServerCullingManager::removePlayer);
         }
-        ServerPlayerEvents.LEAVE.register((player) -> TrafficMonitor.playerStats.remove(player.getUUID()));
         ServerLifecycleEvents.STOPPING.register((_) -> ServerCullingManager.onEnd());
 
         //ModList.get().getModContainerById("kreno").get().registerExtensionPoint();

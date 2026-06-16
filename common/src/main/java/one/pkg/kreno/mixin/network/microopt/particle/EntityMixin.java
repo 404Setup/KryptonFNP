@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import one.pkg.kreno.shared.ModConfig;
-import one.pkg.kreno.shared.culling.ServerCullingManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,7 +40,6 @@ public abstract class EntityMixin {
     private void kreno$lessPacket(CallbackInfo ci) {
         if (ModConfig.Mixin.isParticlePacketOpt()) {
             this.gameEvent(GameEvent.SPLASH);
-            ServerCullingManager.estimateParticlePacketOptSavings((Entity)(Object)this, 15);
             ci.cancel();
         }
     }

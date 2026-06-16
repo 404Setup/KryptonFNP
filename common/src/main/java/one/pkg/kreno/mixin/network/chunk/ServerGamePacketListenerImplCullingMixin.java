@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.culling.ILightUpdatePacketDataSavedBytes;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
-import one.pkg.kreno.shared.network.TrafficMonitor;
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,14 +57,12 @@ public abstract class ServerGamePacketListenerImplCullingMixin extends ServerCom
         if (packet instanceof ClientboundBlockEntityDataPacket blockEntityPacket) {
             if (!ServerCullingManager.isBlockVisible(this.player, blockEntityPacket.getPos())) {
                 if (ServerCullingManager.recordDroppedBlock(this.player, blockEntityPacket.getPos())) {
-                    if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(this.player.getUUID(), "blockEntityCulling", 20);
                     return;
                 }
             }
         } else if (packet instanceof ClientboundBlockUpdatePacket blockUpdatePacket) {
             if (!ServerCullingManager.isBlockVisible(this.player, blockUpdatePacket.getPos())) {
                 if (ServerCullingManager.recordDroppedBlock(this.player, blockUpdatePacket.getPos())) {
-                    if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(this.player.getUUID(), "blockCulling", 12);
                     return;
                 }
                 super.send(packet);
@@ -80,14 +77,8 @@ public abstract class ServerGamePacketListenerImplCullingMixin extends ServerCom
             }
         } else if (packet instanceof ClientboundLevelChunkWithLightPacket chunkPacket) {
             int saved = ((ILightUpdatePacketDataSavedBytes) chunkPacket.getLightData()).kreno$getSavedBytes();
-            if (saved > 0) {
-                if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(this.player.getUUID(), "chunkLightCulling", saved);
-            }
         } else if (packet instanceof ClientboundLightUpdatePacket lightPacket) {
             int saved = ((ILightUpdatePacketDataSavedBytes) lightPacket.getLightData()).kreno$getSavedBytes();
-            if (saved > 0) {
-                if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(this.player.getUUID(), "chunkLightCulling", saved);
-            }
         }
         super.send(packet);
     }

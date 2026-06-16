@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -19,7 +18,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import one.pkg.kreno.shared.ModConfig;
-import one.pkg.kreno.shared.network.TrafficMonitor;
 import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 import java.util.Iterator;
@@ -102,20 +100,9 @@ public class ServerCullingManager {
         float rotX = player.getXRot();
         float rotY = player.getYRot();
 
-        if (Math.abs(state.lastPx - ex) < 0.1f && Math.abs(state.lastPy - ey) < 0.1f && Math.abs(state.lastPz - ez) < 0.1f &&
-                Math.abs(state.lastTx - cx) < 0.1f && Math.abs(state.lastTy - cy) < 0.1f && Math.abs(state.lastTz - cz) < 0.1f &&
-                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+        if (checkAndUpdateStatePosition(state, ex, ey, ez, cx, cy, cz, rotX, rotY)) {
             return state.isCurrentlyVisible;
         }
-
-        state.lastPx = ex;
-        state.lastPy = ey;
-        state.lastPz = ez;
-        state.lastTx = cx;
-        state.lastTy = cy;
-        state.lastTz = cz;
-        state.lastRotX = rotX;
-        state.lastRotY = rotY;
 
         float dx = cx - ex, dy = cy - ey, dz = cz - ez;
         float distanceSq = dx * dx + dy * dy + dz * dz;
@@ -128,60 +115,20 @@ public class ServerCullingManager {
             return true;
         }
 
-        float f = rotX * ((float) Math.PI / 180F);
-        float g = -rotY * ((float) Math.PI / 180F);
-        float h = (float) Math.cos(g);
-        float i = (float) Math.sin(g);
-        float j = (float) Math.cos(f);
-        float k = (float) Math.sin(f);
-        double lVx = (i * j);
-        double lVy = (-k);
-        double lVz = (h * j);
-
-        double dot = lVx * dx + lVy * dy + lVz * dz;
-        boolean inFOV;
-        if (dot >= 0) {
-            inFOV = true;
-        } else {
-            inFOV = (dot * dot <= 0.0225 * distanceSq);
-        }
+        boolean inFOV = isInFOV(dx, dy, dz, rotX, rotY, distanceSq);
 
         if (inFOV) {
             if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
                 if (!state.isChecking) {
                     state.isChecking = true;
                     state.lastCheckTime = now;
-                    AABB aabb = new AABB(pos).inflate(0.1);
-                    Level level = player.level();
-                    Vec3 rayEyePos = new Vec3(ex, ey, ez);
-
-                    if (ModConfig.Culling.isAsyncMode()) {
-                        EXECUTOR.submit(new AsyncAABBCheckTask(state, level, rayEyePos, aabb));
-                    } else {
-                        try {
-                            state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
-                        } catch (Exception e) {
-                            state.lastRaytraceResult = true;
-                        } finally {
-                            state.isChecking = false;
-                        }
-                    }
+                    queueRaytraceCheck(state, player.level(), new Vec3(ex, ey, ez), new AABB(pos).inflate(0.1));
                 }
             }
         }
 
         boolean isVisible = inFOV && state.lastRaytraceResult;
-
-        if (!isVisible) {
-            if (state.hiddenSince == 0) {
-                state.hiddenSince = now;
-            } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
-                state.isCurrentlyVisible = false;
-            }
-        } else {
-            state.hiddenSince = 0;
-            state.isCurrentlyVisible = true;
-        }
+        updateVisibilityState(state, isVisible, now);
 
         if (state.isCurrentlyVisible) {
             EntityCullCache hashCache = ENTITY_CACHE.get(player);
@@ -274,28 +221,10 @@ public class ServerCullingManager {
         }
     }
 
-    public static boolean isEntityVisible(ServerPlayer player, Entity entity) {
-        return isEntityVisible(player, entity, System.currentTimeMillis());
-    }
-
     public static boolean isEntityVisible(ServerPlayer player, Entity entity, long now) {
         if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
 
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
-        if (map == null) {
-            Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
-            map = VISIBILITY_CACHE.putIfAbsent(player, newMap);
-            if (map == null) {
-                map = newMap;
-                updateActiveVisibilityMaps();
-            }
-        }
-        Integer entityId = entity.getId();
-        CullingState state = map.get(entityId);
-        if (state == null) {
-            state = new CullingState();
-            map.put(entityId, state);
-        }
+        CullingState state = getEntityCullingState(player, entity);
 
         float ex = (float) player.getX();
         float ey = (float) player.getEyeY();
@@ -306,20 +235,9 @@ public class ServerCullingManager {
         float rotX = player.getXRot();
         float rotY = player.getYRot();
 
-        if (Math.abs(state.lastPx - ex) < 0.1f && Math.abs(state.lastPy - ey) < 0.1f && Math.abs(state.lastPz - ez) < 0.1f &&
-                Math.abs(state.lastTx - cx) < 0.1f && Math.abs(state.lastTy - cy) < 0.1f && Math.abs(state.lastTz - cz) < 0.1f &&
-                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+        if (checkAndUpdateStatePosition(state, ex, ey, ez, cx, cy, cz, rotX, rotY)) {
             return state.isCurrentlyVisible;
         }
-
-        state.lastPx = ex;
-        state.lastPy = ey;
-        state.lastPz = ez;
-        state.lastTx = cx;
-        state.lastTy = cy;
-        state.lastTz = cz;
-        state.lastRotX = rotX;
-        state.lastRotY = rotY;
 
         float distanceSq = (float) player.distanceToSqr(entity);
         state.lastDistanceSq = distanceSq;
@@ -361,46 +279,20 @@ public class ServerCullingManager {
         float dy = cy - ey;
         float dz = cz - ez;
 
-        float f = rotX * ((float) Math.PI / 180F);
-        float g = -rotY * ((float) Math.PI / 180F);
-        float h = (float) Math.cos(g);
-        float i = (float) Math.sin(g);
-        float j = (float) Math.cos(f);
-        float k = (float) Math.sin(f);
-        double lVx = (i * j);
-        double lVy = (-k);
-        double lVz = (h * j);
-
-        double dot = lVx * dx + lVy * dy + lVz * dz;
-        boolean inFOV;
-        if (dot >= 0) {
-            inFOV = true;
-        } else {
-            inFOV = (dot * dot <= 0.0225 * distanceSq);
-        }
+        boolean inFOV = isInFOV(dx, dy, dz, rotX, rotY, distanceSq);
 
         if (inFOV) {
             if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
                 if (!state.isChecking) {
                     state.isChecking = true;
                     state.lastCheckTime = now;
-                    queueEntityCheck(player, entity, state);
+                    queueRaytraceCheck(state, player.level(), player.getEyePosition(), entity.getBoundingBox().inflate(0.5));
                 }
             }
         }
 
         boolean isVisible = inFOV && state.lastRaytraceResult;
-
-        if (!isVisible) {
-            if (state.hiddenSince == 0) {
-                state.hiddenSince = now;
-            } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
-                state.isCurrentlyVisible = false;
-            }
-        } else {
-            state.hiddenSince = 0;
-            state.isCurrentlyVisible = true;
-        }
+        updateVisibilityState(state, isVisible, now);
 
         if (state.isCurrentlyVisible) {
             hashCache.grid.put(gridKey, true);
@@ -418,6 +310,18 @@ public class ServerCullingManager {
     }
 
     public static void setLastSentVisible(ServerPlayer player, Entity entity, boolean visible) {
+        CullingState state = getEntityCullingState(player, entity);
+        state.lastSentVisible = visible;
+    }
+
+    public static void removePlayerEntityState(ServerPlayer player, Entity entity) {
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
+        if (map != null) {
+            map.remove(entity.getId());
+        }
+    }
+
+    private static CullingState getEntityCullingState(ServerPlayer player, Entity entity) {
         Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
         if (map == null) {
             Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
@@ -433,21 +337,10 @@ public class ServerCullingManager {
             state = new CullingState();
             map.put(entityId, state);
         }
-        state.lastSentVisible = visible;
+        return state;
     }
 
-    public static void removePlayerEntityState(ServerPlayer player, Entity entity) {
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
-        if (map != null) {
-            map.remove(entity.getId());
-        }
-    }
-
-    private static void queueEntityCheck(ServerPlayer player, Entity entity, CullingState state) {
-        Vec3 eyePos = player.getEyePosition();
-        AABB aabb = entity.getBoundingBox().inflate(0.5);
-        Level level = player.level();
-
+    private static void queueRaytraceCheck(CullingState state, Level level, Vec3 eyePos, AABB aabb) {
         if (ModConfig.Culling.isAsyncMode()) {
             EXECUTOR.submit(new AsyncAABBCheckTask(state, level, eyePos, aabb));
         } else {
@@ -458,6 +351,52 @@ public class ServerCullingManager {
             } finally {
                 state.isChecking = false;
             }
+        }
+    }
+
+    private static boolean checkAndUpdateStatePosition(CullingState state, float ex, float ey, float ez, float cx, float cy, float cz, float rotX, float rotY) {
+        if (Math.abs(state.lastPx - ex) < 0.1f && Math.abs(state.lastPy - ey) < 0.1f && Math.abs(state.lastPz - ez) < 0.1f &&
+                Math.abs(state.lastTx - cx) < 0.1f && Math.abs(state.lastTy - cy) < 0.1f && Math.abs(state.lastTz - cz) < 0.1f &&
+                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
+            return true;
+        }
+
+        state.lastPx = ex;
+        state.lastPy = ey;
+        state.lastPz = ez;
+        state.lastTx = cx;
+        state.lastTy = cy;
+        state.lastTz = cz;
+        state.lastRotX = rotX;
+        state.lastRotY = rotY;
+        return false;
+    }
+
+    private static boolean isInFOV(float dx, float dy, float dz, float rotX, float rotY, float distanceSq) {
+        float f = rotX * ((float) Math.PI / 180F);
+        float g = -rotY * ((float) Math.PI / 180F);
+        float h = (float) Math.cos(g);
+        float i = (float) Math.sin(g);
+        float j = (float) Math.cos(f);
+        float k = (float) Math.sin(f);
+        double lVx = (i * j);
+        double lVy = (-k);
+        double lVz = (h * j);
+
+        double dot = lVx * dx + lVy * dy + lVz * dz;
+        return dot >= 0 || (dot * dot <= 0.0225 * distanceSq);
+    }
+
+    private static void updateVisibilityState(CullingState state, boolean isVisible, long now) {
+        if (!isVisible) {
+            if (state.hiddenSince == 0) {
+                state.hiddenSince = now;
+            } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
+                state.isCurrentlyVisible = false;
+            }
+        } else {
+            state.hiddenSince = 0;
+            state.isCurrentlyVisible = true;
         }
     }
 
@@ -485,26 +424,6 @@ public class ServerCullingManager {
             return level.clip(ctx).getType() == HitResult.Type.MISS;
         } catch (Throwable t) {
             return true;
-        }
-    }
-
-    public static void estimateParticlePacketOptSavings(Entity entity, int estimatedBytes) {
-        if (entity.level() instanceof ServerLevel sl) {
-            double tx = entity.getX();
-            double ty = entity.getY();
-            double tz = entity.getZ();
-            for (ServerPlayer p : sl.getChunkSource().chunkMap.getPlayers(entity.chunkPosition(), false)) {
-                double dx = p.getX() - tx;
-                if (dx * dx >= 4096.0) continue;
-                double dy = p.getY() - ty;
-                if (dy * dy >= 4096.0) continue;
-                double dz = p.getZ() - tz;
-                if (dz * dz >= 4096.0) continue;
-
-                if (dx * dx + dy * dy + dz * dz < 4096.0) {
-                    if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(p.getUUID(), "particlePacketOpt", estimatedBytes);
-                }
-            }
         }
     }
 
@@ -543,14 +462,7 @@ public class ServerCullingManager {
             return true;
         }
 
-        Vec3 lookVec = player.getLookAngle();
-        double dot = lookVec.x * dx + lookVec.y * dy + lookVec.z * dz;
-        boolean inFOV;
-        if (dot >= 0) {
-            inFOV = true;
-        } else {
-            inFOV = (dot * dot <= 0.0225 * distanceSq);
-        }
+        boolean inFOV = isInFOV((float) dx, (float) dy, (float) dz, player.getXRot(), player.getYRot(), (float) distanceSq);
 
         if (!inFOV) return false;
 

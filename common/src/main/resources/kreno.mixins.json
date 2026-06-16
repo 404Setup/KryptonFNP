@@ -5,7 +5,6 @@
   "plugin": "one.pkg.kreno.shared.ModMixinBootstrap",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "client.MinecraftClientMixin",
     "network.pipeline.encryption.ClientLoginMixin",
     "network.pipeline.he.ClientConnectionMixin"
   ],
@@ -36,8 +35,6 @@
     "network.pipeline.compression.ConnectionMixin",
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
-    "network.pipeline.monitor.PacketDecoderMixin",
-    "network.pipeline.monitor.PacketEncoderMixin",
     "network.pipeline.prepender.ConnectionMixin",
     "network.thread.ServerLoginPacketListenerImplMixin",
     "network.thread.ServerTextFilterMixin",

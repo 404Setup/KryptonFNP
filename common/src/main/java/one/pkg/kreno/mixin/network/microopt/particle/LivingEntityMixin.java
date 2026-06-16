@@ -3,7 +3,6 @@ package one.pkg.kreno.mixin.network.microopt.particle;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.entity.LivingEntity;
 import one.pkg.kreno.shared.ModConfig;
-import one.pkg.kreno.shared.culling.ServerCullingManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,11 +23,7 @@ public abstract class LivingEntityMixin {
             )
     )
     private boolean kreno$lessPacket(List<ParticleOptions> instance) {
-        boolean skip = ModConfig.Mixin.isParticlePacketOpt() && instance.isEmpty();
-        if (skip) {
-            ServerCullingManager.estimateParticlePacketOptSavings((LivingEntity)(Object)this, 15);
-        }
-        return skip;
+        return ModConfig.Mixin.isParticlePacketOpt() && instance.isEmpty();
     }
 
     @Redirect(
@@ -39,10 +34,6 @@ public abstract class LivingEntityMixin {
             )
     )
     private void kreno$lessPacket2(LivingEntity instance) {
-        if (ModConfig.Mixin.isParticlePacketOpt()) {
-            ServerCullingManager.estimateParticlePacketOptSavings(instance, 15);
-            return;
-        }
-        makePoofParticles();
+        if (!ModConfig.Mixin.isParticlePacketOpt()) makePoofParticles();
     }
 }

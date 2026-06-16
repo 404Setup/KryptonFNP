@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
-import one.pkg.kreno.shared.network.TrafficMonitor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,7 +32,6 @@ public class ServerLevelMixin {
             return;
 
         if (!ServerCullingManager.isParticleVisible(player, x, y, z)) {
-            if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(player.getUUID(), "particleCulling", 30);
             cir.setReturnValue(false);
         }
     }
