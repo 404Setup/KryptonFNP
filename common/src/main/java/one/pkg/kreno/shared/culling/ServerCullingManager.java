@@ -29,22 +29,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 public class ServerCullingManager {
     public static final double NEAR_DISTANCE_SQ = 64.0;
     private static final Direction[] DIRECTIONS = Direction.values();
     private static final ExecutorService EXECUTOR = Executors.newWorkStealingPool();
-    private static final Map<Integer, Map<Integer, CullingState>> VISIBILITY_CACHE = new ConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Map<Integer, CullingState>> VISIBILITY_CACHE = new WeakConcurrentHashMap<>();
     private static final Object ACTIVE_MAPS_LOCK = new Object();
     private static final long CHECK_INTERVAL_MS = 500;
     private static final long HIDE_DELAY_MS = 1000;
     private static final long REFRESH_SWEEP_INTERVAL_MS = 250;
     private static final int MAX_REFRESHES_PER_SWEEP = 64;
     private static final int MAX_DROPPED_TRACKED = 4096;
-    private static final Map<Integer, Cache<Long, CullingState>> BLOCK_VISIBILITY_CACHE = new ConcurrentHashMap<>();
-    private static final Map<Integer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new ConcurrentHashMap<>();
-    private static final Map<Integer, Long> LAST_SWEEP_TIME = new ConcurrentHashMap<>();
-    private static final Map<Integer, ParticleCullCache> PARTICLE_CACHE = new ConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Cache<Long, CullingState>> BLOCK_VISIBILITY_CACHE = new WeakConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Set<BlockPos>> DROPPED_BLOCK_UPDATES = new WeakConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Long> LAST_SWEEP_TIME = new WeakConcurrentHashMap<>();
+    private static final Map<ServerPlayer, ParticleCullCache> PARTICLE_CACHE = new WeakConcurrentHashMap<>();
+    private static final Map<ServerPlayer, EntityCullCache> ENTITY_CACHE = new WeakConcurrentHashMap<>();
     @SuppressWarnings("unchecked")
     private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
 
@@ -63,17 +65,17 @@ public class ServerCullingManager {
         DROPPED_BLOCK_UPDATES.clear();
         LAST_SWEEP_TIME.clear();
         PARTICLE_CACHE.clear();
+        ENTITY_CACHE.clear();
         EXECUTOR.close();
     }
 
     public static boolean isBlockVisible(ServerPlayer player, BlockPos pos) {
         if (!ModConfig.Culling.isBlockEnabled()) return true;
 
-        Integer playerId = player.getId();
-        Cache<Long, CullingState> cache = BLOCK_VISIBILITY_CACHE.get(playerId);
+        Cache<Long, CullingState> cache = BLOCK_VISIBILITY_CACHE.get(player);
         if (cache == null) {
             cache = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(1, TimeUnit.MINUTES).build();
-            Cache<Long, CullingState> existing = BLOCK_VISIBILITY_CACHE.putIfAbsent(playerId, cache);
+            Cache<Long, CullingState> existing = BLOCK_VISIBILITY_CACHE.putIfAbsent(player, cache);
             if (existing != null) {
                 cache = existing;
             }
@@ -152,15 +154,7 @@ public class ServerCullingManager {
                     Vec3 rayEyePos = new Vec3(ex, ey, ez);
 
                     if (ModConfig.Culling.isAsyncMode()) {
-                        EXECUTOR.submit(() -> {
-                            try {
-                                state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
-                            } catch (Exception e) {
-                                state.lastRaytraceResult = true;
-                            } finally {
-                                state.isChecking = false;
-                            }
-                        });
+                        EXECUTOR.submit(new AsyncAABBCheckTask(state, level, rayEyePos, aabb));
                     } else {
                         try {
                             state.lastRaytraceResult = checkAABBVisible(level, rayEyePos, aabb);
@@ -187,6 +181,17 @@ public class ServerCullingManager {
             state.isCurrentlyVisible = true;
         }
 
+        if (state.isCurrentlyVisible) {
+            EntityCullCache hashCache = ENTITY_CACHE.get(player);
+            if (hashCache != null) {
+                int gridX = (int) Math.floor(cx / 8.0);
+                int gridY = (int) Math.floor(cy / 8.0);
+                int gridZ = (int) Math.floor(cz / 8.0);
+                long gridKey = ((long) (gridX & 0x3FFFFF) << 42) | ((long) (gridY & 0xFFFFF) << 22) | (gridZ & 0x3FFFFF);
+                hashCache.grid.put(gridKey, true);
+            }
+        }
+
         return state.isCurrentlyVisible;
     }
 
@@ -199,7 +204,14 @@ public class ServerCullingManager {
      * caller MUST send the original packet to the client to avoid losing the update.
      */
     public static boolean recordDroppedBlock(ServerPlayer player, BlockPos pos) {
-        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.computeIfAbsent(player.getId(), k -> ConcurrentHashMap.newKeySet());
+        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.get(player);
+        if (set == null) {
+            set = ConcurrentHashMap.newKeySet();
+            Set<BlockPos> existing = DROPPED_BLOCK_UPDATES.putIfAbsent(player, set);
+            if (existing != null) {
+                set = existing;
+            }
+        }
         BlockPos immutable = pos.immutable();
         if (set.contains(immutable)) return true;
         if (set.size() >= MAX_DROPPED_TRACKED) return false;
@@ -217,14 +229,13 @@ public class ServerCullingManager {
      */
     public static void maybeProcessPendingRefreshes(ServerPlayer player, Consumer<Packet<?>> directSender) {
         if (!ModConfig.Culling.isBlockEnabled()) return;
-        int pid = player.getId();
-        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.get(pid);
+        Set<BlockPos> set = DROPPED_BLOCK_UPDATES.get(player);
         if (set == null || set.isEmpty()) return;
 
         long now = System.currentTimeMillis();
-        Long last = LAST_SWEEP_TIME.get(pid);
+        Long last = LAST_SWEEP_TIME.get(player);
         if (last != null && now - last < REFRESH_SWEEP_INTERVAL_MS) return;
-        LAST_SWEEP_TIME.put(pid, now);
+        LAST_SWEEP_TIME.put(player, now);
 
         Level level = player.level();
         int processed = 0;
@@ -268,11 +279,10 @@ public class ServerCullingManager {
     public static boolean isEntityVisible(ServerPlayer player, Entity entity, long now) {
         if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
 
-        Integer playerId = player.getId();
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(playerId);
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
         if (map == null) {
             Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
-            map = VISIBILITY_CACHE.putIfAbsent(playerId, newMap);
+            map = VISIBILITY_CACHE.putIfAbsent(player, newMap);
             if (map == null) {
                 map = newMap;
                 updateActiveVisibilityMaps();
@@ -314,6 +324,32 @@ public class ServerCullingManager {
 
         if (distanceSq < NEAR_DISTANCE_SQ) {
             state.lastRaytraceResult = true;
+            state.isCurrentlyVisible = true;
+            state.hiddenSince = 0;
+            return true;
+        }
+
+        EntityCullCache hashCache = ENTITY_CACHE.get(player);
+        if (hashCache == null) {
+            hashCache = new EntityCullCache();
+            EntityCullCache existing = ENTITY_CACHE.putIfAbsent(player, hashCache);
+            if (existing != null) {
+                hashCache = existing;
+            }
+        }
+        long tickCount = player.level().getServer().getTickCount();
+        if (hashCache.lastTick != tickCount) {
+            hashCache.grid.clear();
+            hashCache.lastTick = tickCount;
+        }
+
+        int gridX = (int) Math.floor(cx / 8.0);
+        int gridY = (int) Math.floor(cy / 8.0);
+        int gridZ = (int) Math.floor(cz / 8.0);
+        long gridKey = ((long) (gridX & 0x3FFFFF) << 42) | ((long) (gridY & 0xFFFFF) << 22) | (gridZ & 0x3FFFFF);
+
+        Boolean cellVisible = hashCache.grid.get(gridKey);
+        if (cellVisible != null && cellVisible) {
             state.isCurrentlyVisible = true;
             state.hiddenSince = 0;
             return true;
@@ -364,6 +400,10 @@ public class ServerCullingManager {
             state.isCurrentlyVisible = true;
         }
 
+        if (state.isCurrentlyVisible) {
+            hashCache.grid.put(gridKey, true);
+        }
+
         return state.isCurrentlyVisible;
     }
 
@@ -376,11 +416,10 @@ public class ServerCullingManager {
     }
 
     public static void setLastSentVisible(ServerPlayer player, Entity entity, boolean visible) {
-        Integer playerId = player.getId();
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(playerId);
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
         if (map == null) {
             Map<Integer, CullingState> newMap = new ConcurrentHashMap<>();
-            map = VISIBILITY_CACHE.putIfAbsent(playerId, newMap);
+            map = VISIBILITY_CACHE.putIfAbsent(player, newMap);
             if (map == null) {
                 map = newMap;
                 updateActiveVisibilityMaps();
@@ -396,7 +435,7 @@ public class ServerCullingManager {
     }
 
     public static void removePlayerEntityState(ServerPlayer player, Entity entity) {
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player.getId());
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
         if (map != null) {
             map.remove(entity.getId());
         }
@@ -408,15 +447,7 @@ public class ServerCullingManager {
         Level level = player.level();
 
         if (ModConfig.Culling.isAsyncMode()) {
-            EXECUTOR.submit(() -> {
-                try {
-                    state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
-                } catch (Exception e) {
-                    state.lastRaytraceResult = true;
-                } finally {
-                    state.isChecking = false;
-                }
-            });
+            EXECUTOR.submit(new AsyncAABBCheckTask(state, level, eyePos, aabb));
         } else {
             try {
                 state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
@@ -476,14 +507,14 @@ public class ServerCullingManager {
     }
 
     public static void removePlayer(ServerPlayer player) {
-        int pid = player.getId();
-        if (VISIBILITY_CACHE.remove(pid) != null) {
+        if (VISIBILITY_CACHE.remove(player) != null) {
             updateActiveVisibilityMaps();
         }
-        BLOCK_VISIBILITY_CACHE.remove(pid);
-        DROPPED_BLOCK_UPDATES.remove(pid);
-        LAST_SWEEP_TIME.remove(pid);
-        PARTICLE_CACHE.remove(pid);
+        BLOCK_VISIBILITY_CACHE.remove(player);
+        DROPPED_BLOCK_UPDATES.remove(player);
+        LAST_SWEEP_TIME.remove(player);
+        PARTICLE_CACHE.remove(player);
+        ENTITY_CACHE.remove(player);
     }
 
     public static void removeEntity(Entity entity) {
@@ -494,11 +525,10 @@ public class ServerCullingManager {
     }
 
     public static boolean isParticleVisible(ServerPlayer player, double x, double y, double z) {
-        Integer playerId = player.getId();
-        ParticleCullCache cache = PARTICLE_CACHE.get(playerId);
+        ParticleCullCache cache = PARTICLE_CACHE.get(player);
         if (cache == null) {
             cache = new ParticleCullCache();
-            PARTICLE_CACHE.put(playerId, cache);
+            PARTICLE_CACHE.put(player, cache);
         }
 
         Vec3 eyePos = player.getEyePosition();
@@ -545,6 +575,36 @@ public class ServerCullingManager {
         float lastY = Float.MAX_VALUE;
         float lastZ = Float.MAX_VALUE;
         boolean lastResult = true;
+    }
+
+    private static class EntityCullCache {
+        final Map<Long, Boolean> grid = new ConcurrentHashMap<>();
+        long lastTick = -1;
+    }
+
+    private static class AsyncAABBCheckTask implements Runnable {
+        private final CullingState state;
+        private final Level level;
+        private final Vec3 eyePos;
+        private final AABB aabb;
+
+        public AsyncAABBCheckTask(CullingState state, Level level, Vec3 eyePos, AABB aabb) {
+            this.state = state;
+            this.level = level;
+            this.eyePos = eyePos;
+            this.aabb = aabb;
+        }
+
+        @Override
+        public void run() {
+            try {
+                state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
+            } catch (Exception e) {
+                state.lastRaytraceResult = true;
+            } finally {
+                state.isChecking = false;
+            }
+        }
     }
 
     private static class CullingState {
