@@ -84,14 +84,17 @@ public class BlockCullingUtil {
 
         PalettedContainer<BlockState> culled = null;
 
+        int startY = Math.max(0, minY + 1 - sectionYOffset);
+        int endY = Math.min(16, maxY - 1 - sectionYOffset);
+
+        if (startY >= endY) {
+            return null;
+        }
+
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                for (int y = 0; y < 16; y++) {
+                for (int y = startY; y < endY; y++) {
                     int worldY = sectionYOffset + y;
-
-                    if (worldY <= minY || worldY >= maxY - 1) {
-                        continue;
-                    }
 
                     BlockState state = container.get(x, y, z);
                     if (state.isAir() || !state.isSolidRender()) {
