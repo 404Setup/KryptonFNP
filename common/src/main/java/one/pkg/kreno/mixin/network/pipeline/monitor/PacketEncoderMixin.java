@@ -34,6 +34,7 @@ public class PacketEncoderMixin {
 
     @Inject(method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;Lio/netty/buffer/ByteBuf;)V", at = @At("TAIL"))
     private void kreno$onEncode(ChannelHandlerContext ctx, Packet<?> packet, ByteBuf output, CallbackInfo ci) {
+        if (!one.pkg.kreno.shared.ModConfig.Monitor.isEnabled()) return;
         if (!kreno$isPlayerResolved) {
             if (kreno$cachedConnection == null) {
                 kreno$cachedConnection = ctx.pipeline().get(Connection.class);

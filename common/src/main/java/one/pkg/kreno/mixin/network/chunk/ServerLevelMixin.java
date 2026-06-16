@@ -33,7 +33,7 @@ public class ServerLevelMixin {
             return;
 
         if (!ServerCullingManager.isParticleVisible(player, x, y, z)) {
-            TrafficMonitor.onDroppedPacket(player.getUUID(), "particleCulling", 30);
+            if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(player.getUUID(), "particleCulling", 30);
             cir.setReturnValue(false);
         }
     }

@@ -47,31 +47,33 @@ public class MinecraftCompressEncoder extends MessageToByteEncoder<ByteBuf> {
                 compatibleIn.release();
             }
         }
-        TrafficMonitor.compressionEnabled = true;
-        if (!kreno$isPlayerResolved) {
-            if (kreno$cachedConnection == null) {
-                kreno$cachedConnection = ctx.pipeline().get(Connection.class);
-            }
-            if (kreno$cachedConnection != null) {
-                PacketListener listener = kreno$cachedConnection.getPacketListener();
-                if (listener instanceof ServerGamePacketListenerImpl s) {
-                    ServerPlayer player = s.getPlayer();
-                    if (player != null) {
-                        kreno$cachedUuid = player.getUUID();
-                        kreno$cachedName = player.getScoreboardName();
-                        kreno$isPlayerResolved = true;
-                    }
-                } else if (JavaLoader.INSTANCE.isClient()) {
-                    Player player = ClientMonitorUtils.onMonitor(listener);
-                    if (player != null) {
-                        kreno$cachedUuid = player.getUUID();
-                        kreno$cachedName = player.getScoreboardName();
-                        kreno$isPlayerResolved = true;
+        if (one.pkg.kreno.shared.ModConfig.Monitor.isEnabled()) {
+            TrafficMonitor.compressionEnabled = true;
+            if (!kreno$isPlayerResolved) {
+                if (kreno$cachedConnection == null) {
+                    kreno$cachedConnection = ctx.pipeline().get(Connection.class);
+                }
+                if (kreno$cachedConnection != null) {
+                    PacketListener listener = kreno$cachedConnection.getPacketListener();
+                    if (listener instanceof ServerGamePacketListenerImpl s) {
+                        ServerPlayer player = s.getPlayer();
+                        if (player != null) {
+                            kreno$cachedUuid = player.getUUID();
+                            kreno$cachedName = player.getScoreboardName();
+                            kreno$isPlayerResolved = true;
+                        }
+                    } else if (JavaLoader.INSTANCE.isClient()) {
+                        Player player = ClientMonitorUtils.onMonitor(listener);
+                        if (player != null) {
+                            kreno$cachedUuid = player.getUUID();
+                            kreno$cachedName = player.getScoreboardName();
+                            kreno$isPlayerResolved = true;
+                        }
                     }
                 }
             }
+            TrafficMonitor.onOutboundCompressed(kreno$cachedUuid, kreno$cachedName, out.readableBytes());
         }
-        TrafficMonitor.onOutboundCompressed(kreno$cachedUuid, kreno$cachedName, out.readableBytes());
     }
 
     @Override
