@@ -42,6 +42,7 @@ public class PacketDecoderMixin {
 
     @Inject(method = "decode", at = @At("TAIL"))
     private void kreno$onDecodeTail(ChannelHandlerContext ctx, ByteBuf input, List<Object> out, CallbackInfo ci) {
+        if (!one.pkg.kreno.shared.ModConfig.Monitor.isEnabled()) return;
         if (!out.isEmpty()) {
             Object packet = out.getLast();
             int consumed = kreno$initialBytes - input.readableBytes();

@@ -68,6 +68,9 @@ public class ModConfig {
     @ConfigTarget(group = "culling", value = "asyncMode", comment = "Asynchronous execution mode for Cuttings system")
     private static boolean cullingAsyncMode = true;
 
+    @ConfigTarget(group = "monitor", value = "enabled", comment = "Enable traffic monitor")
+    private static boolean monitorEnabled = true;
+
     static {
         config = new SewliaConfig(ConfigMeta.of(
                 ModConfig.class,
@@ -211,6 +214,12 @@ public class ModConfig {
 
         public static boolean isAsyncMode() {
             return cullingAsyncMode;
+        }
+    }
+
+    public static class Monitor {
+        public static boolean isEnabled() {
+            return monitorEnabled;
         }
     }
 }

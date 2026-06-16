@@ -27,8 +27,19 @@ public class TrafficMonitor {
     private static long lastTotalOut;
     private static long lastPacketsIn;
     private static long lastPacketsOut;
+    private static volatile long lastResetTime = System.currentTimeMillis();
 
-    public static void reset() {
+    private static boolean checkExpirationAndEnabled() {
+        if (!one.pkg.kreno.shared.ModConfig.Monitor.isEnabled()) {
+            return false;
+        }
+        if (System.currentTimeMillis() - lastResetTime >= 15 * 60 * 1000L) {
+            reset();
+        }
+        return true;
+    }
+
+    public static synchronized void reset() {
         inboundStats.clear();
         outboundStats.clear();
         playerStats.clear();
@@ -48,6 +59,7 @@ public class TrafficMonitor {
         lastPacketsIn = 0;
         lastPacketsOut = 0;
         lastTime = System.currentTimeMillis();
+        lastResetTime = System.currentTimeMillis();
     }
 
     private static PlayerTrafficStat getOrCreatePlayerStat(UUID playerUuid, String playerName) {
@@ -66,6 +78,7 @@ public class TrafficMonitor {
     }
 
     public static void onInboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
+        if (!checkExpirationAndEnabled()) return;
         PacketStat globalStat = inboundStats.get(packetName);
         if (globalStat == null) {
             globalStat = inboundStats.computeIfAbsent(packetName, k -> new PacketStat());
@@ -88,6 +101,7 @@ public class TrafficMonitor {
     }
 
     public static void onOutboundPacket(UUID playerUuid, String playerName, String packetName, int bytes) {
+        if (!checkExpirationAndEnabled()) return;
         PacketStat globalStat = outboundStats.get(packetName);
         if (globalStat == null) {
             globalStat = outboundStats.computeIfAbsent(packetName, k -> new PacketStat());
@@ -110,6 +124,7 @@ public class TrafficMonitor {
     }
 
     public static void onInboundCompressed(UUID playerUuid, String playerName, int bytes) {
+        if (!checkExpirationAndEnabled()) return;
         totalInCompressed.add(bytes);
         if (playerUuid != null) {
             PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
@@ -118,6 +133,7 @@ public class TrafficMonitor {
     }
 
     public static void onOutboundCompressed(UUID playerUuid, String playerName, int bytes) {
+        if (!checkExpirationAndEnabled()) return;
         totalOutCompressed.add(bytes);
         if (playerUuid != null) {
             PlayerTrafficStat pStat = getOrCreatePlayerStat(playerUuid, playerName);
@@ -126,6 +142,7 @@ public class TrafficMonitor {
     }
 
     public static void onDroppedPacket(UUID playerUuid, String reason, int estimatedBytes) {
+        if (!checkExpirationAndEnabled()) return;
         if (playerUuid != null) {
             PlayerTrafficStat pStat = playerStats.get(playerUuid);
             if (pStat != null) {

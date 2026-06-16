@@ -82,5 +82,7 @@
   "kreno.config.entry.culling.particle": "Отсечение частиц",
   "kreno.config.entry.culling.particle.desc": "Умное отсечение частиц на стороне сервера",
   "kreno.config.entry.culling.asyncMode": "Асинхронное отсечение",
-  "kreno.config.entry.culling.asyncMode.desc": "Асинхронный режим выполнения для системы отсечения"
+  "kreno.config.entry.culling.asyncMode.desc": "Асинхронный режим выполнения для системы отсечения",
+  "kreno.config.entry.monitor.enabled": "Включить мониторинг трафика",
+  "kreno.config.entry.monitor.enabled.desc": "Включить мониторинг трафика"
 }

@@ -82,5 +82,7 @@
   "kreno.config.entry.culling.particle": "パーティクルカリング",
   "kreno.config.entry.culling.particle.desc": "サーバー側でのスマートなパーティクルカリング",
   "kreno.config.entry.culling.asyncMode": "非同期カリング",
-  "kreno.config.entry.culling.asyncMode.desc": "カリングシステムの非同期実行モード"
+  "kreno.config.entry.culling.asyncMode.desc": "カリングシステムの非同期実行モード",
+  "kreno.config.entry.monitor.enabled": "トラフィックモニターを有効にする",
+  "kreno.config.entry.monitor.enabled.desc": "トラフィックモニターを有効にする"
 }

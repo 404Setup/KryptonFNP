@@ -82,5 +82,7 @@
   "kreno.config.entry.culling.particle": "粒子剔除",
   "kreno.config.entry.culling.particle.desc": "在服务端启用智能粒子剔除",
   "kreno.config.entry.culling.asyncMode": "异步剔除",
-  "kreno.config.entry.culling.asyncMode.desc": "为剔除系统启用异步执行模式"
+  "kreno.config.entry.culling.asyncMode.desc": "为剔除系统启用异步执行模式",
+  "kreno.config.entry.monitor.enabled": "启用流量监视器",
+  "kreno.config.entry.monitor.enabled.desc": "启用流量监视器"
 }

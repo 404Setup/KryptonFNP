@@ -502,7 +502,7 @@ public class ServerCullingManager {
                 if (dz * dz >= 4096.0) continue;
 
                 if (dx * dx + dy * dy + dz * dz < 4096.0) {
-                    TrafficMonitor.onDroppedPacket(p.getUUID(), "particlePacketOpt", estimatedBytes);
+                    if (ModConfig.Monitor.isEnabled()) TrafficMonitor.onDroppedPacket(p.getUUID(), "particlePacketOpt", estimatedBytes);
                 }
             }
         }

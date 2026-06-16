@@ -78,5 +78,7 @@
   "kreno.config.entry.culling.particle": "Particle Culling",
   "kreno.config.entry.culling.particle.desc": "Smart particle culling on server side",
   "kreno.config.entry.culling.asyncMode": "Asynchronous Culling",
-  "kreno.config.entry.culling.asyncMode.desc": "Asynchronous execution mode for the culling system"
+  "kreno.config.entry.culling.asyncMode.desc": "Asynchronous execution mode for the culling system",
+  "kreno.config.entry.monitor.enabled": "Enable Traffic Monitor",
+  "kreno.config.entry.monitor.enabled.desc": "Enable traffic monitor"
 }
