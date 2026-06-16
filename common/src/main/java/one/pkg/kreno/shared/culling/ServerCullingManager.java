@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.TrafficMonitor;
+import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 public class ServerCullingManager {
     public static final double NEAR_DISTANCE_SQ = 64.0;
@@ -58,7 +58,9 @@ public class ServerCullingManager {
     }
 
     public static void onEnd() {
-        BLOCK_VISIBILITY_CACHE.values().forEach(Cache::invalidateAll);
+        for (Cache<Long, ServerCullingManager.CullingState> v : BLOCK_VISIBILITY_CACHE.values()) {
+            v.invalidateAll();
+        }
         BLOCK_VISIBILITY_CACHE.clear();
         VISIBILITY_CACHE.clear();
         updateActiveVisibilityMaps();
@@ -266,7 +268,7 @@ public class ServerCullingManager {
             if (!neighborState.isAir() && neighborState.isSolidRender()) {
                 BlockPos immutable = cursor.immutable();
                 directSender.accept(new ClientboundBlockUpdatePacket(immutable, neighborState));
-                Set<BlockPos> dropped = DROPPED_BLOCK_UPDATES.get(player.getId());
+                Set<BlockPos> dropped = DROPPED_BLOCK_UPDATES.get(player);
                 if (dropped != null) dropped.remove(immutable);
             }
         }
@@ -408,7 +410,7 @@ public class ServerCullingManager {
     }
 
     public static boolean getLastSentVisible(ServerPlayer player, Entity entity) {
-        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player.getId());
+        Map<Integer, CullingState> map = VISIBILITY_CACHE.get(player);
         if (map == null) return true;
         CullingState state = map.get(entity.getId());
         if (state == null) return true;
@@ -582,19 +584,7 @@ public class ServerCullingManager {
         long lastTick = -1;
     }
 
-    private static class AsyncAABBCheckTask implements Runnable {
-        private final CullingState state;
-        private final Level level;
-        private final Vec3 eyePos;
-        private final AABB aabb;
-
-        public AsyncAABBCheckTask(CullingState state, Level level, Vec3 eyePos, AABB aabb) {
-            this.state = state;
-            this.level = level;
-            this.eyePos = eyePos;
-            this.aabb = aabb;
-        }
-
+    private record AsyncAABBCheckTask(CullingState state, Level level, Vec3 eyePos, AABB aabb) implements Runnable {
         @Override
         public void run() {
             try {
@@ -608,14 +598,13 @@ public class ServerCullingManager {
     }
 
     private static class CullingState {
-        boolean isCurrentlyVisible = true;
         volatile boolean lastRaytraceResult = true;
+        volatile boolean isChecking = false;
+        boolean isCurrentlyVisible = true;
         long lastCheckTime = 0;
         long hiddenSince = 0;
-        volatile boolean isChecking = false;
         float lastDistanceSq = 0;
         boolean lastSentVisible = true;
-
         float lastPx = Float.MAX_VALUE;
         float lastPy = Float.MAX_VALUE;
         float lastPz = Float.MAX_VALUE;

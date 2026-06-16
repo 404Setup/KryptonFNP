@@ -68,11 +68,7 @@ public class BlockCullingUtil {
             int sectionYIndex, int minY, int maxY
     ) {
         LevelChunkSection section = sections[sectionYIndex];
-        PalettedContainerRO<BlockState> roContainer = section.getStates();
-
-        if (!(roContainer instanceof PalettedContainer<BlockState> container)) {
-            return null;
-        }
+        PalettedContainerRO<BlockState> container = section.getStates();
 
         int sectionYOffset = chunk.getSectionYFromSectionIndex(sectionYIndex) * 16;
 
