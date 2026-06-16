@@ -30,7 +30,7 @@ public class KrenoCommand {
         dispatcher.register(cmd);
     }
 
-    private synchronized static int reloadConfig(CommandContext<CommandSourceStack> context) {
+    private static int reloadConfig(CommandContext<CommandSourceStack> context) {
         ModConfig.config.reloadConfigurations(true);
         context.getSource().sendSuccess(() -> Component.literal("Config reloaded successfully").withStyle(ChatFormatting.GREEN), true);
         return 1;

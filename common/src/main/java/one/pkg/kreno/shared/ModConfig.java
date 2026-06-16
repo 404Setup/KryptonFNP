@@ -21,9 +21,9 @@ public class ModConfig {
     @ConfigTarget(group = "compress", value = "permitOversizedPackets", comment = "Permit Oversized Packets")
     private static boolean compressPop = false;
     @ConfigTarget(group = "fix.issues128", value = "enabled", comment = "Fix Traffic Statistics")
-    private static boolean var3 = false;
+    private static boolean fixIssues128Enabled = false;
     @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
-    private static boolean var4 = true;
+    private static boolean fixIssues128Sync = true;
     @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
     private static boolean wideVarInt = false;
     @ConfigTarget(group = "mixin", value = "loginVT", comment = "Replace player login validation thread with virtual thread")
@@ -59,12 +59,6 @@ public class ModConfig {
     private static boolean cullingParticle = true;
     @ConfigTarget(group = "culling", value = "entity", comment = "Smart entity culling on server side")
     private static boolean cullingEntity = true;
-    @ConfigTarget(group = "culling", value = "block", comment = "Smart block/block entity culling on server side")
-    private static boolean cullingBlock = true;
-    @ConfigTarget(group = "culling", value = "chunk_block", comment = "Replaces completely hidden blocks in chunk packets with air to save bandwidth")
-    private static boolean cullingChunkBlock = true;
-    @ConfigTarget(group = "culling", value = "chunk_light", comment = "Treat light sections whose data array is fully zero as empty to skip 2KiB payload per section in ClientboundLevelChunkWithLightPacket / ClientboundLightUpdatePacket")
-    private static boolean cullingChunkLight = true;
     @ConfigTarget(group = "culling", value = "asyncMode", comment = "Asynchronous execution mode for Cuttings system")
     private static boolean cullingAsyncMode = true;
 
@@ -80,8 +74,10 @@ public class ModConfig {
 
     @ReadWith("compressLevel")
     private static void setCompressionLevel(DumpMeta dumpMeta) {
-        if (!(dumpMeta.getObject() instanceof Integer))
+        if (!(dumpMeta.getObject() instanceof Integer)) {
             dumpMeta.setCancelled(true);
+            return;
+        }
 
         int level = (Integer) dumpMeta.getObject();
 
@@ -93,8 +89,10 @@ public class ModConfig {
 
     @ReadWith("nettyAllocatorMaxOrder")
     private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
-        if (!(dumpMeta.getObject() instanceof Integer))
+        if (!(dumpMeta.getObject() instanceof Integer)) {
             dumpMeta.setCancelled(true);
+            return;
+        }
         int level = (Integer) dumpMeta.getObject();
         if (level > 51 || level < 9) {
             dumpMeta.setObject(9);
@@ -115,17 +113,17 @@ public class ModConfig {
     public static class Fix {
         public static class Issues128 {
             public static boolean isEnabled() {
-                return var3;
+                return fixIssues128Enabled;
             }
 
             public static boolean isSync() {
-                return var4;
+                return fixIssues128Sync;
             }
         }
     }
 
     public static class Compatibility {
-        public static boolean AllowWideVarInt() {
+        public static boolean isAllowWideVarInt() {
             return wideVarInt;
         }
     }
@@ -195,18 +193,6 @@ public class ModConfig {
 
         public static boolean isEntityEnabled() {
             return !JavaLoader.INSTANCE.isClient() && cullingEntity;
-        }
-
-        public static boolean isBlockEnabled() {
-            return !JavaLoader.INSTANCE.isClient() &&cullingBlock;
-        }
-
-        public static boolean isChunkBlockCullingEnabled() {
-            return !JavaLoader.INSTANCE.isClient() &&cullingChunkBlock;
-        }
-
-        public static boolean isChunkLightCullingEnabled() {
-            return !JavaLoader.INSTANCE.isClient() &&cullingChunkLight;
         }
 
         public static boolean isAsyncMode() {

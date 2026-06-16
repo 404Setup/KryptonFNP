@@ -56,7 +56,7 @@ public class Varint21FrameDecoderMixin {
         // take the last three bytes and check if any of them have the high bit set
         int atStop = ~wholeOrMore & 0x808080;
         if (atStop == 0) {
-            if (ModConfig.Compatibility.AllowWideVarInt()) {
+            if (ModConfig.Compatibility.isAllowWideVarInt()) {
                 return kreno$readRawVarintSmallBuf(buffer);
             } else {
                 // all bytes have the high bit set, so the varint we are trying to decode is too wide
@@ -110,7 +110,7 @@ public class Varint21FrameDecoderMixin {
         if ((tmp = buffer.readByte()) >= 0) {
             return result | tmp << 14;
         }
-        if (!ModConfig.Compatibility.AllowWideVarInt()) {
+        if (!ModConfig.Compatibility.isAllowWideVarInt()) {
             throw VARINT_BIG_CACHED;
         }
         result |= (tmp & 0x7F) << 14;
