@@ -3,9 +3,13 @@ package me.steinborn.krypton.mixin.shared.network.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import me.steinborn.krypton.mod.shared.network.util.QuietDecoderException;
+import me.steinborn.krypton.mod.shared.network.util.VarIntUtil;
+import net.minecraft.network.BandwidthDebugMonitor;
 import net.minecraft.network.Varint21FrameDecoder;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
@@ -20,6 +24,10 @@ import static me.steinborn.krypton.mod.shared.network.util.WellKnownExceptions.V
  */
 @Mixin(Varint21FrameDecoder.class)
 public class Varint21FrameDecoderMixin {
+
+    @Final @Shadow
+    private BandwidthDebugMonitor monitor;
+
     /**
      * @author Andrew Steinborn
      * @reason Use optimized Velocity varint decoder that reduces bounds checking
@@ -55,6 +63,9 @@ public class Varint21FrameDecoderMixin {
             if (in.readableBytes() < length) {
                 in.resetReaderIndex();
             } else {
+                if (this.monitor != null) {
+                    this.monitor.onReceive(length + VarIntUtil.getVarIntLength(length));
+                }
                 out.add(in.readRetainedSlice(length));
             }
         }
