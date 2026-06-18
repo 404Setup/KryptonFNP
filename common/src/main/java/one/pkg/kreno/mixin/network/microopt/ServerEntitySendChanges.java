@@ -120,14 +120,14 @@ public class ServerEntitySendChanges {
                     target = "Lnet/minecraft/world/phys/Vec3;distanceToSqr(Lnet/minecraft/world/phys/Vec3;)D"
             )
     )
-    private double kreno$optimizeRedundantMotion(Vec3 currentMovement, Vec3 lastSentMovement) {
-        double diff = currentMovement.distanceToSqr(lastSentMovement);
+    private double kreno$optimizeRedundantMotion(Vec3 currentMovement, Vec3 vec) {
+        double diff = currentMovement.distanceToSqr(vec);
         if (diff == 0.0) {
             return 0.0;
         }
         
         double maxCurr = Math.max(Math.abs(currentMovement.x), Math.max(Math.abs(currentMovement.y), Math.abs(currentMovement.z)));
-        double maxLast = Math.max(Math.abs(lastSentMovement.x), Math.max(Math.abs(lastSentMovement.y), Math.abs(lastSentMovement.z)));
+        double maxLast = Math.max(Math.abs(vec.x), Math.max(Math.abs(vec.y), Math.abs(vec.z)));
         
         if (maxCurr < 3.051944088384301E-5 && maxLast < 3.051944088384301E-5) {
             return 0.0;

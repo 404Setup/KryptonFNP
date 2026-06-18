@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 
 // TODO: I didn't implement Ping compatibility
 @Mixin(Connection.class)
+@Deprecated
 public abstract class ClientConnectionMixin {
     @Inject(method = "connectToServer", at = @At("HEAD"), cancellable = true)
     private static void happyEyeballsConnectToServer(InetSocketAddress address, EventLoopGroupHolder eventLoopGroupHolder, LocalSampleLogger bandwidthLogger, CallbackInfoReturnable<Connection> cir) {

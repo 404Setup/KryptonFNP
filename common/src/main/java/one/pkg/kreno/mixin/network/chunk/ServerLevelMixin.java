@@ -3,7 +3,6 @@ package one.pkg.kreno.mixin.network.chunk;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.Vec3;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.culling.ServerCullingManager;
 import org.spongepowered.asm.mixin.Mixin;

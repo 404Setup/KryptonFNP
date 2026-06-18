@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+@Deprecated
 public class HEConnect {
     private static final Logger LOGGER = LoggerFactory.getLogger(HEConnect.class);
     private static final long CONNECTION_ATTEMPT_DELAY_MS = 250;

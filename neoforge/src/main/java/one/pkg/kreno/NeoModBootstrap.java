@@ -16,8 +16,6 @@ import one.pkg.loader.FMLTest;
 
 @Mod("kreno")
 public class NeoModBootstrap {
-    private static final org.slf4j.Logger logg = org.slf4j.LoggerFactory.getLogger("Kreno");
-
     public NeoModBootstrap(IEventBus bus, ModContainer container) {
         FMLTest.test();
         ModSharedBootstrap.run();
@@ -40,7 +38,7 @@ public class NeoModBootstrap {
         private static void init(ModContainer container) {
             container.registerExtensionPoint(IConfigScreenFactory.class, (_, parent) -> new KRenoConfigGUI(parent));
 
-            CommandRegistrationEvent.EVENT.register((dispatcher, context, environment) -> {
+            CommandRegistrationEvent.EVENT.register((dispatcher, _, _) -> {
                 KrenoCommand.Client.register(dispatcher);
             });
         }
