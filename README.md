@@ -111,14 +111,12 @@ fix:
     # Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.
     sync: true
 culling:
+  # Smart particle culling on server side
+  particle: true
   # Smart entity culling on server side
   entity: true
-  # Smart block/block entity culling on server side
-  block: true
-  # Replaces completely hidden blocks in chunk packets with air to save bandwidth
-  chunk_block: true
-  # Treat light sections whose data array is fully zero as empty to skip 2KiB payload per section in ClientboundLevelChunkWithLightPacket / ClientboundLightUpdatePacket
-  chunk_light: true
+  # Asynchronous execution mode for Cuttings system
+  asyncMode: true
 compress:
   # The compression level for packets, between 1-9.
   compressionLevel: 4
@@ -231,6 +229,12 @@ Reno won't break something there, or that they break Krypton Reno.
 - For MacOS: You should do nothing, just make sure the system is up to date.
 
 These libraries should be compatible with x64 and arm64 architectures, so you don’t need to worry about them.
+
+----
+
+## Dependencies
+
+- [SpringLotus](https://www.curseforge.com/minecraft/mc-mods/springlotus) - This prerequisite mod is required starting from version 26.3.0.
 
 ----
 
