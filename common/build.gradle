@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'multiloader-common'
     alias libs.plugins.moddev
-    id "me.champeau.jmh" version "0.7.3"
 }
 
 neoForge {
@@ -28,18 +27,6 @@ dependencies {
         exclude group: 'org.slf4j'
     }
     implementation(libs.libsl.neoforge)
-
-    jmh("io.netty:netty-buffer:4.2.7.Final")
-    jmh("io.netty:netty-common:4.2.7.Final")
-    jmh("io.netty:netty-codec:4.2.7.Final")
-    jmh("io.netty:netty-handler:4.2.7.Final")
-    jmh("io.netty:netty-resolver:4.2.7.Final")
-    jmh("one.pkg.velocity_rc:velocity-native:3.4.0-SNAPSHOT") {
-        exclude group: 'io.netty'
-    }
-    jmh("org.openjdk.jmh:jmh-core:1.37")
-    jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
-    jmh("org.openjdk.jmh:jmh-generator-bytecode:1.37")
 }
 
 configurations {
@@ -53,18 +40,8 @@ configurations {
     }
 }
 
-jmh {
-    resultFormat = "JSON"
-    zip64 = true
-}
 
 artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
-}
-
-jmh {
-    if (project.hasProperty('jmh.includes')) {
-        includes = [project.property('jmh.includes')]
-    }
 }

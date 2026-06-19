@@ -26,8 +26,6 @@ public class ModConfig {
     private static boolean fixIssues128Sync = true;
     @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
     private static boolean wideVarInt = false;
-    @ConfigTarget(group = "mixin", value = "loginVT", comment = "Replace player login validation thread with virtual thread")
-    private static boolean loginVt = true;
     @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
     private static boolean textFilterVT = true;
     @ConfigTarget(group = "mixin", value = "utilVT", comment = "Replace download thread with virtual thread")
@@ -129,10 +127,6 @@ public class ModConfig {
     }
 
     public static class Mixin {
-        public static boolean isLoginVT() {
-            return loginVt;
-        }
-
         public static boolean isTextFilterVT() {
             return textFilterVT;
         }

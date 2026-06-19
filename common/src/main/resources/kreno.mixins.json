@@ -33,7 +33,6 @@
     "network.pipeline.encryption.ConnectionMixin",
     "network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
     "network.pipeline.prepender.ConnectionMixin",
-    "network.thread.ServerLoginPacketListenerImplMixin",
     "network.thread.ServerTextFilterMixin",
     "network.thread.UtilMixin"
   ],
