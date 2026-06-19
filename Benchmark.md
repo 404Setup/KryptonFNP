@@ -18,7 +18,7 @@ After waiting for 50–90 minutes, the result will be generated to `common/build
 
 ## VarLong && VarInt Result
 
-<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.1-new/results/var.json">
+<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.2.0/results/var.json">
 <img src="https://img.shields.io/badge/VarInt & VarLong-View%20full%20report-4caf50?style=flat-square" alt=""/>
 </a>
 
@@ -199,18 +199,18 @@ After waiting for 50–90 minutes, the result will be generated to `common/build
 
 ### Full Result
 
-<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.1-new/results/compress/windows.recastlib.jni.json">
+<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.2.0/results/compress/windows.recastlib.jni.json">
 <img src="https://img.shields.io/badge/R:W:J-View full report-4caf50?style=flat-square" alt=""/>
 </a>
 
-<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.1-new/results/compress/windows.recastlib.ffm.json">
+<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.2.0/results/compress/windows.recastlib.ffm.json">
 <img src="https://img.shields.io/badge/R:W:F-View full report-4caf50?style=flat-square" alt=""/>
 </a>
 
-<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.1-new/results/compress/linux.recastlib.jni.json">
+<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.2.0/results/compress/linux.recastlib.jni.json">
 <img src="https://img.shields.io/badge/R:L:J-View full report-4caf50?style=flat-square" alt=""/>
 </a>
 
-<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.1-new/results/compress/linux.velocity.jni.json">
+<a href="https://jmh.morethan.io/?source=https://raw.githubusercontent.com/404Setup/KryptonReno/refs/heads/26.2.0/results/compress/linux.velocity.jni.json">
 <img src="https://img.shields.io/badge/V:L:J-View full report-4caf50?style=flat-square" alt=""/>
 </a>

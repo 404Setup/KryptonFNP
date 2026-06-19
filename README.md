@@ -154,7 +154,7 @@ ENABLE_LINUX_RECAST=true java -jar neoforge_launcher.jar
 
 ## Benchmark
 
-<a href="https://github.com/404Setup/KryptonReno/blob/26.1-new/Benchmark.md">
+<a href="https://github.com/404Setup/KryptonReno/blob/26.2.0/Benchmark.md">
 <img src="https://img.shields.io/badge/Github-View-4caf50?style=flat-square" alt=""/>
 </a>
 
