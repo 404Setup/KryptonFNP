@@ -18,8 +18,6 @@
   "kreno.config.entry.fix.issues128.sync": "Синхронный мониторинг трафика",
   "kreno.config.entry.fix.issues128.sync.desc": "Запуск статистики пропускной способности в синхронном потоке, что ближе к поведению ванильной версии.",
   "kreno.config.entry.compatibility.allow-wide-var-int": "Разрешить широкие VarInt",
-  "kreno.config.entry.mixin.loginVT": "Виртуальный поток проверки входа",
-  "kreno.config.entry.mixin.loginVT.desc": "Заменить поток проверки входа игрока на виртуальный поток",
   "kreno.config.entry.mixin.textFilterVT": "Виртуальный поток фильтрации текста",
   "kreno.config.entry.mixin.textFilterVT.desc": "Заменить поток фильтрации текста на виртуальный поток",
   "kreno.config.entry.mixin.utilVT": "Утилитарный виртуальный поток",

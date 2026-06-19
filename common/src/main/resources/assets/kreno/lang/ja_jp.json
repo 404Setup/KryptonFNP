@@ -18,8 +18,6 @@
   "kreno.config.entry.fix.issues128.sync": "同期トラフィック監視",
   "kreno.config.entry.fix.issues128.sync.desc": "バニラの動作に近い同期スレッドで帯域幅統計を実行します。",
   "kreno.config.entry.compatibility.allow-wide-var-int": "ワイド VarInt を許可",
-  "kreno.config.entry.mixin.loginVT": "ログイン検証仮想スレッド",
-  "kreno.config.entry.mixin.loginVT.desc": "ログイン検証スレッドを仮想スレッドに置き換えます。",
   "kreno.config.entry.mixin.textFilterVT": "テキストフィルター仮想スレッド",
   "kreno.config.entry.mixin.textFilterVT.desc": "テキストフィルタースレッドを仮想スレッドに置き換えます。",
   "kreno.config.entry.mixin.utilVT": "ユーティリティ仮想スレッド",

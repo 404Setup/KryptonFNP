@@ -130,7 +130,6 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
     }
 
     enum CONFIG {
-        Login_VT("one.pkg.kreno.mixin.network.thread.ServerLoginPacketListenerImplMixin", ModConfig.Mixin::isLoginVT),
         TextFilter_VT("one.pkg.kreno.mixin.network.thread.ServerTextFilterMixin", ModConfig.Mixin::isTextFilterVT),
         Util_VT("one.pkg.kreno.mixin.network.thread.UtilMixin", ModConfig.Mixin::isUtilVT),
         BestVarLong("one.pkg.kreno.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),

@@ -7,7 +7,6 @@ import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import one.pkg.kreno.shared.ModConfig;
 import one.pkg.kreno.shared.network.util.VarIntUtil;
-import one.pkg.libsl.api.loader.JavaLoader;
 
 import java.util.List;
 

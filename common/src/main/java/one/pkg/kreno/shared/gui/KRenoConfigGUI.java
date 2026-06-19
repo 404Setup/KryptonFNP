@@ -15,7 +15,7 @@ public class KRenoConfigGUI extends Screen {
 
     @Override
     protected void init() {
-        minecraft.setScreen(SeeUIBuilder.builder()
+        minecraft.gui.setScreen(SeeUIBuilder.builder()
                 .clazz(ModConfig.class)
                 .lastScreen(parent)
                 .useOreUI(ModConfig.GUI.isOreUI())

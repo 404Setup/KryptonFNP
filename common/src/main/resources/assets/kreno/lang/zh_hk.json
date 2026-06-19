@@ -18,8 +18,6 @@
   "kreno.config.entry.fix.issues128.sync": "同步流量監控",
   "kreno.config.entry.fix.issues128.sync.desc": "在同步線程運行頻寬統計，這更接近原版行為。",
   "kreno.config.entry.compatibility.allow-wide-var-int": "允許寬位元組 VarInt",
-  "kreno.config.entry.mixin.loginVT": "登入驗證虛擬線程",
-  "kreno.config.entry.mixin.loginVT.desc": "使用虛擬線程替換玩家登入驗證線程",
   "kreno.config.entry.mixin.textFilterVT": "文本過濾虛擬線程",
   "kreno.config.entry.mixin.textFilterVT.desc": "使用虛擬線程替換文本過濾線程",
   "kreno.config.entry.mixin.utilVT": "工具類虛擬線程",

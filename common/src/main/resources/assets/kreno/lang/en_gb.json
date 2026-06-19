@@ -18,8 +18,6 @@
   "kreno.config.entry.fix.issues128.sync": "Sync Traffic Monitoring",
   "kreno.config.entry.fix.issues128.sync.desc": "Run bandwidth statistics on sync thread, which is closer to Vanilla behaviour.",
   "kreno.config.entry.compatibility.allow-wide-var-int": "Allow Wide VarInt",
-  "kreno.config.entry.mixin.loginVT": "Login Virtual Thread",
-  "kreno.config.entry.mixin.loginVT.desc": "Replace player login validation thread with virtual thread",
   "kreno.config.entry.mixin.textFilterVT": "Text Filter Virtual Thread",
   "kreno.config.entry.mixin.textFilterVT.desc": "Replace text filter thread with virtual thread",
   "kreno.config.entry.mixin.utilVT": "Utility Virtual Thread",

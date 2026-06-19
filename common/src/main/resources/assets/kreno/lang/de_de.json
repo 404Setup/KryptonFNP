@@ -18,8 +18,6 @@
   "kreno.config.entry.fix.issues128.sync": "Synchrone Verkehrsüberwachung",
   "kreno.config.entry.fix.issues128.sync.desc": "Bandbreitenstatistiken im synchronen Thread ausführen, was dem Vanilla-Verhalten näher kommt.",
   "kreno.config.entry.compatibility.allow-wide-var-int": "Breite VarInt erlauben",
-  "kreno.config.entry.mixin.loginVT": "Virtueller Login-Thread",
-  "kreno.config.entry.mixin.loginVT.desc": "Ersetzt den Thread zur Validierung der Spieleranmeldung durch einen virtuellen Thread",
   "kreno.config.entry.mixin.textFilterVT": "Virtueller Textfilter-Thread",
   "kreno.config.entry.mixin.textFilterVT.desc": "Ersetzt den Textfilter-Thread durch einen virtuellen Thread",
   "kreno.config.entry.mixin.utilVT": "Virtueller Utility-Thread",
