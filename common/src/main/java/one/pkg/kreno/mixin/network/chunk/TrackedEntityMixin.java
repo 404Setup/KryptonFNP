@@ -82,8 +82,9 @@ public abstract class TrackedEntityMixin implements IKrenoTrackedEntity {
     @Inject(method = "sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void kreno$sendToTrackingPlayers(Packet<?> packet, CallbackInfo ci) {
         if (ModConfig.Mixin.isTrackedEntityOpt() || ModConfig.Culling.isEntityEnabled()) {
+            boolean isCullingEnabled = ModConfig.Culling.isEntityEnabled();
             for (ServerPlayerConnection conn : this.seenBy) {
-                if (!ModConfig.Culling.isEntityEnabled() || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {
+                if (!isCullingEnabled || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {
                     conn.send(packet);
                 }
             }
@@ -94,9 +95,10 @@ public abstract class TrackedEntityMixin implements IKrenoTrackedEntity {
     @Inject(method = "sendToTrackingPlayersFiltered", at = @At("HEAD"), cancellable = true)
     private void kreno$sendToTrackingPlayersFiltered(Packet<?> packet, Predicate<ServerPlayer> targetPredicate, CallbackInfo ci) {
         if (ModConfig.Mixin.isTrackedEntityOpt() || ModConfig.Culling.isEntityEnabled()) {
+            boolean isCullingEnabled = ModConfig.Culling.isEntityEnabled();
             for (ServerPlayerConnection conn : this.seenBy) {
                 if (targetPredicate.test(conn.getPlayer())) {
-                    if (!ModConfig.Culling.isEntityEnabled() || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {
+                    if (!isCullingEnabled || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {
                         conn.send(packet);
                     }
                 }
