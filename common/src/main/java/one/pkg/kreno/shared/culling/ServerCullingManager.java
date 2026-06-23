@@ -280,10 +280,15 @@ public class ServerCullingManager {
 
     public static boolean isLineOfSightClear(Level level, Vec3 start, Vec3 end) {
         try {
-            int chunkX = (int) Math.floor(end.x) >> 4;
-            int chunkZ = (int) Math.floor(end.z) >> 4;
-            ChunkAccess chunk = level.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
-            if (chunk == null) return true;
+            int minX = (int) Math.floor(Math.min(start.x, end.x)) >> 4;
+            int minZ = (int) Math.floor(Math.min(start.z, end.z)) >> 4;
+            int maxX = (int) Math.floor(Math.max(start.x, end.x)) >> 4;
+            int maxZ = (int) Math.floor(Math.max(start.z, end.z)) >> 4;
+            for (int x = minX; x <= maxX; x++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    if (!level.hasChunk(x, z)) return true;
+                }
+            }
 
             ClipContext ctx = new ClipContext(start, end, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty());
             return level.clip(ctx).getType() == HitResult.Type.MISS;
