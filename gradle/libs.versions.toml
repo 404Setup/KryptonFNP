@@ -1,7 +1,7 @@
 [versions]
 moddev = "2.0.141"
 
-sewlia-config = "2.0.0-SNAPSHOT"
+sewlia-config = "1.1.1-SNAPSHOT"
 recastlib = "3.4.0-SNAPSHOT"
 libsl = "1.1.0+26.2"
 tinyutils = "2.4.0"
