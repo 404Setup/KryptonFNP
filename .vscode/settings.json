@@ -1,0 +1,8 @@
+{
+    "modpublish.github.branch": "26.2.0",
+    "modpublish.gitlab.branch": "26.2.0",
+    "modpublish.github.repo": "404Setup/KryptonReno",
+    "modpublish.common.versionFormat": "[{loader} {low-version}] {name} - {version}",
+    "modpublish.modrinth.modid": "JkxWVYwU",
+    "modpublish.curseforge.modid": "1269169"
+}

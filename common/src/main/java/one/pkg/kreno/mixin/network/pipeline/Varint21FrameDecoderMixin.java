@@ -25,14 +25,26 @@ import static one.pkg.kreno.shared.network.util.WellKnownExceptions.VARINT_BIG_C
  */
 @Mixin(Varint21FrameDecoder.class)
 public class Varint21FrameDecoderMixin {
+    /**
+     * Shared across all connections. A per-instance executor would leak a thread and its
+     * backing queue for every connection, since decoder instances are never shut down.
+     */
     @Unique
-    private final ExecutorService kreno$executor = new ThreadPoolExecutor(
-            1, 1,
-            0L, TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<>(1024),
-            Thread.ofVirtual().factory(),
-            new ThreadPoolExecutor.DiscardPolicy()
-    );
+    private static final ExecutorService KRENO$EXECUTOR = kreno$createExecutor();
+
+    @Unique
+    private static ExecutorService kreno$createExecutor() {
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                1, 1,
+                30L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(1024),
+                Thread.ofVirtual().factory(),
+                new ThreadPoolExecutor.DiscardPolicy()
+        );
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
+    }
+
     @Final
     @Shadow
     private BandwidthDebugMonitor monitor;
@@ -182,6 +194,6 @@ public class Varint21FrameDecoderMixin {
     @Unique
     private void kreno$execute(int l) {
         if (ModConfig.Fix.Issues128.isSync()) this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l));
-        else this.kreno$executor.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
+        else KRENO$EXECUTOR.execute(() -> this.monitor.onReceive(l + VarIntUtil.getVarIntLength(l)));
     }
 }
