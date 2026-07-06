@@ -38,8 +38,8 @@ public class ModConfig {
     private static boolean rconClient = false;
     @ConfigTarget(group = "mixin", value = "serverEntityMoveOpt", comment = "Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned")
     private static boolean serverEntityMoveOpt = false;
-    @ConfigTarget(group = "mixin", value = "connectionMicroOpt", comment = "Reduces object allocation and lock contention in the Connection class")
-    private static boolean connectionMicroOpt = true;
+    @ConfigTarget(group = "mixin", value = "packetProcessorOpt", comment = "Halves concurrent queue operations when draining queued packets on the main thread")
+    private static boolean packetProcessorOpt = true;
     @ConfigTarget(group = "mixin", value = "particlePacketOpt", comment = "Reduces some potentially useless particle packets. This configuration only takes effect on the server side.")
     private static boolean particlePacketOpt = true;
     @ConfigTarget(group = "mixin", value = "trackedEntityOpt", comment = "Optimizes entity packet broadcasting and integrates with server-side entity culling")
@@ -151,8 +151,8 @@ public class ModConfig {
             return serverEntityMoveOpt;
         }
 
-        public static boolean isConnectionMicroOpt() {
-            return connectionMicroOpt;
+        public static boolean isPacketProcessorOpt() {
+            return packetProcessorOpt;
         }
 
         public static boolean isParticlePacketOpt() {
