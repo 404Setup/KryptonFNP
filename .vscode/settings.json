@@ -4,5 +4,19 @@
     "modpublish.github.repo": "404Setup/KryptonReno",
     "modpublish.common.versionFormat": "[{loader} {low-version}] {name} - {version}",
     "modpublish.modrinth.modid": "JkxWVYwU",
-    "modpublish.curseforge.modid": "1269169"
+    "modpublish.curseforge.modid": "1269169",
+    "modpublish.common.releaseChannel": "beta",
+    "modpublish.common.dependencies": [
+        {
+            "projectId": ",1573788",
+            "type": "required",
+            "customTitle": "SpringLotus",
+            "curseforgeModInfo": {
+                "modid": "1573788",
+                "slug": "springlotus",
+                "title": "SpringLotus"
+            }
+        }
+    ],
+    "modpublish.common.changelog": "## 26.3.2 Beta in Minecraft 26.2.0\n\n- avoid sync chunk loads in line of sight culling\n- Cache entity culling config check outside loops in TrackedEntityMixin\n- improved Executor in Varint21FrameDecoderMixin\n- remove connectionMicroOpt\n- add packetProcessorOpt"
 }

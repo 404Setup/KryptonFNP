@@ -12,7 +12,6 @@ import net.minecraft.world.entity.animal.squid.Squid;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.EyeOfEnder;
 import net.minecraft.world.entity.projectile.ShulkerBullet;
-import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,13 +23,6 @@ public class ServerEntityMixin {
     @Shadow
     @Final
     private Entity entity;
-
-    @Shadow
-    @Final
-    private ServerEntity.Synchronizer synchronizer;
-
-    @Shadow
-    private Vec3 lastSentMovement;
 
     @WrapOperation(
             method = "sendChanges",
