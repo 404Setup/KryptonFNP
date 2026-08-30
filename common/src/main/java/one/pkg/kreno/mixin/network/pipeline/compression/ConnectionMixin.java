@@ -12,7 +12,6 @@ import one.pkg.kreno.shared.network.compression.MinecraftCompressDecoder;
 import one.pkg.kreno.shared.network.compression.MinecraftCompressEncoder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,56 +21,66 @@ public class ConnectionMixin {
     @Shadow
     private Channel channel;
 
-    @Unique
-    private static boolean kreno$isKryptonOrVanillaDecompressor(Object o) {
-        return o instanceof CompressionEncoder || o instanceof MinecraftCompressDecoder;
-    }
-
-    @Unique
-    private static boolean kreno$isKryptonOrVanillaCompressor(Object o) {
-        return o instanceof CompressionDecoder || o instanceof MinecraftCompressEncoder;
-    }
-
     @Inject(method = "setupCompression", at = @At("HEAD"), cancellable = true)
     public void setCompressionThreshold(int threshold, boolean validateDecompressed, CallbackInfo ci) {
+        Object decompressor = this.channel.pipeline().get("decompress");
+        Object compressor = this.channel.pipeline().get("compress");
+
         if (threshold < 0) {
-            if (kreno$isKryptonOrVanillaDecompressor(this.channel.pipeline().get("decompress"))) {
+            if (decompressor instanceof CompressionDecoder || decompressor instanceof MinecraftCompressDecoder) {
                 this.channel.pipeline().remove("decompress");
             }
-            if (kreno$isKryptonOrVanillaCompressor(this.channel.pipeline().get("compress"))) {
+            if (compressor instanceof CompressionEncoder || compressor instanceof MinecraftCompressEncoder) {
                 this.channel.pipeline().remove("compress");
             }
 
             this.channel.pipeline().fireUserEventTriggered(KRenoPipelineEvent.COMPRESSION_DISABLED);
         } else {
-            MinecraftCompressDecoder decoder = (MinecraftCompressDecoder) channel.pipeline()
-                    .get("decompress");
-            MinecraftCompressEncoder encoder = (MinecraftCompressEncoder) channel.pipeline()
-                    .get("compress");
-            if (decoder != null && encoder != null) {
-                decoder.setThreshold(threshold);
-                encoder.setThreshold(threshold);
+            boolean installed = false;
+            boolean updated = false;
+            VelocityCompressor newlyCreatedCompressor = null;
 
-                this.channel.pipeline().fireUserEventTriggered(KRenoPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
-            } else {
-                VelocityCompressor compressor = Natives.compress.get().create(ModConfig.Compression.getLevel());
-
-                encoder = new MinecraftCompressEncoder(threshold, compressor);
-                decoder = new MinecraftCompressDecoder(threshold, validateDecompressed, compressor);
-
+            if (decompressor instanceof MinecraftCompressDecoder decoder) {
+                decoder.setThreshold(threshold, validateDecompressed);
+                updated = true;
+            } else if (decompressor instanceof CompressionDecoder decoder) {
+                decoder.setThreshold(threshold, validateDecompressed);
+                updated = true;
+            } else if (decompressor == null) {
+                newlyCreatedCompressor = Natives.compress.get().create(ModConfig.Compression.getLevel());
+                MinecraftCompressDecoder decoder = new MinecraftCompressDecoder(
+                        threshold, validateDecompressed, newlyCreatedCompressor);
                 if (channel.pipeline().get("decoder") != null) {
                     channel.pipeline().addBefore("decoder", "decompress", decoder);
                 } else {
                     channel.pipeline().addFirst("decompress", decoder);
                 }
+                installed = true;
+            }
 
+            if (compressor instanceof MinecraftCompressEncoder encoder) {
+                encoder.setThreshold(threshold);
+                updated = true;
+            } else if (compressor instanceof CompressionEncoder encoder) {
+                encoder.setThreshold(threshold);
+                updated = true;
+            } else if (compressor == null) {
+                VelocityCompressor nativeCompressor = newlyCreatedCompressor != null
+                        ? newlyCreatedCompressor
+                        : Natives.compress.get().create(ModConfig.Compression.getLevel());
+                MinecraftCompressEncoder encoder = new MinecraftCompressEncoder(threshold, nativeCompressor);
                 if (channel.pipeline().get("encoder") != null) {
                     channel.pipeline().addBefore("encoder", "compress", encoder);
                 } else {
                     channel.pipeline().addLast("compress", encoder);
                 }
+                installed = true;
+            }
 
+            if (installed) {
                 this.channel.pipeline().fireUserEventTriggered(KRenoPipelineEvent.COMPRESSION_ENABLED);
+            } else if (updated) {
+                this.channel.pipeline().fireUserEventTriggered(KRenoPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             }
         }
 

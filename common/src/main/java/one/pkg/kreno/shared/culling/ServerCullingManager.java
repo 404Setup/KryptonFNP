@@ -2,11 +2,11 @@ package one.pkg.kreno.shared.culling;
 
 import it.unimi.dsi.fastutil.longs.LongArraySet;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -16,8 +16,6 @@ import one.pkg.tinyutils.map.WeakConcurrentHashMap;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class ServerCullingManager {
@@ -25,12 +23,18 @@ public class ServerCullingManager {
     private static final float DEG_TO_RAD = (float) Math.PI / 180F;
     private static final Map<ServerPlayer, Map<Integer, CullingState>> VISIBILITY_CACHE = new WeakConcurrentHashMap<>();
     private static final Object ACTIVE_MAPS_LOCK = new Object();
-    private static final long CHECK_INTERVAL_MS = 500;
-    private static final long HIDE_DELAY_MS = 1000;
+    private static final long CHECK_INTERVAL_TICKS = 10;
+    private static final long HIDE_DELAY_TICKS = 20;
+    private static final int MAX_ENTITY_RAYTRACES_PER_TICK = 16;
+    private static final int MAX_PARTICLE_RAYTRACES_PER_TICK = 64;
+    private static final int MAX_PARTICLE_RAYTRACES_PER_PLAYER_TICK = 8;
     private static final Map<ServerPlayer, ParticleCullCache> PARTICLE_CACHE = new WeakConcurrentHashMap<>();
     private static final Map<ServerPlayer, EntityCullCache> ENTITY_CACHE = new WeakConcurrentHashMap<>();
-    private static final ThreadLocal<double[]> PROBE_COORDS = ThreadLocal.withInitial(() -> new double[18]);
-    private static volatile ExecutorService EXECUTOR = Executors.newWorkStealingPool();
+    private static final ThreadLocal<double[]> PROBE_COORDS = ThreadLocal.withInitial(() -> new double[30]);
+    private static long entityRaytraceBudgetTick = Long.MIN_VALUE;
+    private static int entityRaytracesThisTick;
+    private static long particleRaytraceBudgetTick = Long.MIN_VALUE;
+    private static int particleRaytracesThisTick;
     @SuppressWarnings("unchecked")
     private static volatile Map<Integer, CullingState>[] activeVisibilityMaps = new Map[0];
 
@@ -46,37 +50,59 @@ public class ServerCullingManager {
         updateActiveVisibilityMaps();
         PARTICLE_CACHE.clear();
         ENTITY_CACHE.clear();
-        if (EXECUTOR != null && !EXECUTOR.isShutdown())
-            EXECUTOR.shutdown();
-        EXECUTOR = Executors.newWorkStealingPool();
+        entityRaytraceBudgetTick = Long.MIN_VALUE;
+        entityRaytracesThisTick = 0;
+        particleRaytraceBudgetTick = Long.MIN_VALUE;
+        particleRaytracesThisTick = 0;
+    }
+
+    public static void onConfigReload() {
+        PARTICLE_CACHE.clear();
+        ENTITY_CACHE.clear();
+        if (!ModConfig.Culling.isEntityEnabled()) {
+            restoreHiddenEntities();
+            VISIBILITY_CACHE.clear();
+            updateActiveVisibilityMaps();
+        }
+    }
+
+    private static void restoreHiddenEntities() {
+        for (Map<Integer, CullingState> map : activeVisibilityMaps) {
+            for (CullingState state : map.values()) {
+                Runnable restoreAction = state.restoreAction;
+                if (!state.lastSentVisible && restoreAction != null) {
+                    state.lastSentVisible = true;
+                    state.restoreAction = null;
+                    restoreAction.run();
+                }
+            }
+        }
     }
 
 
-    public static boolean isEntityVisible(ServerPlayer player, Entity entity, long now) {
-        if (!ModConfig.Culling.isEntityEnabled() || !player.level().getServer().isDedicatedServer()) return true;
+    /**
+     * Only entities whose purpose is visual decoration are safe to remove from a vanilla client.
+     * Gameplay entities and unknown modded entities must remain in the vanilla tracking set.
+     */
+    public static boolean shouldCullEntity(Entity entity) {
+        return ModConfig.Culling.isEntityEnabled()
+                && (entity instanceof Display || entity instanceof HangingEntity);
+    }
+
+    public static boolean isEntityVisible(ServerPlayer player, Entity entity, long currentTick) {
+        if (!shouldCullEntity(entity) || !player.level().getServer().isDedicatedServer()) return true;
 
         CullingState state = getEntityCullingState(player, entity);
 
-        float ex = (float) player.getX();
-        float ey = (float) player.getEyeY();
-        float ez = (float) player.getZ();
         float cx = (float) entity.getX();
         float cy = (float) (entity.getY() + entity.getBbHeight() / 2.0);
         float cz = (float) entity.getZ();
-        float rotX = player.getXRot();
-        float rotY = player.getYRot();
-
-        if (checkAndUpdateStatePosition(state, ex, ey, ez, cx, cy, cz, rotX, rotY)) {
-            return state.isCurrentlyVisible;
-        }
 
         float distanceSq = (float) player.distanceToSqr(entity);
-        state.lastDistanceSq = distanceSq;
-
         if (distanceSq < NEAR_DISTANCE_SQ) {
             state.lastRaytraceResult = true;
             state.isCurrentlyVisible = true;
-            state.hiddenSince = 0;
+            state.hiddenSinceTick = -1;
             return true;
         }
 
@@ -91,28 +117,30 @@ public class ServerCullingManager {
 
         if (hashCache.grid.contains(gridKey)) {
             state.isCurrentlyVisible = true;
-            state.hiddenSince = 0;
+            state.hiddenSinceTick = -1;
             return true;
         }
 
-        float dx = cx - ex;
-        float dy = cy - ey;
-        float dz = cz - ez;
+        float dx = cx - (float) player.getX();
+        float dy = cy - (float) player.getEyeY();
+        float dz = cz - (float) player.getZ();
 
-        boolean inFOV = isInFOVCached(state, dx, dy, dz, rotX, rotY, distanceSq);
+        boolean inFOV = isInFOVCached(state, dx, dy, dz, player.getXRot(), player.getYRot(), distanceSq);
 
-        if (inFOV) {
-            if (now - state.lastCheckTime > CHECK_INTERVAL_MS) {
-                if (!state.isChecking) {
-                    state.isChecking = true;
-                    state.lastCheckTime = now;
-                    queueRaytraceCheck(state, player.level(), player.getEyePosition(), entity.getBoundingBox().inflate(0.5));
-                }
+        if (inFOV && (state.lastCheckTick == Long.MIN_VALUE
+                || currentTick - state.lastCheckTick >= CHECK_INTERVAL_TICKS)) {
+            if (tryAcquireEntityRaytrace(player.level())) {
+                state.lastCheckTick = currentTick;
+                state.lastRaytraceResult = checkAABBVisible(
+                        player.level(), player.getEyePosition(), entity.getBoundingBox().inflate(0.5));
+            } else {
+                // A saturated culling budget must fail open instead of hiding an unverified entity.
+                state.lastRaytraceResult = true;
             }
         }
 
         boolean isVisible = inFOV && state.lastRaytraceResult;
-        updateVisibilityState(state, isVisible, now);
+        updateVisibilityState(state, isVisible, currentTick);
 
         if (state.isCurrentlyVisible) {
             hashCache.grid.add(gridKey);
@@ -129,9 +157,16 @@ public class ServerCullingManager {
         return state.lastSentVisible;
     }
 
-    public static void setLastSentVisible(ServerPlayer player, Entity entity, boolean visible) {
+    public static void setLastSentVisible(ServerPlayer player, Entity entity) {
         CullingState state = getEntityCullingState(player, entity);
-        state.lastSentVisible = visible;
+        state.lastSentVisible = true;
+        state.restoreAction = null;
+    }
+
+    public static void setLastSentHidden(ServerPlayer player, Entity entity, Runnable restoreAction) {
+        CullingState state = getEntityCullingState(player, entity);
+        state.lastSentVisible = false;
+        state.restoreAction = restoreAction;
     }
 
     public static void removePlayerEntityState(ServerPlayer player, Entity entity) {
@@ -163,38 +198,32 @@ public class ServerCullingManager {
         return state;
     }
 
-    private static void queueRaytraceCheck(CullingState state, Level level, Vec3 eyePos, AABB aabb) {
-        if (ModConfig.Culling.isAsyncMode()) {
-            if (EXECUTOR != null && !EXECUTOR.isShutdown()) {
-                EXECUTOR.submit(new AsyncAABBCheckTask(state, level, eyePos, aabb));
-                return;
-            }
+    private static boolean tryAcquireEntityRaytrace(Level level) {
+        long tick = level.getServer().getTickCount();
+        if (entityRaytraceBudgetTick != tick) {
+            entityRaytraceBudgetTick = tick;
+            entityRaytracesThisTick = 0;
         }
-        try {
-            state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
-        } catch (Exception e) {
-            state.lastRaytraceResult = true;
-        } finally {
-            state.isChecking = false;
+        if (entityRaytracesThisTick >= MAX_ENTITY_RAYTRACES_PER_TICK) {
+            return false;
         }
+        entityRaytracesThisTick++;
+        return true;
     }
 
-    private static boolean checkAndUpdateStatePosition(CullingState state, float ex, float ey, float ez, float cx, float cy, float cz, float rotX, float rotY) {
-        if (Math.abs(state.lastPx - ex) < 0.1f && Math.abs(state.lastPy - ey) < 0.1f && Math.abs(state.lastPz - ez) < 0.1f &&
-                Math.abs(state.lastTx - cx) < 0.1f && Math.abs(state.lastTy - cy) < 0.1f && Math.abs(state.lastTz - cz) < 0.1f &&
-                Math.abs(state.lastRotX - rotX) < 1.0f && Math.abs(state.lastRotY - rotY) < 1.0f) {
-            return true;
+    private static boolean tryAcquireParticleRaytrace(Level level, ParticleCullCache cache) {
+        long tick = level.getServer().getTickCount();
+        if (particleRaytraceBudgetTick != tick) {
+            particleRaytraceBudgetTick = tick;
+            particleRaytracesThisTick = 0;
         }
-
-        state.lastPx = ex;
-        state.lastPy = ey;
-        state.lastPz = ez;
-        state.lastTx = cx;
-        state.lastTy = cy;
-        state.lastTz = cz;
-        state.lastRotX = rotX;
-        state.lastRotY = rotY;
-        return false;
+        if (particleRaytracesThisTick >= MAX_PARTICLE_RAYTRACES_PER_TICK
+                || cache.raytraces >= MAX_PARTICLE_RAYTRACES_PER_PLAYER_TICK) {
+            return false;
+        }
+        particleRaytracesThisTick++;
+        cache.raytraces++;
+        return true;
     }
 
     private static boolean isInFOV(float dx, float dy, float dz, float rotX, float rotY, float distanceSq) {
@@ -234,15 +263,15 @@ public class ServerCullingManager {
         return dot >= 0 || (dot * dot <= 0.0225 * distanceSq);
     }
 
-    private static void updateVisibilityState(CullingState state, boolean isVisible, long now) {
+    private static void updateVisibilityState(CullingState state, boolean isVisible, long currentTick) {
         if (!isVisible) {
-            if (state.hiddenSince == 0) {
-                state.hiddenSince = now;
-            } else if (now - state.hiddenSince > HIDE_DELAY_MS) {
+            if (state.hiddenSinceTick < 0) {
+                state.hiddenSinceTick = currentTick;
+            } else if (currentTick - state.hiddenSinceTick >= HIDE_DELAY_TICKS) {
                 state.isCurrentlyVisible = false;
             }
         } else {
-            state.hiddenSince = 0;
+            state.hiddenSinceTick = -1;
             state.isCurrentlyVisible = true;
         }
     }
@@ -260,19 +289,31 @@ public class ServerCullingManager {
         p[4] = aabb.minY;
         p[5] = cz;
         p[6] = aabb.minX;
-        p[7] = aabb.maxY;
+        p[7] = aabb.minY;
         p[8] = aabb.minZ;
-        p[9] = aabb.maxX;
-        p[10] = aabb.maxY;
+        p[9] = aabb.minX;
+        p[10] = aabb.minY;
         p[11] = aabb.maxZ;
         p[12] = aabb.minX;
-        p[13] = aabb.minY;
-        p[14] = aabb.maxZ;
-        p[15] = aabb.maxX;
-        p[16] = aabb.minY;
-        p[17] = aabb.minZ;
+        p[13] = aabb.maxY;
+        p[14] = aabb.minZ;
+        p[15] = aabb.minX;
+        p[16] = aabb.maxY;
+        p[17] = aabb.maxZ;
+        p[18] = aabb.maxX;
+        p[19] = aabb.minY;
+        p[20] = aabb.minZ;
+        p[21] = aabb.maxX;
+        p[22] = aabb.minY;
+        p[23] = aabb.maxZ;
+        p[24] = aabb.maxX;
+        p[25] = aabb.maxY;
+        p[26] = aabb.minZ;
+        p[27] = aabb.maxX;
+        p[28] = aabb.maxY;
+        p[29] = aabb.maxZ;
 
-        for (int i = 0; i < 18; i += 3) {
+        for (int i = 0; i < 30; i += 3) {
             if (isLineOfSightClear(level, eye, new Vec3(p[i], p[i + 1], p[i + 2]))) return true;
         }
         return false;
@@ -292,7 +333,7 @@ public class ServerCullingManager {
 
             ClipContext ctx = new ClipContext(start, end, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty());
             return level.clip(ctx).getType() == HitResult.Type.MISS;
-        } catch (Throwable t) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -326,12 +367,18 @@ public class ServerCullingManager {
         int gridX = (int) Math.floor(cx / 8.0);
         int gridY = (int) Math.floor(cy / 8.0);
         int gridZ = (int) Math.floor(cz / 8.0);
+        return packGridKey(gridX, gridY, gridZ);
+    }
+
+    private static long toParticleGridKey(double x, double y, double z) {
+        return packGridKey((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
+    }
+
+    private static long packGridKey(int gridX, int gridY, int gridZ) {
         return ((long) (gridX & 0x3FFFFF) << 42) | ((long) (gridY & 0xFFFFF) << 22) | (gridZ & 0x3FFFFF);
     }
 
     public static boolean isParticleVisible(ServerPlayer player, double x, double y, double z) {
-        ParticleCullCache cache = getOrCreate(PARTICLE_CACHE, player, ParticleCullCache::new);
-
         Vec3 eyePos = player.getEyePosition();
         double dx = x - eyePos.x;
         double dy = y - eyePos.y;
@@ -346,29 +393,37 @@ public class ServerCullingManager {
 
         if (!inFOV) return false;
 
-        float fx = (float) x;
-        float fy = (float) y;
-        float fz = (float) z;
-
-        if (Math.abs(cache.lastX - fx) < 1.0f && Math.abs(cache.lastY - fy) < 1.0f && Math.abs(cache.lastZ - fz) < 1.0f) {
-            return cache.lastResult;
+        ParticleCullCache cache = getOrCreate(PARTICLE_CACHE, player, ParticleCullCache::new);
+        Level level = player.level();
+        long tick = level.getServer().getTickCount();
+        if (cache.level != level || cache.lastTick != tick) {
+            cache.level = level;
+            cache.lastTick = tick;
+            cache.raytraces = 0;
+            cache.visibleCells.clear();
         }
 
-        boolean result = isLineOfSightClear(player.level(), eyePos, new Vec3(x, y, z));
+        long gridKey = toParticleGridKey(x, y, z);
+        if (cache.visibleCells.contains(gridKey)) {
+            return true;
+        }
+        if (!tryAcquireParticleRaytrace(level, cache)) {
+            return true;
+        }
 
-        cache.lastX = fx;
-        cache.lastY = fy;
-        cache.lastZ = fz;
-        cache.lastResult = result;
+        boolean result = isLineOfSightClear(level, eyePos, new Vec3(x, y, z));
+        if (result) {
+            cache.visibleCells.add(gridKey);
+        }
 
         return result;
     }
 
     private static class ParticleCullCache {
-        float lastX = Float.MAX_VALUE;
-        float lastY = Float.MAX_VALUE;
-        float lastZ = Float.MAX_VALUE;
-        boolean lastResult = true;
+        final LongArraySet visibleCells = new LongArraySet();
+        Level level;
+        long lastTick = Long.MIN_VALUE;
+        int raytraces;
     }
 
     private static class EntityCullCache {
@@ -376,35 +431,13 @@ public class ServerCullingManager {
         long lastTick = -1;
     }
 
-    private record AsyncAABBCheckTask(CullingState state, Level level, Vec3 eyePos, AABB aabb) implements Runnable {
-        @Override
-        public void run() {
-            try {
-                state.lastRaytraceResult = checkAABBVisible(level, eyePos, aabb);
-            } catch (Exception e) {
-                state.lastRaytraceResult = true;
-            } finally {
-                state.isChecking = false;
-            }
-        }
-    }
-
     private static class CullingState {
-        volatile boolean lastRaytraceResult = true;
-        volatile boolean isChecking = false;
+        boolean lastRaytraceResult = true;
         boolean isCurrentlyVisible = true;
-        long lastCheckTime = 0;
-        long hiddenSince = 0;
-        float lastDistanceSq = 0;
+        long lastCheckTick = Long.MIN_VALUE;
+        long hiddenSinceTick = -1;
         boolean lastSentVisible = true;
-        float lastPx = Float.MAX_VALUE;
-        float lastPy = Float.MAX_VALUE;
-        float lastPz = Float.MAX_VALUE;
-        float lastTx = Float.MAX_VALUE;
-        float lastTy = Float.MAX_VALUE;
-        float lastTz = Float.MAX_VALUE;
-        float lastRotX = Float.MAX_VALUE;
-        float lastRotY = Float.MAX_VALUE;
+        Runnable restoreAction;
         float cachedRotX = Float.MAX_VALUE;
         float cachedRotY = Float.MAX_VALUE;
         float sinF = 0f;

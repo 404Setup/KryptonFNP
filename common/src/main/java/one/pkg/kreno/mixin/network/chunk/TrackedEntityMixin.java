@@ -38,34 +38,59 @@ public abstract class TrackedEntityMixin implements IKrenoTrackedEntity {
     @Unique
     private int kreno$cullingTickCounter = 0;
 
+    @Unique
+    private boolean kreno$cullingActive = false;
+
     @Override
     public void kreno$checkCullingState() {
-        if (!ModConfig.Culling.isEntityEnabled()) return;
+        if (!ServerCullingManager.shouldCullEntity(this.entity)) {
+            if (this.kreno$cullingActive) {
+                this.kreno$restoreTrackingState();
+                this.kreno$cullingActive = false;
+            }
+            return;
+        }
+        this.kreno$cullingActive = true;
         this.kreno$cullingTickCounter++;
         if ((this.kreno$cullingTickCounter + this.entity.getId()) % 10 != 0) return;
         
-        long now = System.currentTimeMillis();
+        long currentTick = this.entity.level().getServer().getTickCount();
         for (ServerPlayerConnection conn : this.seenBy) {
             ServerPlayer player = conn.getPlayer();
-            boolean isVisible = ServerCullingManager.isEntityVisible(player, this.entity, now);
+            boolean isVisible = ServerCullingManager.isEntityVisible(player, this.entity, currentTick);
             boolean wasVisible = ServerCullingManager.getLastSentVisible(player, this.entity);
 
             if (isVisible != wasVisible) {
-                ServerCullingManager.setLastSentVisible(player, this.entity, isVisible);
                 if (isVisible) {
+                    ServerCullingManager.setLastSentVisible(player, this.entity);
                     this.serverEntity.sendPairingData(player, conn::send);
                 } else {
+                    ServerCullingManager.setLastSentHidden(
+                            player,
+                            this.entity,
+                            () -> this.serverEntity.sendPairingData(player, conn::send));
                     conn.send(new ClientboundRemoveEntitiesPacket(this.entity.getId()));
                 }
             }
         }
     }
 
+    @Unique
+    private void kreno$restoreTrackingState() {
+        for (ServerPlayerConnection conn : this.seenBy) {
+            ServerPlayer player = conn.getPlayer();
+            if (!ServerCullingManager.getLastSentVisible(player, this.entity)) {
+                this.serverEntity.sendPairingData(player, conn::send);
+            }
+            ServerCullingManager.removePlayerEntityState(player, this.entity);
+        }
+    }
+
     @Redirect(method = "updatePlayer", at = @At(value = "INVOKE", target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"))
     private boolean kreno$onSeenByAdd(Set<ServerPlayerConnection> instance, Object e) {
         boolean added = instance.add((ServerPlayerConnection) e);
-        if (added) {
-            ServerCullingManager.setLastSentVisible(((ServerPlayerConnection) e).getPlayer(), this.entity, true);
+        if (added && ServerCullingManager.shouldCullEntity(this.entity)) {
+            ServerCullingManager.setLastSentVisible(((ServerPlayerConnection) e).getPlayer(), this.entity);
         }
         return added;
     }
@@ -81,8 +106,8 @@ public abstract class TrackedEntityMixin implements IKrenoTrackedEntity {
 
     @Inject(method = "sendToTrackingPlayers(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void kreno$sendToTrackingPlayers(Packet<?> packet, CallbackInfo ci) {
-        if (ModConfig.Mixin.isTrackedEntityOpt() || ModConfig.Culling.isEntityEnabled()) {
-            boolean isCullingEnabled = ModConfig.Culling.isEntityEnabled();
+        boolean isCullingEnabled = ServerCullingManager.shouldCullEntity(this.entity);
+        if (ModConfig.Mixin.isTrackedEntityOpt() || isCullingEnabled) {
             for (ServerPlayerConnection conn : this.seenBy) {
                 if (!isCullingEnabled || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {
                     conn.send(packet);
@@ -94,8 +119,8 @@ public abstract class TrackedEntityMixin implements IKrenoTrackedEntity {
 
     @Inject(method = "sendToTrackingPlayersFiltered", at = @At("HEAD"), cancellable = true)
     private void kreno$sendToTrackingPlayersFiltered(Packet<?> packet, Predicate<ServerPlayer> targetPredicate, CallbackInfo ci) {
-        if (ModConfig.Mixin.isTrackedEntityOpt() || ModConfig.Culling.isEntityEnabled()) {
-            boolean isCullingEnabled = ModConfig.Culling.isEntityEnabled();
+        boolean isCullingEnabled = ServerCullingManager.shouldCullEntity(this.entity);
+        if (ModConfig.Mixin.isTrackedEntityOpt() || isCullingEnabled) {
             for (ServerPlayerConnection conn : this.seenBy) {
                 if (targetPredicate.test(conn.getPlayer())) {
                     if (!isCullingEnabled || ServerCullingManager.getLastSentVisible(conn.getPlayer(), this.entity)) {

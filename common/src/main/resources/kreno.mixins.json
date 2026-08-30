@@ -9,7 +9,6 @@
     "network.pipeline.he.ClientConnectionMixin"
   ],
   "mixins": [
-    "accessor.ClientboundMoveEntityPacketAccessor",
     "accessor.ConnectionAccessor",
     "accessor.LevelChunkSectionAccessor",
     "network.chunk.ServerEntityCullingMixin",
@@ -25,8 +24,6 @@
     "network.microopt.VarIntMixin",
     "network.microopt.VarLongMixin",
     "network.microopt.particle.EntityMixin",
-    "network.microopt.particle.LivingEntityMixin",
-    "network.microopt.particle.ServerEntityMixin",
     "network.pipeline.LegacyQueryHandlerMixin",
     "network.pipeline.Varint21FrameDecoderMixin",
     "network.pipeline.compression.ConnectionMixin",

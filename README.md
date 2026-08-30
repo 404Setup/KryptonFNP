@@ -33,7 +33,7 @@ For Velocity Server, please see the [VelocityNT Recast](https://github.com/404Se
 - Continuously provide compatibility for stable versions (1.20.1, 1.21.1) and the latest versions
 - RecastLib provides acceleration features for **Windows** (x64/arm64)
 - Support RFC 8305 Happy Eyeballs for client connections
-- Server-side asynchronous (possibly) entity hiding – Hides entities that are not visible to the player
+- Bounded server-side entity hiding – Hides occluded display and hanging entities without removing gameplay entities
 - Further scalability optimizations
 
 ## Mandatory dependencies
@@ -82,10 +82,11 @@ even if you do, I can't help.
 
 ## Config
 
+Some options under `mixin` decide whether a Mixin is applied during startup. Changes to those
+options require a game restart; runtime options take effect after reloading the configuration.
+
 ```yaml
 mixin:
-  # Replace player login validation thread with virtual thread
-  loginVT: true
   # Replace text filter thread with virtual thread
   textFilterVT: true
   # Replace download thread with virtual thread
@@ -96,10 +97,10 @@ mixin:
   clientEncrypt: true
   # Optimized RconClient implementation
   rconClient: false
-  # Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned
+  # Skips motion updates only when both velocities encode to zero on the client
   serverEntityMoveOpt: false
-  # Reduces object allocation and lock contention in the Connection class
-  connectionMicroOpt: true
+  # Halves concurrent queue operations when draining queued packets on the main thread
+  packetProcessorOpt: true
   # Reduces some potentially useless particle packets. This configuration only takes effect on the server side.
   particlePacketOpt: true
   # Optimizes entity packet broadcasting and integrates with server-side entity culling
@@ -113,10 +114,8 @@ fix:
 culling:
   # Smart particle culling on server side
   particle: true
-  # Smart entity culling on server side
+  # Cull occluded display and hanging entities on dedicated servers
   entity: true
-  # Asynchronous execution mode for Cuttings system
-  asyncMode: true
 compress:
   # The compression level for packets, between 1-9.
   compressionLevel: 4
@@ -126,10 +125,9 @@ gui:
   # Replace Minecraft style KReno UI with a newly designed OreUI
   oreui: false
 compatibility:
+  # Allow non-standard frame lengths encoded as four- or five-byte VarInts
   allow-wide-var-int: false
 netty:
-  # Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.
-  allocatorMaxOrder: 9
   # Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.
   happyEyeballs: false
 ```

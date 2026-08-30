@@ -135,10 +135,6 @@ public class ModMixinBootstrap implements IMixinConfigPlugin {
         BestVarLong("one.pkg.kreno.mixin.network.microopt.VarLongMixin", ModConfig.Mixin::isBestVarLong),
         ClientEncrypt("one.pkg.kreno.mixin.network.pipeline.encryption.ClientLoginMixin", ModConfig.Mixin::isClientEncrypt),
         RconClient("one.pkg.kreno.mixin.network.experimental.RconClientMixin", ModConfig.Mixin::isRconClient),
-        ServerEntitySendChanges("one.pkg.kreno.mixin.network.microopt.ServerEntitySendChanges", ModConfig.Mixin::isServerEntityMoveOpt),
-        ParticlePacketOpt("one.pkg.kreno.mixin.network.microopt.particle.EntityMixin", () -> ModConfig.Mixin.isParticlePacketOpt() && !JavaLoader.INSTANCE.isClient()),
-        ParticlePacketOpt2("one.pkg.kreno.mixin.network.microopt.particle.LivingEntityMixin", () -> ModConfig.Mixin.isParticlePacketOpt() && !JavaLoader.INSTANCE.isClient()),
-        ParticlePacketOpt3("one.pkg.kreno.mixin.network.microopt.particle.ServerEntityMixin", () -> ModConfig.Mixin.isParticlePacketOpt() && !JavaLoader.INSTANCE.isClient()),
         ;
 
         public final String CLASS;

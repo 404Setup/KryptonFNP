@@ -8,6 +8,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
 import one.pkg.kreno.shared.ModConfig;
+import one.pkg.kreno.shared.culling.ServerCullingManager;
 
 public class KrenoCommand {
     public static class Client {
@@ -32,7 +33,11 @@ public class KrenoCommand {
 
     private static int reloadConfig(CommandContext<CommandSourceStack> context) {
         ModConfig.config.reloadConfigurations(true);
-        context.getSource().sendSuccess(() -> Component.literal("Config reloaded successfully").withStyle(ChatFormatting.GREEN), true);
+        ServerCullingManager.onConfigReload();
+        context.getSource().sendSuccess(
+                () -> Component.literal("Config reloaded. Startup-only Mixin options require a game restart.")
+                        .withStyle(ChatFormatting.GREEN),
+                true);
         return 1;
     }
 }

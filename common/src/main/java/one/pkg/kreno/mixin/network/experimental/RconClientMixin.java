@@ -57,7 +57,7 @@ public class RconClientMixin {
 
     /**
      * @author 404
-     * @reason Optimize sendCmdResponse to split on byte boundaries instead of characters, reducing allocations and fixing potential encoding issues.
+     * @reason Split responses without cutting through a UTF-8 code point.
      */
     @Overwrite
     private void sendCmdResponse(int id, String message) throws IOException {
@@ -69,9 +69,15 @@ public class RconClientMixin {
         } else {
             int offset = 0;
             while (offset < len) {
-                int chunkSize = Math.min(CHUNK_SIZE, len - offset);
+                int end = Math.min(offset + CHUNK_SIZE, len);
+                if (end < len) {
+                    while (end > offset && (fullBytes[end] & 0xC0) == 0x80) {
+                        end--;
+                    }
+                }
+                int chunkSize = end - offset;
                 this.send(id, 0, fullBytes, offset, chunkSize);
-                offset += chunkSize;
+                offset = end;
             }
         }
     }

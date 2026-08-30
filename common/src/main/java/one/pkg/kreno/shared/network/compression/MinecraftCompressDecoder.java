@@ -22,12 +22,8 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
     private static final int VANILLA_MAXIMUM_UNCOMPRESSED_SIZE = 8 * 1024 * 1024;
     private static final int HARD_MAXIMUM_UNCOMPRESSED_SIZE = 128 * 1024 * 1024;
 
-    private static final int UNCOMPRESSED_CAP =
-            ModConfig.Compression.isPermitOversizedPackets()
-                    ? HARD_MAXIMUM_UNCOMPRESSED_SIZE : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
-
     private final VelocityCompressor compressor;
-    private final boolean validate;
+    private boolean validate;
     private int threshold;
 
 
@@ -54,11 +50,14 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
 
         if (validate) {
+            int uncompressedCap = ModConfig.Compression.isPermitOversizedPackets()
+                    ? HARD_MAXIMUM_UNCOMPRESSED_SIZE
+                    : VANILLA_MAXIMUM_UNCOMPRESSED_SIZE;
             checkState(claimedUncompressedSize >= threshold, "Uncompressed size %s is less than"
                     + " threshold %s", claimedUncompressedSize, threshold);
-            checkState(claimedUncompressedSize <= UNCOMPRESSED_CAP,
+            checkState(claimedUncompressedSize <= uncompressedCap,
                     "Uncompressed size %s exceeds hard threshold of %s", claimedUncompressedSize,
-                    UNCOMPRESSED_CAP);
+                    uncompressedCap);
         }
 
         decompress(compressor, ctx, in, out, claimedUncompressedSize);
@@ -84,7 +83,8 @@ public class MinecraftCompressDecoder extends MessageToMessageDecoder<ByteBuf> {
         compressor.close();
     }
 
-    public void setThreshold(int threshold) {
+    public void setThreshold(int threshold, boolean validate) {
         this.threshold = threshold;
+        this.validate = validate;
     }
 }

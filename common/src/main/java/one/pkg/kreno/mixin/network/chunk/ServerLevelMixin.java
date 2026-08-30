@@ -30,6 +30,10 @@ public class ServerLevelMixin {
         if (!ModConfig.Culling.isParticleEnabled())
             return;
 
+        ServerLevel level = (ServerLevel) (Object) this;
+        if (player.level() != level)
+            return;
+
         if (!ServerCullingManager.isParticleVisible(player, x, y, z)) {
             cir.setReturnValue(false);
         }

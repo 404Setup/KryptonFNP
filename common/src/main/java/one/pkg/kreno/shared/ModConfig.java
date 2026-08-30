@@ -24,7 +24,7 @@ public class ModConfig {
     private static boolean fixIssues128Enabled = false;
     @ConfigTarget(group = "fix.issues128", value = "sync", comment = "Run bandwidth statistics on sync thread, which is closer to Vanilla behavior.")
     private static boolean fixIssues128Sync = true;
-    @ConfigTarget(group = "compatibility", value = "allow-wide-var-int")
+    @ConfigTarget(group = "compatibility", value = "allow-wide-var-int", comment = "Allow non-standard frame lengths encoded as four- or five-byte VarInts")
     private static boolean wideVarInt = false;
     @ConfigTarget(group = "mixin", value = "textFilterVT", comment = "Replace text filter thread with virtual thread")
     private static boolean textFilterVT = true;
@@ -36,7 +36,7 @@ public class ModConfig {
     private static boolean clientEncrypt = true;
     @ConfigTarget(group = "mixin", value = "rconClient", comment = "Optimized RconClient implementation")
     private static boolean rconClient = false;
-    @ConfigTarget(group = "mixin", value = "serverEntityMoveOpt", comment = "Skips sending movement packets if the entity hasn't moved, and downgrades position+rotation packets to just rotation if the entity only turned")
+    @ConfigTarget(group = "mixin", value = "serverEntityMoveOpt", comment = "Skips motion updates only when both velocities encode to zero on the client")
     private static boolean serverEntityMoveOpt = false;
     @ConfigTarget(group = "mixin", value = "packetProcessorOpt", comment = "Halves concurrent queue operations when draining queued packets on the main thread")
     private static boolean packetProcessorOpt = true;
@@ -44,10 +44,6 @@ public class ModConfig {
     private static boolean particlePacketOpt = true;
     @ConfigTarget(group = "mixin", value = "trackedEntityOpt", comment = "Optimizes entity packet broadcasting and integrates with server-side entity culling")
     private static boolean trackedEntityOpt = true;
-    @ConfigTarget(group = "netty", value = "allocatorMaxOrder", comment = "Change Netty's default 16MiB memory allocation to 4MiB, as Minecraft has a 2MiB packet size limit.")
-    @Range(min = 9, max = 51)
-    @DisplayMode(EntryMode.SLIDER)
-    private static int nettyAllocatorMaxOrder = 9;
     @ConfigTarget(group = "netty", value = "happyEyeballs", comment = "Enable Happy Eyeballs (RFC 8305) for client connections to race IPv6 and IPv4. May cause some servers (like Velocity) to temporarily refuse connections.")
     private static boolean nettyHe = false;
     @ConfigTarget(group = "gui", value = "oreui", comment = "Replace Minecraft style KReno UI with a newly designed OreUI")
@@ -55,10 +51,8 @@ public class ModConfig {
 
     @ConfigTarget(group = "culling", value = "particle", comment = "Smart particle culling on server side")
     private static boolean cullingParticle = true;
-    @ConfigTarget(group = "culling", value = "entity", comment = "Smart entity culling on server side")
+    @ConfigTarget(group = "culling", value = "entity", comment = "Cull occluded display and hanging entities on dedicated servers")
     private static boolean cullingEntity = true;
-    @ConfigTarget(group = "culling", value = "asyncMode", comment = "Asynchronous execution mode for Cuttings system")
-    private static boolean cullingAsyncMode = true;
 
     static {
         config = new SewliaConfig(ConfigMeta.of(
@@ -81,19 +75,6 @@ public class ModConfig {
 
         if (level > 9 || level < 1) {
             dumpMeta.setObject(4);
-            dumpMeta.setCancelled(true);
-        }
-    }
-
-    @ReadWith("nettyAllocatorMaxOrder")
-    private static void setAllocatorMaxOrder(DumpMeta dumpMeta) {
-        if (!(dumpMeta.getObject() instanceof Integer)) {
-            dumpMeta.setCancelled(true);
-            return;
-        }
-        int level = (Integer) dumpMeta.getObject();
-        if (level > 51 || level < 9) {
-            dumpMeta.setObject(9);
             dumpMeta.setCancelled(true);
         }
     }
@@ -156,7 +137,7 @@ public class ModConfig {
         }
 
         public static boolean isParticlePacketOpt() {
-            return particlePacketOpt;
+            return !JavaLoader.INSTANCE.isClient() && particlePacketOpt;
         }
 
         public static boolean isTrackedEntityOpt() {
@@ -165,10 +146,6 @@ public class ModConfig {
     }
 
     public static class Netty {
-        public static int getAllocatorMaxOrder() {
-            return nettyAllocatorMaxOrder;
-        }
-
         public static boolean isHappyEyeballs() {
             return nettyHe;
         }
@@ -187,10 +164,6 @@ public class ModConfig {
 
         public static boolean isEntityEnabled() {
             return !JavaLoader.INSTANCE.isClient() && cullingEntity;
-        }
-
-        public static boolean isAsyncMode() {
-            return cullingAsyncMode;
         }
     }
 
